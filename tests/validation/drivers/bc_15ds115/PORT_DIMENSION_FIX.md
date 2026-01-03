@@ -1,7 +1,7 @@
 # Port Dimension Validation Fix
 
 **Date:** 2025-12-27
-**Component:** `src/viberesp/enclosure/ported_box.py`
+**Component:** `src/gsd/enclosure/ported_box.py`
 **Function:** `calculate_optimal_port_dimensions()`
 
 ---
@@ -164,7 +164,7 @@ Based on this fix, practical designs require:
 
 ## Files Modified
 
-- `src/viberesp/enclosure/ported_box.py` - Added validation to `calculate_optimal_port_dimensions()`
+- `src/gsd/enclosure/ported_box.py` - Added validation to `calculate_optimal_port_dimensions()`
 - Updated docstring with validation details
 
 ## Files Created

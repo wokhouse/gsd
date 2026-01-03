@@ -26,7 +26,7 @@ Validation against Hornresp identified accuracy issues in the ported box SPL cal
 
 ### Frequency-by-Frequency Comparison
 
-| Freq (Hz) | Hornresp (dB) | Viberesp (dB) | Error (dB) | Status |
+| Freq (Hz) | Hornresp (dB) | GSD (dB) | Error (dB) | Status |
 |-----------|---------------|---------------|------------|--------|
 | 20.15     | 92.81         | 80.41         | **-12.40** | ✗ Poor |
 | 30.08     | 84.87         | 88.74         | **+3.87**  | ~ Fair |
@@ -61,7 +61,7 @@ Validation against Hornresp identified accuracy issues in the ported box SPL cal
 **Characteristic:** Distinct peak at Fb (20 Hz) → dip → gradual rise → HF rolloff
 This is the **expected vented box behavior** with Helmholtz resonance.
 
-### Viberesp Response (Current)
+### GSD Response (Current)
 ```
 20 Hz:  80.4 dB  ← TOO LOW (missing peak)
 30 Hz:  88.7 dB  ← Slight elevation
@@ -81,7 +81,7 @@ The **midrange accuracy (50-100 Hz) is excellent**, but the tuning frequency pea
 
 ### Current Implementation (CORRECT)
 
-**File:** `src/viberesp/enclosure/ported_box.py:780`
+**File:** `src/gsd/enclosure/ported_box.py:780`
 
 ```python
 # Numerator (Small 1973, Eq. 20): N(s) = s⁴T_B²T_S²
@@ -149,7 +149,7 @@ See Issue #26: "Ported Box SPL: Missing Peak at Tuning Frequency"
 
 ### Qts Mismatch
 
-| Parameter | Hornresp (calc) | Viberesp | Difference |
+| Parameter | Hornresp (calc) | GSD | Difference |
 |-----------|-----------------|----------|------------|
 | Qes       | 0.0527          | 0.0631   | +0.0104    |
 | Qms       | 1.5869          | 1.9006   | +0.3137    |
@@ -202,7 +202,7 @@ Testing revealed that **calibration offset is driver-dependent**:
 
 ### Hornresp Data Source
 
-**File:** `/Users/fungj/vscode/viberesp/imports/ported_sim.txt`
+**File:** `/Users/fungj/vscode/gsd/imports/ported_sim.txt`
 
 Contains tab-separated simulation results:
 - Freq (Hz)
@@ -210,7 +210,7 @@ Contains tab-separated simulation results:
 - Ze (ohms) - 6th column
 - Other acoustic/electrical parameters
 
-### Viberesp Calculation
+### GSD Calculation
 
 **Function:** `calculate_spl_ported_transfer_function()`
 ```python
@@ -243,8 +243,8 @@ spl_vb = calculate_spl_ported_transfer_function(
    - File: `literature/thiele_small/thiele_1971_vented_boxes.md`
 
 3. **Hornresp Simulation Results**
-   - File: `/Users/fungj/vscode/viberesp/imports/ported_sim.txt`
-   - Parameters: `/Users/fungj/vscode/viberesp/imports/ported_params.txt`
+   - File: `/Users/fungj/vscode/gsd/imports/ported_sim.txt`
+   - Parameters: `/Users/fungj/vscode/gsd/imports/ported_params.txt`
 
 4. **Investigation Documents**
    - `docs/validation/ported_box_validation_investigation.md` - Full analysis

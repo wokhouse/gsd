@@ -16,10 +16,10 @@ import math
 import cmath
 from pathlib import Path
 
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
-from viberesp.driver.bc_drivers import get_bc_8ndl51
-from viberesp.driver.radiation_impedance import radiation_impedance_piston
-from viberesp.simulation.constants import AIR_DENSITY, SPEED_OF_SOUND
+from gsd.hornresp.results_parser import load_hornresp_sim_file
+from gsd.driver.bc_drivers import get_bc_8ndl51
+from gsd.driver.radiation_impedance import radiation_impedance_piston
+from gsd.simulation.constants import AIR_DENSITY, SPEED_OF_SOUND
 
 
 def diagnose_spl_calculation(frequency, driver, voltage=2.83, measurement_distance=1.0):

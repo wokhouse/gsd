@@ -2,16 +2,16 @@
 
 ## Overview
 
-The **PlotFactory** has been successfully implemented to eliminate code duplication across plotting scripts in the viberesp project. This factory provides a unified, configuration-driven interface for generating standard visualizations from optimization results.
+The **PlotFactory** has been successfully implemented to eliminate code duplication across plotting scripts in the gsd project. This factory provides a unified, configuration-driven interface for generating standard visualizations from optimization results.
 
 ## What Was Implemented
 
-### New Module: `src/viberesp/visualization/`
+### New Module: `src/gsd/visualization/`
 
 Created a complete visualization module with the following structure:
 
 ```
-src/viberesp/visualization/
+src/gsd/visualization/
 ├── __init__.py              # Module exports and public API
 ├── factory.py               # Main PlotFactory class (450+ lines)
 ├── config.py                # PlotConfig and MultiPlotConfig dataclasses
@@ -84,7 +84,7 @@ Consistent visual styling across all plots:
 ### Basic Usage
 
 ```python
-from viberesp.visualization import PlotFactory, PlotConfig
+from gsd.visualization import PlotFactory, PlotConfig
 
 # Create configuration
 config = PlotConfig(
@@ -104,7 +104,7 @@ fig.savefig(config.output_path, dpi=150)
 ### Using Preset Configurations
 
 ```python
-from viberesp.visualization import get_preset_config
+from gsd.visualization import get_preset_config
 
 # Get preset configuration
 config = get_preset_config(
@@ -270,14 +270,14 @@ All use validated physics-based methods with proper literature citations. See `d
 
 Add CLI commands:
 ```bash
-viberesp plot-factory create \
+gsd plot-factory create \
     --type pareto_2d \
     --input results.json \
     --output pareto.png \
     --x-objective f3 \
     --y-objective flatness
 
-viberesp plot-factory batch \
+gsd plot-factory batch \
     --input results.json \
     --output-dir plots/ \
     --plots pareto_2d,spl_response,horn_profile
@@ -320,11 +320,11 @@ These methods already have proper literature citations in their respective modul
 ## Files Created
 
 ### Module Files
-- `src/viberesp/visualization/__init__.py`
-- `src/viberesp/visualization/factory.py`
-- `src/viberesp/visualization/config.py`
-- `src/viberesp/visualization/utils.py`
-- `src/viberesp/visualization/styles.py`
+- `src/gsd/visualization/__init__.py`
+- `src/gsd/visualization/factory.py`
+- `src/gsd/visualization/config.py`
+- `src/gsd/visualization/utils.py`
+- `src/gsd/visualization/styles.py`
 
 ### Test Files
 - `tasks/test_plot_factory.py`

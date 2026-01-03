@@ -23,7 +23,7 @@ All scripts created and tested:
 | Script | Purpose | Status |
 |--------|---------|--------|
 | `tasks/export_hornresp_test_cases.py` | Exports designs to Hornresp format | ✅ Complete |
-| `tasks/validate_transfer_function_calibration.py` | Compares viberesp vs Hornresp | ✅ Complete |
+| `tasks/validate_transfer_function_calibration.py` | Compares gsd vs Hornresp | ✅ Complete |
 | `tasks/analyze_spl_offset.py` | Analyzes offset between SPL methods | ✅ Complete |
 | `tasks/apply_spl_calibration.py` | Applies calibration to transfer functions | ✅ Complete |
 
@@ -92,7 +92,7 @@ PYTHONPATH=src python3 tasks/validate_transfer_function_calibration.py
 ```
 
 **Expected output:**
-- Comparison table showing viberesp vs Hornresp SPL at each frequency
+- Comparison table showing gsd vs Hornresp SPL at each frequency
 - Average offset calculation
 - Recommended calibration constant
 - Pass/fail criteria check
@@ -109,8 +109,8 @@ PYTHONPATH=src python3 tasks/apply_spl_calibration.py
 ```
 
 This will automatically update:
-- `src/viberesp/enclosure/sealed_box.py` (line ~270)
-- `src/viberesp/enclosure/ported_box.py` (line ~686)
+- `src/gsd/enclosure/sealed_box.py` (line ~270)
+- `src/gsd/enclosure/ported_box.py` (line ~686)
 
 #### 5. Verify Calibration
 
@@ -131,7 +131,7 @@ PYTHONPATH=src python3 tasks/validate_transfer_function_calibration.py
 ```
 tasks/
 ├── export_hornresp_test_cases.py           # Export driver designs to Hornresp
-├── validate_transfer_function_calibration.py # Compare viberesp vs Hornresp
+├── validate_transfer_function_calibration.py # Compare gsd vs Hornresp
 ├── analyze_spl_offset.py                    # Analyze offset between SPL methods
 ├── apply_spl_calibration.py                 # Apply calibration to code
 ├── SPL_CALIBRATION_INSTRUCTIONS.md          # Detailed instructions
@@ -189,7 +189,7 @@ Based on initial analysis, we expect approximately **-37 dB** for sealed boxes. 
 After applying calibration, all criteria must be met:
 
 1. **Accuracy**
-   - Average offset between viberesp and Hornresp < 0.5 dB
+   - Average offset between gsd and Hornresp < 0.5 dB
    - Maximum deviation at any frequency < 2 dB
 
 2. **Frequency Response Shape**

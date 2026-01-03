@@ -24,8 +24,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
-from viberesp.enclosure.sealed_box import calculate_sealed_box_system_parameters
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
+from gsd.enclosure.sealed_box import calculate_sealed_box_system_parameters
 
 
 def calculate_vb_for_qtc(driver, target_qtc: float) -> tuple[float, float, float]:

@@ -35,11 +35,11 @@ Area ratio ≈ 3.1
 Compression gain ≈ 10·log₁₀(3.1) ≈ 5 dB
 ```
 
-**Missing in viberesp**: The transformation from diaphragm area to throat area through the phase plug.
+**Missing in gsd**: The transformation from diaphragm area to throat area through the phase plug.
 
 **Files to check**:
-- `src/viberesp/simulation/horn_driver_integration.py` - Does it include front chamber (V_tc)?
-- `src/viberesp/simulation/types.py` - Is `FrontLoadedHorn` modeling the compression ratio?
+- `src/gsd/simulation/horn_driver_integration.py` - Does it include front chamber (V_tc)?
+- `src/gsd/simulation/types.py` - Is `FrontLoadedHorn` modeling the compression ratio?
 
 ### B. Radiation Space Mismatch (6 dB)
 
@@ -94,7 +94,7 @@ result = calculate_horn_spl_flow(
 
 **Status**: ✅ **IMPLEMENTED** (2025-12-30)
 
-**Implementation**: `src/viberesp/enclosure/baffle_step.py`
+**Implementation**: `src/gsd/enclosure/baffle_step.py`
 - Linkwitz shelf filter model (smooth transition)
 - Olson/Stenzel circular baffle model (with diffraction ripples)
 - Both physics mode (attenuates LF) and compensation mode (boosts LF)
@@ -116,7 +116,7 @@ result = calculate_horn_spl_flow(
 
 **Usage**:
 ```python
-from viberesp.enclosure.baffle_step import apply_baffle_step_to_spl
+from gsd.enclosure.baffle_step import apply_baffle_step_to_spl
 
 # Apply baffle step physics to SPL response
 spl_with_baffle = apply_baffle_step_to_spl(

@@ -17,9 +17,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from viberesp.driver.loader import load_driver
-from viberesp.crossover.lr4 import apply_lr4_crossover, optimize_crossover_and_alignment
-from viberesp.enclosure.ported_box import calculate_spl_ported_transfer_function
+from gsd.driver.loader import load_driver
+from gsd.crossover.lr4 import apply_lr4_crossover, optimize_crossover_and_alignment
+from gsd.enclosure.ported_box import calculate_spl_ported_transfer_function
 
 
 def calculate_hf_response_fixed(driver, horn_cutoff, frequencies):

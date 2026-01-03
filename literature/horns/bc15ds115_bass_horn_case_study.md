@@ -188,7 +188,7 @@ For a 2.6 m exponential horn with ~0.1 m² mouth, consider these folding strateg
 
 1. **Import to Hornresp:** Load `bc15ds115_bass_horn.txt` and verify parameters
 2. **Simulate response:** Generate SPL and impedance curves
-3. **Compare with viberesp:** Check agreement (should be <2% deviation)
+3. **Compare with gsd:** Check agreement (should be <2% deviation)
 4. **Analyze mouth reflection:** Look for impedance anomalies from mouth size compromise
 5. **Adjust if needed:** Modify rear chamber volume or throat chamber for desired response
 

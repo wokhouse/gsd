@@ -7,13 +7,13 @@
 
 ## Summary of Corrections
 
-After reviewing GitHub issue #21, we identified **critical bugs** in the viberesp export function that have now been **fixed**.
+After reviewing GitHub issue #21, we identified **critical bugs** in the gsd export function that have now been **fixed**.
 
 ---
 
 ## Parameter Comparison (All Values Now CORRECT)
 
-| Parameter | User Manual | Old viberesp | Corrected viberesp | Status |
+| Parameter | User Manual | Old gsd | Corrected gsd | Status |
 |-----------|-------------|--------------|-------------------|--------|
 | **F12** | 25.23 Hz | 50.29 Hz ❌ | **25.15 Hz** ✓ | Fixed! |
 | **L12** | 266 cm | Missing ❌ | **266.00 cm** ✓ | Fixed! |
@@ -186,7 +186,7 @@ Lrc         72.44         72.44              ✓
 
 **✓ ALL PARAMETERS NOW MATCH!**
 
-Your manual entry was **correct all along**. The viberesp export function had bugs.
+Your manual entry was **correct all along**. The gsd export function had bugs.
 
 ---
 
@@ -197,7 +197,7 @@ Your manual entry was **correct all along**. The viberesp export function had bu
    File → Import → exports/bc15ds115_bass_horn_CORRECTED.txt
    ```
 
-2. **Run simulation** and compare with viberesp predictions
+2. **Run simulation** and compare with gsd predictions
 
 3. **Expected agreement:** <2% deviation for impedance and frequency response
 
@@ -222,7 +222,7 @@ Your manual entry was **correct all along**. The viberesp export function had bu
 
 1. **`exports/bc15ds115_bass_horn_CORRECTED.txt`** - Fixed export file ready for Hornresp import
 2. **`tasks/hornresp_parameter_units_correction.md`** - Detailed bug analysis
-3. **`src/viberesp/hornresp/export.py`** - Fixed export function (committed to repo)
+3. **`src/gsd/hornresp/export.py`** - Fixed export function (committed to repo)
 
 ---
 
@@ -231,8 +231,8 @@ Your manual entry was **correct all along**. The viberesp export function had bu
 | Item | Status |
 |------|--------|
 | User manual entry | ✓ CORRECT (was right all along!) |
-| Old viberesp export | ✗ BROKEN (multiple bugs) |
-| Fixed viberesp export | ✓ CORRECTED (all bugs fixed) |
+| Old gsd export | ✗ BROKEN (multiple bugs) |
+| Fixed gsd export | ✓ CORRECTED (all bugs fixed) |
 | Ready for validation | ✓ YES - import corrected file to Hornresp |
 
 **The previous validation report was invalidated by these bugs. Please use the corrected export file for validation.**

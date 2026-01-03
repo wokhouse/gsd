@@ -1,7 +1,7 @@
-# Research Prompt: Horn Simulation Implementation for Viberesp
+# Research Prompt: Horn Simulation Implementation for GSD
 
 **Date:** 2025-12-27
-**Context:** Viberesp is a Python CLI tool for loudspeaker enclosure design, with focus on horn-loaded enclosures. We validate all simulations against Hornresp (industry standard).
+**Context:** GSD is a Python CLI tool for loudspeaker enclosure design, with focus on horn-loaded enclosures. We validate all simulations against Hornresp (industry standard).
 
 ---
 
@@ -46,7 +46,7 @@ A successful answer will provide:
 
 ## CONTEXT
 
-**Viberesp Project Status:**
+**GSD Project Status:**
 - Already implemented: Direct radiator simulation (sealed/ported boxes) with Hornresp validation
 - Implemented: Driver parameters (Thiele-Small), radiation impedance, voice coil inductance (Leach model)
 - Implemented: Hornresp export/import functionality
@@ -61,11 +61,11 @@ A successful answer will provide:
 - Cannot assume user has access to Hornresp - we must be able to generate test data
 
 **GitHub Repository:**
-https://github.com/wokhouse/viberesp
+https://github.com/wokhouse/gsd
 
 Relevant code locations:
-- `src/viberesp/simulation/` - Simulation modules (need to add horn theory)
-- `src/viberesp/hornresp/export.py` - Export to Hornresp format
+- `src/gsd/simulation/` - Simulation modules (need to add horn theory)
+- `src/gsd/hornresp/export.py` - Export to Hornresp format
 - `literature/horns/` - Acoustic theory references
 
 ---
@@ -149,7 +149,7 @@ Relevant code locations:
 - Does Hornresp assume infinite baffle at mouth? Free field? Something else?
 
 **What we need:**
-- Complete parameter mapping (viberesp → Hornresp)
+- Complete parameter mapping (gsd → Hornresp)
 - Parameter definitions with units (m², m, etc.)
 - Any constraints or relationships between parameters
 
@@ -245,7 +245,7 @@ Write this as a direct task specification for a future Claude Code instance, inc
 - Pass/fail criteria for validation tests
 
 **2.4 File Structure**
-- Which files to create (`src/viberesp/simulation/horn_theory.py`?)
+- Which files to create (`src/gsd/simulation/horn_theory.py`?)
 - Import structure
 - How this integrates with existing codebase
 

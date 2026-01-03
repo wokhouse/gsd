@@ -257,7 +257,7 @@ Cone displacement is maximum below resonance and decreases with frequency. Large
 
 ---
 
-## Implementation Notes for Viberesp
+## Implementation Notes for GSD
 
 ### 1. Radiation Mass Multiplier
 

@@ -12,9 +12,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import numpy as np
 from scipy.optimize import minimize
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.optimization.objectives.response_metrics import objective_response_flatness
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.optimization.objectives.response_metrics import objective_response_flatness
+from gsd.enclosure.ported_box import (
     calculate_optimal_port_dimensions,
     ported_box_electrical_impedance,
     calculate_ported_box_system_parameters
@@ -54,7 +54,7 @@ def optimize_flatness(driver, freq_range=(20, 200), initial_guess=None):
     print(f"  Fb = {initial_guess[1]:.1f} Hz")
 
     # Calculate initial flatness
-    from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+    from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
     port_area, port_length, _ = calculate_optimal_port_dimensions(driver, initial_guess[0], initial_guess[1])
     initial_vector = np.array([initial_guess[0], initial_guess[1], port_area, port_length])
 

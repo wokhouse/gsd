@@ -7,9 +7,9 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.hornresp.export import export_to_hornresp
-from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.hornresp.export import export_to_hornresp
+from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
 
 def main():

@@ -8,8 +8,8 @@
 ## Context
 
 The transfer function approach for SPL calculation has been successfully implemented in:
-- `src/viberesp/enclosure/sealed_box.py` - `calculate_spl_from_transfer_function()`
-- `src/viberesp/enclosure/ported_box.py` - `calculate_spl_ported_transfer_function()`
+- `src/gsd/enclosure/sealed_box.py` - `calculate_spl_from_transfer_function()`
+- `src/gsd/enclosure/ported_box.py` - `calculate_spl_ported_transfer_function()`
 
 **Current Status:**
 - ✅ Frequency response SHAPE is correct (SPL rolls off at high frequencies)
@@ -39,8 +39,8 @@ Create Hornresp export files for validation:
 
 ```python
 # Use the export function to create Hornresp input files
-from viberesp.hornresp.export import export_to_hornresp
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.hornresp.export import export_to_hornresp
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
 
 # Test 1: BC_8NDL51 sealed box
 driver = get_bc_8ndl51()
@@ -96,9 +96,9 @@ Create `tasks/validate_transfer_function_calibration.py`:
 Validate transfer function SPL against Hornresp reference data.
 """
 import csv
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
-from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
+from gsd.enclosure.ported_box import (
     ported_box_electrical_impedance,
     calculate_optimal_port_dimensions
 )
@@ -125,25 +125,25 @@ def compare_sealed_box():
     )
 
     print("Sealed Box: BC_8NDL51 in 10L")
-    print("Frequency (Hz) | Viberesp (dB) | Hornresp (dB) | Difference")
+    print("Frequency (Hz) | GSD (dB) | Hornresp (dB) | Difference")
     print("---------------|---------------|---------------|------------")
 
     for freq in sorted(hornresp_data.keys()):
         result = sealed_box_electrical_impedance(
             freq, driver, Vb, use_transfer_function_spl=True
         )
-        viberesp_spl = result['SPL']
+        gsd_spl = result['SPL']
         hornresp_spl = hornresp_data[freq]
-        diff = viberesp_spl - hornresp_spl
-        print(f"{freq:14.0f} | {viberesp_spl:13.1f} | {hornresp_spl:13.1f} | {diff:+10.1f}")
+        diff = gsd_spl - hornresp_spl
+        print(f"{freq:14.0f} | {gsd_spl:13.1f} | {hornresp_spl:13.1f} | {diff:+10.1f}")
 
     # Calculate average offset
     diffs = []
     for freq in sorted(hornresp_data.keys()):
         result = sealed_box_electrical_impedance(freq, driver, Vb)
-        viberesp_spl = result['SPL']
+        gsd_spl = result['SPL']
         hornresp_spl = hornresp_data[freq]
-        diffs.append(viberesp_spl - hornresp_spl)
+        diffs.append(gsd_spl - hornresp_spl)
 
     avg_offset = sum(diffs) / len(diffs)
     print(f"\nAverage offset: {avg_offset:+.1f} dB")
@@ -162,7 +162,7 @@ def compare_ported_box():
     )
 
     print("\nPorted Box: BC_15DS115 in 180L, Fb=28Hz")
-    print("Frequency (Hz) | Viberesp (dB) | Hornresp (dB) | Difference")
+    print("Frequency (Hz) | GSD (dB) | Hornresp (dB) | Difference")
     print("---------------|---------------|---------------|------------")
 
     for freq in sorted(hornresp_data.keys()):
@@ -170,10 +170,10 @@ def compare_ported_box():
             freq, driver, Vb, Fb, port_area, port_length,
             use_transfer_function_spl=True
         )
-        viberesp_spl = result['SPL']
+        gsd_spl = result['SPL']
         hornresp_spl = hornresp_data[freq]
-        diff = viberesp_spl - hornresp_spl
-        print(f"{freq:14.0f} | {viberesp_spl:13.1f} | {hornresp_spl:13.1f} | {diff:+10.1f}")
+        diff = gsd_spl - hornresp_spl
+        print(f"{freq:14.0f} | {gsd_spl:13.1f} | {hornresp_spl:13.1f} | {diff:+10.1f}")
 
     # Calculate average offset
     diffs = []
@@ -181,9 +181,9 @@ def compare_ported_box():
         result = ported_box_electrical_impedance(
             freq, driver, Vb, Fb, port_area, port_length
         )
-        viberesp_spl = result['SPLPL']
+        gsd_spl = result['SPLPL']
         hornresp_spl = hornresp_data[freq]
-        diffs.append(viberesp_spl - hornresp_spl)
+        diffs.append(gsd_spl - hornresp_spl)
 
     avg_offset = sum(diffs) / len(diffs)
     print(f"\nAverage offset: {avg_offset:+.1f} dB")
@@ -208,11 +208,11 @@ Run the comparison script:
 PYTHONPATH=src python3 tasks/validate_transfer_function_calibration.py
 ```
 
-The script will output the average offset between viberesp and Hornresp. This is your calibration factor.
+The script will output the average offset between gsd and Hornresp. This is your calibration factor.
 
 ### Step 5: Apply Calibration to Transfer Functions
 
-**For Sealed Box** (`src/viberesp/enclosure/sealed_box.py`):
+**For Sealed Box** (`src/gsd/enclosure/sealed_box.py`):
 
 Find the reference SPL calculation in `calculate_spl_from_transfer_function()` (around line 270):
 
@@ -234,7 +234,7 @@ Then use `spl_ref_calibrated` instead of `spl_ref` in the final calculation:
 spl = spl_ref_calibrated + tf_dB
 ```
 
-**For Ported Box** (`src/viberesp/enclosure/ported_box.py`):
+**For Ported Box** (`src/gsd/enclosure/ported_box.py`):
 
 Apply the same calibration in `calculate_spl_ported_transfer_function()` (around line 686).
 
@@ -256,7 +256,7 @@ PYTHONPATH=src python3 tasks/validate_transfer_function_calibration.py
 Test with more drivers to ensure calibration works across different designs:
 
 ```python
-from viberesp.driver.bc_drivers import (
+from gsd.driver.bc_drivers import (
     get_bc_8ndl51,    # Moderate BL
     get_bc_12tk76,    # Another moderate BL driver (if available)
     get_bc_15ds115    # High BL
@@ -283,7 +283,7 @@ Document the calibration results in `docs/validation/spl_calibration_results.md`
 
 ## Calibration Method
 
-Compared viberesp transfer function SPL against Hornresp reference simulations.
+Compared gsd transfer function SPL against Hornresp reference simulations.
 
 ## Test Cases
 
@@ -328,7 +328,7 @@ Expected: Optimizer should find truly flat responses, not rising responses.
 
 ## Success Criteria
 
-- [ ] Average offset between viberesp and Hornresp < 0.5 dB
+- [ ] Average offset between gsd and Hornresp < 0.5 dB
 - [ ] Max deviation at any frequency < 2 dB
 - [ ] Calibration works for both sealed and ported boxes
 - [ ] Calibration works for multiple drivers (low-BL, moderate-BL, high-BL)
@@ -352,8 +352,8 @@ Expected: Optimizer should find truly flat responses, not rising responses.
 
 ## Files to Modify
 
-1. `src/viberesp/enclosure/sealed_box.py` - Apply calibration to `calculate_spl_from_transfer_function()`
-2. `src/viberesp/enclosure/ported_box.py` - Apply calibration to `calculate_spl_ported_transfer_function()`
+1. `src/gsd/enclosure/sealed_box.py` - Apply calibration to `calculate_spl_from_transfer_function()`
+2. `src/gsd/enclosure/ported_box.py` - Apply calibration to `calculate_spl_ported_transfer_function()`
 3. `tasks/validate_transfer_function_calibration.py` - Create comparison script
 4. `docs/validation/spl_calibration_results.md` - Document results
 

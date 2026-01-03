@@ -99,8 +99,8 @@ would require smaller boxes that cannot accommodate the driver.
 
 ## Notes
 
-- All Hornresp input files were generated using `viberesp.hornresp.export.export_to_hornresp()`
-- This ensures driver parameters match exactly between viberesp and Hornresp
+- All Hornresp input files were generated using `gsd.hornresp.export.export_to_hornresp()`
+- This ensures driver parameters match exactly between gsd and Hornresp
 - Qtc values tested range from 0.5 (underdamped) to 0.94 (near critical)
 - Lower Q_ts (0.441) allows for a wider range of alignments
 - Tests validate Small (1972) sealed box theory for a larger driver

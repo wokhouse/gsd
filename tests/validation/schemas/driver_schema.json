@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://viberesp.org/schemas/driver_schema.json",
+  "$id": "https://gsd.org/schemas/driver_schema.json",
   "title": "Driver Metadata",
   "description": "Schema for driver metadata and Thiele-Small parameters",
   "type": "object",

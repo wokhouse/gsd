@@ -8,8 +8,8 @@ calculation of electrical impedance and SPL.
 import math
 import pytest
 
-from viberesp.driver.response import direct_radiator_electrical_impedance
-from viberesp.driver import load_driver:
+from gsd.driver.response import direct_radiator_electrical_impedance
+from gsd.driver import load_driver:
         """Get BC 8NDL51 driver parameters."""
         return load_driver("BC_8NDL51")
 

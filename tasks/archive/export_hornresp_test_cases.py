@@ -9,9 +9,9 @@ to calibrate the SPL transfer function against Hornresp reference simulations.
 import sys
 sys.path.insert(0, 'src')
 
-from viberesp.hornresp.export import export_to_hornresp
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
-from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+from gsd.hornresp.export import export_to_hornresp
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
 
 def main():

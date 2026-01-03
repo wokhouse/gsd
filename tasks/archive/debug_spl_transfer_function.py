@@ -9,8 +9,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import math
 import numpy as np
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.enclosure.ported_box import (
     calculate_spl_ported_transfer_function,
     calculate_optimal_port_dimensions
 )

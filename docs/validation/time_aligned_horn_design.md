@@ -2,7 +2,7 @@
 
 **Date:** 2025-12-30
 **Status:** Validated with LR4 crossover simulation
-**Authors:** Viberesp Project
+**Authors:** GSD Project
 
 ## Executive Summary
 
@@ -357,7 +357,7 @@ Requires: Active crossover with DSP
 
 ### Simulation Validation
 
-The LR4 crossover simulation (`src/viberesp/crossover/lr4.py`) has been validated:
+The LR4 crossover simulation (`src/gsd/crossover/lr4.py`) has been validated:
 
 **Test Setup:**
 - LF: BC_10NW64 in 26.5L ported box @ 70 Hz
@@ -441,8 +441,8 @@ For larger systems, consider:
 
 ### Software Tools
 
-**Viberesp:**
-- `src/viberesp/crossover/lr4.py` - LR4 crossover simulation
+**GSD:**
+- `src/gsd/crossover/lr4.py` - LR4 crossover simulation
 - `tasks/test_lr4_crossover.py` - Validation test script
 - `tasks/plot_two_way_response.py` - Frequency response plotting
 

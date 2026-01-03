@@ -2,7 +2,7 @@
 
 **Date:** 2025-12-30
 **Status:** Validated via External Research
-**Module:** `src/viberesp/crossover/lr4.py`
+**Module:** `src/gsd/crossover/lr4.py`
 
 ## Executive Summary
 
@@ -128,7 +128,7 @@ def apply_lr4_crossover(
 
 **Usage:**
 ```python
-from viberesp.crossover.lr4 import apply_lr4_crossover
+from gsd.crossover.lr4 import apply_lr4_crossover
 
 combined, lf, hf = apply_lr4_crossover(
     freqs, lf_spl, hf_spl,
@@ -351,6 +351,6 @@ Potential enhancements:
 
 ---
 
-**Module:** src/viberesp/crossover/lr4.py
+**Module:** src/gsd/crossover/lr4.py
 **Status:** Production Ready ✅
 **Validated:** External Research (2025-12-30)

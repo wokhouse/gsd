@@ -8,7 +8,7 @@
 
 ### Impedance Comparison
 
-| Frequency (Hz) | Hornresp Ze (Ω) | Viberesp Circuit (Ω) | Viberesp Small (Ω) | Error (Circuit) |
+| Frequency (Hz) | Hornresp Ze (Ω) | GSD Circuit (Ω) | GSD Small (Ω) | Error (Circuit) |
 |----------------|-----------------|---------------------|--------------------|------------------|
 | 20             | 139.0           | 100.3               | 151.3              | -28%            |
 | 30             | 5.5             | 43.2                | 130.2              | +686%           |
@@ -24,7 +24,7 @@
 
 ### SPL Comparison
 
-| Frequency (Hz) | Hornresp SPL (dB) | Viberesp SPL (dB) | Difference (dB) |
+| Frequency (Hz) | Hornresp SPL (dB) | GSD SPL (dB) | Difference (dB) |
 |----------------|-------------------|-------------------|-----------------|
 | 20             | 75.3              | 98.2              | +22.9           |
 | 30             | 103.2             | 93.7              | -9.5            |
@@ -47,7 +47,7 @@
 
 ### Issue 1: Efficiency Formula is Fundamentally Broken
 
-**Location:** `src/viberesp/enclosure/ported_box.py:664`
+**Location:** `src/gsd/enclosure/ported_box.py:664`
 
 ```python
 eta_0 = (air_density / (2 * math.pi * speed_of_sound)) * \
@@ -63,7 +63,7 @@ There's a compensating error in the SPL calculation formula that happens to canc
 
 ### Issue 2: Transfer Function Roll-off at High Frequencies
 
-**Location:** `src/viberesp/enclosure/ported_box.py:509` (`calculate_spl_ported_transfer_function`)
+**Location:** `src/gsd/enclosure/ported_box.py:509` (`calculate_spl_ported_transfer_function`)
 
 **Transfer function values observed:**
 - 20 Hz: -19.72 dB (too high)
@@ -79,7 +79,7 @@ The transfer function should approach 0 dB at high frequencies (well above Fb), 
 
 ### Issue 3: Small's Impedance Model Doesn't Work for High-BL Drivers
 
-**Location:** `src/viberesp/enclosure/ported_box.py:704` (`ported_box_impedance_small`)
+**Location:** `src/gsd/enclosure/ported_box.py:704` (`ported_box_impedance_small`)
 
 **Problem:** For the BC_15DS115 driver (Qes=0.06, BL=38.7 T·m), the impedance model produces a flat ~150 Ω across frequency, completely missing the dual-peak pattern.
 

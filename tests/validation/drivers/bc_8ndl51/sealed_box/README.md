@@ -93,8 +93,8 @@ Based on existing Butterworth validation (Qtc=0.707):
 
 ## Notes
 
-- All Hornresp input files were generated using `viberesp.hornresp.export.export_to_hornresp()`
-- This ensures driver parameters match exactly between viberesp and Hornresp
+- All Hornresp input files were generated using `gsd.hornresp.export.export_to_hornresp()`
+- This ensures driver parameters match exactly between gsd and Hornresp
 - Qtc values tested range from 0.65 (underdamped) to 1.1 (overdamped)
 - Minimum achievable Qtc is 0.616 (infinite baffle, Qts)
 - Tests validate Small (1972) sealed box theory across different alignments

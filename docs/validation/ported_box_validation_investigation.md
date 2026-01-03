@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Validation against Hornresp revealed a **Qts parameter mismatch** as the primary cause of SPL errors at low frequencies. The viberesp driver definition has **Qts = 0.0611**, while Hornresp uses **Qts = 0.0510** (calculated from physical parameters).
+Validation against Hornresp revealed a **Qts parameter mismatch** as the primary cause of SPL errors at low frequencies. The gsd driver definition has **Qts = 0.0611**, while Hornresp uses **Qts = 0.0510** (calculated from physical parameters).
 
 **Impact:**
 - With correct Qts: Mean error improves from 6.09 dB → 5.36 dB (at 4 test frequencies)
@@ -21,7 +21,7 @@ Validation against Hornresp revealed a **Qts parameter mismatch** as the primary
 
 ### 1. Qts Parameter Mismatch
 
-**Viberesp driver:**
+**GSD driver:**
 ```
 Qes = 0.0631
 Qms = 1.9006
@@ -37,7 +37,7 @@ Qts = 0.0510
 
 **Difference:** 0.0101 (16.5% relative error)
 
-**Source:** Discrepancy in how Q parameters are calculated or defined. Hornresp likely calculates Q directly from M_ms, C_ms, R_ms, while viberesp uses Thiele-Small parameter values.
+**Source:** Discrepancy in how Q parameters are calculated or defined. Hornresp likely calculates Q directly from M_ms, C_ms, R_ms, while gsd uses Thiele-Small parameter values.
 
 ### 2. Calibration Offset
 
@@ -57,7 +57,7 @@ Qts = 0.0510
 100 Hz: 92.0 dB
 ```
 
-**Viberesp response (with corrected Qts):**
+**GSD response (with corrected Qts):**
 ```
 20 Hz:  81.97 dB  ← TOO LOW (should be peak!)
 30 Hz:  90.38 dB  ← TOO HIGH
@@ -65,7 +65,7 @@ Qts = 0.0510
 100 Hz: 92.53 dB  ← GOOD (only +0.54 dB error)
 ```
 
-**Observation:** Viberesp doesn't show the characteristic **peak at Fb**. The bass shape is fundamentally different.
+**Observation:** GSD doesn't show the characteristic **peak at Fb**. The bass shape is fundamentally different.
 
 ---
 
@@ -126,7 +126,7 @@ numerator = (s ** 2) * (Tb ** 2) + s * (Tb / QB) + 1  # Port resonance term
 - F3 very close to Fb (~20 Hz)
 
 **Hornresp correctly shows:** 92.8 dB peak @ 20 Hz (tuning frequency)
-**Viberesp incorrectly shows:** 81.97 dB @ 20 Hz (no peak)
+**GSD incorrectly shows:** 81.97 dB @ 20 Hz (no peak)
 
 ---
 
@@ -160,12 +160,12 @@ numerator = (s ** 2) * (Tb ** 2) + s * (Tb / QB) + 1  # Port resonance term
 ### Immediate (Easy Fixes)
 
 1. **Update calibration offset to +3 dB**
-   - File: `src/viberesp/enclosure/ported_box.py:846`
+   - File: `src/gsd/enclosure/ported_box.py:846`
    - Change: `CALIBRATION_OFFSET_DB = 6.0` → `CALIBRATION_OFFSET_DB = 3.0`
    - Expected improvement: ~1 dB (mean error)
 
 2. **Correct Qts in driver definition**
-   - File: `src/viberesp/driver/bc_drivers.py`
+   - File: `src/gsd/driver/bc_drivers.py`
    - Investigate source of Qts discrepancy
    - Recalculate from physical parameters if needed
    - Expected improvement: ~0.7 dB (mean error)
@@ -199,7 +199,7 @@ numerator = (s ** 2) * (Tb ** 2) + s * (Tb / QB) + 1  # Port resonance term
 
 **With Qts = 0.0510 and +3 dB calibration:**
 
-| Freq (Hz) | Hornresp | Viberesp | Error | Status |
+| Freq (Hz) | Hornresp | GSD | Error | Status |
 |-----------|----------|----------|-------|--------|
 | 20.15     | 92.81    | ~82      | -10.8 | ✗ Poor |
 | 30.08     | 84.87    | ~90      | +5.5  | ✗ Poor |
@@ -243,16 +243,16 @@ Create Hornresp-based calibration:
 
 1. `docs/validation/ported_box_spl_validation_bc15ds115.md` - Initial validation report
 2. `docs/validation/ported_box_validation_investigation.md` - This investigation summary
-3. `src/viberesp/driver/bc_drivers.py` - **NOT YET MODIFIED** (Qts correction pending)
-4. `src/viberesp/enclosure/ported_box.py` - **NOT YET MODIFIED** (calibration pending)
+3. `src/gsd/driver/bc_drivers.py` - **NOT YET MODIFIED** (Qts correction pending)
+4. `src/gsd/enclosure/ported_box.py` - **NOT YET MODIFIED** (calibration pending)
 
 ---
 
 ## References
 
 1. **Hornresp simulation:**
-   - `/Users/fungj/vscode/viberesp/imports/ported_sim.txt`
-   - `/Users/fungj/vscode/viberesp/imports/ported_params.txt`
+   - `/Users/fungj/vscode/gsd/imports/ported_sim.txt`
+   - `/Users/fungj/vscode/gsd/imports/ported_params.txt`
 
 2. **Literature:**
    - Thiele (1971) - "Loudspeakers in Vented Boxes"

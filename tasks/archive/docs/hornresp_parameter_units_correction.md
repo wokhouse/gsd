@@ -1,7 +1,7 @@
 # Hornresp Parameter Units - CRITICAL CORRECTION
 
 **Date:** 2025-12-28
-**Issue:** https://github.com/wokhouse/viberesp/issues/21
+**Issue:** https://github.com/wokhouse/gsd/issues/21
 **Status:** Previous validation report was INCORRECT due to unit misunderstandings
 
 ---
@@ -18,7 +18,7 @@ After reviewing the GitHub discussion, the correct units are:
 
 ---
 
-## Critical Bug Found in viberesp Export
+## Critical Bug Found in gsd Export
 
 The `export_front_loaded_horn_to_hornresp()` function has **MAJOR BUGS**:
 
@@ -59,7 +59,7 @@ But Hornresp actually uses:
 F12 = 25.23 Hz (for this geometry)
 ```
 
-The discrepancy suggests viberesp is using the wrong formula or the formula is being misapplied.
+The discrepancy suggests gsd is using the wrong formula or the formula is being misapplied.
 
 ---
 
@@ -90,13 +90,13 @@ F12 = 25.15 Hz
 
 ✓ **Hornresp calculation is CORRECT: F12 = 25.23 Hz**
 
-✗ **viberesp export is WRONG: F12 = 50.29 Hz (exactly 2× too high!)**
+✗ **gsd export is WRONG: F12 = 50.29 Hz (exactly 2× too high!)**
 
 ---
 
 ## Root Cause of F12 Error
 
-The viberesp export code calculates:
+The gsd export code calculates:
 ```python
 f12 = (c * flare_constant) / (4.0 * math.pi)
 ```
@@ -150,9 +150,9 @@ Lrc = 72.44     # Rear chamber depth (cm)
 
 ## Action Items
 
-### 1. Fix viberesp Export Function (CRITICAL BUG)
+### 1. Fix gsd Export Function (CRITICAL BUG)
 
-File: `src/viberesp/hornresp/export.py`
+File: `src/gsd/hornresp/export.py`
 
 **Changes needed:**
 ```python
@@ -191,7 +191,7 @@ AT = {at_cm2:.2f}     # ← FIX THIS (was length, should be area)
 ### 2. Re-run Validation
 
 After fixing the export:
-1. Re-export from viberesp
+1. Re-export from gsd
 2. Import to Hornresp
 3. Verify F12 matches (should be ~25 Hz)
 4. Compare simulation results
@@ -221,8 +221,8 @@ Add to `CLAUDE.md`:
 | Item | Status | Action |
 |------|--------|--------|
 | User's manual entry | ✓ Mostly correct | Vtc=19820 was right (cm³), AT was interpreted wrong |
-| viberesp export function | ✗ BROKEN | Needs critical fixes to AT, L12, F12 |
-| F12 calculation | ✗ WRONG in viberesp | Should be 25.23 Hz, not 50.29 Hz |
+| gsd export function | ✗ BROKEN | Needs critical fixes to AT, L12, F12 |
+| F12 calculation | ✗ WRONG in gsd | Should be 25.23 Hz, not 50.29 Hz |
 | Previous validation report | ✗ INVALID | Based on wrong unit assumptions |
 
 **Correct validation needs to happen AFTER fixing the export function.**

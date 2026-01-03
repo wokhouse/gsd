@@ -14,9 +14,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
-from viberesp.driver import load_driver
-from viberesp.enclosure.ported_box import calculate_spl_ported_transfer_function
-from viberesp.optimization.api.crossover_assistant import CrossoverDesignAssistant
+from gsd.driver import load_driver
+from gsd.enclosure.ported_box import calculate_spl_ported_transfer_function
+from gsd.optimization.api.crossover_assistant import CrossoverDesignAssistant
 
 # Configure plot for better appearance
 rcParams['font.size'] = 10

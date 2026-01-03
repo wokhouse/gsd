@@ -1,6 +1,6 @@
 # Tasks Directory
 
-This directory contains active implementation work and reference materials for the viberesp project. Following the project's [CLAUDE.md](../CLAUDE.md) guidelines, the tasks directory holds work-in-progress files, while completed work is archived or moved to appropriate locations in the codebase.
+This directory contains active implementation work and reference materials for the gsd project. Following the project's [CLAUDE.md](../CLAUDE.md) guidelines, the tasks directory holds work-in-progress files, while completed work is archived or moved to appropriate locations in the codebase.
 
 ## Directory Organization
 
@@ -42,7 +42,7 @@ Timestamped JSON optimization results from CLI `optimize` commands. These are ou
 **Usage:**
 ```bash
 # Generate new results
-viberesp optimize preset --driver BC_15DS115 --preset bass_horn --output results/
+gsd optimize preset --driver BC_15DS115 --preset bass_horn --output results/
 ```
 
 ### `plots/`
@@ -51,11 +51,11 @@ Generated visualizations from CLI `plot` commands. Includes PNG files and subdir
 **Usage:**
 ```bash
 # Generate plots from results
-viberesp plot auto --input results/my_design.json --output-dir plots/
+gsd plot auto --input results/my_design.json --output-dir plots/
 ```
 
 ### `examples/`
-Example scripts demonstrating how to use viberesp for common tasks:
+Example scripts demonstrating how to use gsd for common tasks:
 - `optimize_practical.py` - Practical optimization example
 - `plot_final_validated.py` - Plotting validated design
 - `plot_two_way_response.py` - Two-way system response plotting
@@ -85,11 +85,11 @@ Old scripts that have been replaced by CLI factories:
 During the cleanup, ~70-80 redundant files were removed:
 
 ### Deleted Scripts (replaced by CLI factories)
-- **16 plotting scripts** → `viberesp plot create/batch/auto`
-- **14 optimization scripts** → `viberesp optimize run/preset`
+- **16 plotting scripts** → `gsd plot create/batch/auto`
+- **14 optimization scripts** → `gsd optimize run/preset`
 - **12 design/analysis scripts** → CLI optimization with presets
-- **5 validation scripts** → `viberesp validate compare/generate-input`
-- **5 export scripts** → `viberesp export`
+- **5 validation scripts** → `gsd validate compare/generate-input`
+- **5 export scripts** → `gsd export`
 - **5 test scripts** → Integration tests in tests/
 
 ### Moved to Literature
@@ -134,25 +134,25 @@ Most tasks that previously required standalone scripts can now be done via CLI:
 
 ### Optimization
 ```bash
-viberesp optimize preset --driver BC_15DS115 --preset bass_horn --plot
-viberesp optimize run --config my_config.yaml
+gsd optimize preset --driver BC_15DS115 --preset bass_horn --plot
+gsd optimize run --config my_config.yaml
 ```
 
 ### Plotting
 ```bash
-viberesp plot auto --input results.json --preset overview
-viberesp plot create --type spl_response --input results.json
+gsd plot auto --input results.json --preset overview
+gsd plot create --type spl_response --input results.json
 ```
 
 ### Validation
 ```bash
-viberesp validate compare BC_8NDL51 sealed/Vb31.6L
-viberesp validate generate-input --driver BC_15DS115
+gsd validate compare BC_8NDL51 sealed/Vb31.6L
+gsd validate generate-input --driver BC_15DS115
 ```
 
 ### Export
 ```bash
-viberesp export BC_18PZW100 -o hornresp.txt
+gsd export BC_18PZW100 -o hornresp.txt
 ```
 
 ## Guidelines

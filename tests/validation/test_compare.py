@@ -7,7 +7,7 @@ Tests the compare functions for correct error metric calculation.
 import pytest
 import numpy as np
 
-from viberesp.validation.compare import (
+from gsd.validation.compare import (
     ValidationResult,
     compare_electrical_impedance,
     compare_spl,

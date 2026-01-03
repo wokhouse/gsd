@@ -4,18 +4,18 @@
 Remove the +13.5 dB empirical calibration offset and regenerate Hornresp validation files with correct half-space (2π) configuration.
 
 ## PROBLEM SUMMARY
-The current +13.5 dB calibration offset in `src/viberesp/enclosure/sealed_box.py` is compensating for:
+The current +13.5 dB calibration offset in `src/gsd/enclosure/sealed_box.py` is compensating for:
 1. Hornresp using eighth-space (π/2) radiation instead of half-space (2π)
 2. Unexplained ~8.5 dB gain in Hornresp configuration
 
 The CORRECT approach is:
-- Viberesp should use half-space (2π) as standard (matches B&C datasheet)
+- GSD should use half-space (2π) as standard (matches B&C datasheet)
 - Hornresp validation files should use Ang = 2.0×Pi, not 0.5×Pi
 - No empirical calibration offset should be needed
 
 ## FILES TO MODIFY
 
-### 1. src/viberesp/enclosure/sealed_box.py
+### 1. src/gsd/enclosure/sealed_box.py
 
 **Location**: Line 429
 **Current code**:
@@ -27,7 +27,7 @@ spl_ref += CALIBRATION_OFFSET_DB
 **Change to**:
 ```python
 # NO CALIBRATION OFFSET NEEDED
-# Viberesp uses standard half-space (2π steradians) radiation
+# GSD uses standard half-space (2π steradians) radiation
 # This matches B&C datasheet and IEEE/IEC measurement standards
 # Previous +13.5 dB offset was compensating for non-standard Hornresp configuration
 CALIBRATION_OFFSET_DB = 0.0
@@ -92,8 +92,8 @@ Ang = 2.0 x Pi
 - Mean error: ~0 dB (was 0.85 dB)
 
 **Expected SPL at 500 Hz**:
-- Viberesp (no offset): ~91.1 dB (includes mass roll-off)
-- Hornresp (corrected): ~91.1 dB (should match viberesp)
+- GSD (no offset): ~91.1 dB (includes mass roll-off)
+- Hornresp (corrected): ~91.1 dB (should match gsd)
 - B&C Datasheet: 94 dB (half-space, no mass roll-off)
 
 ## VALIDATION STEPS
@@ -101,7 +101,7 @@ Ang = 2.0 x Pi
 ### Step 1: Verify Efficiency Calculation
 ```bash
 PYTHONPATH=src python -c "
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 import math
 
 driver = load_driver('BC_8NDL51')
@@ -125,7 +125,7 @@ Expected: 0.006051 (0.605%)
 ### Step 2: Verify Half-Space SPL Calculation
 ```bash
 PYTHONPATH=src python -c "
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 import math
 
 driver = load_driver('BC_8NDL51')
@@ -159,11 +159,11 @@ Match: True
 ✓ Half-space SPL matches datasheet
 ```
 
-### Step 3: Test Viberesp Output
+### Step 3: Test GSD Output
 ```bash
 PYTHONPATH=src python -c "
-from viberesp.driver import load_driver
-from viberesp.enclosure.sealed_box import calculate_spl_from_transfer_function
+from gsd.driver import load_driver
+from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
 
 driver = load_driver('BC_8NDL51')
 Vb = 0.03165
@@ -171,22 +171,22 @@ Vb = 0.03165
 # Test at 500 Hz (well above resonance, includes mass roll-off)
 spl = calculate_spl_from_transfer_function(500, driver, Vb, f_mass=450)
 
-print(f'Viberesp SPL at 500 Hz: {spl:.2f} dB')
+print(f'GSD SPL at 500 Hz: {spl:.2f} dB')
 print(f'Expected (no offset): ~91.1 dB (includes mass roll-off)')
 print(f'Expected (half-space, no roll-off): ~94.8 dB')
 
 # Should be ~91 dB with mass roll-off, NOT 105 dB
 assert 90 < spl < 92, f'SPL {spl:.2f} dB outside expected range [90, 92]'
-print('✓ Viberesp output correct (no calibration offset)')
+print('✓ GSD output correct (no calibration offset)')
 "
 ```
 
 **Expected output**:
 ```
-Viberesp SPL at 500 Hz: 91.14 dB
+GSD SPL at 500 Hz: 91.14 dB
 Expected (no offset): ~91.1 dB (includes mass roll-off)
 Expected (half-space, no roll-off): ~94.8 dB
-✓ Viberesp output correct (no calibration offset)
+✓ GSD output correct (no calibration offset)
 ```
 
 ### Step 4: Run Validation Tests
@@ -200,17 +200,17 @@ PYTHONPATH=src python -m pytest tests/validation/test_sealed_box.py -v
 ```bash
 PYTHONPATH=src python -c "
 import numpy as np
-from viberesp.driver import load_driver
-from viberesp.enclosure.sealed_box import calculate_spl_from_transfer_function
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
+from gsd.driver import load_driver
+from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
+from gsd.hornresp.results_parser import load_hornresp_sim_file
 
 driver = load_driver('BC_8NDL51')
 Vb = 0.03165
 hr_data = load_hornresp_sim_file('tests/validation/drivers/bc_8ndl51/sealed_box/sim.txt')
 
-print('Comparing Viberesp vs CORRECTED Hornresp (Ang=2.0×Pi):')
+print('Comparing GSD vs CORRECTED Hornresp (Ang=2.0×Pi):')
 print()
-print('Freq (Hz)  Viberesp    Hornresp    Error')
+print('Freq (Hz)  GSD    Hornresp    Error')
 print('-' * 45)
 
 for f in [100, 200, 500, 1000, 2000]:
@@ -227,9 +227,9 @@ print('All errors should be < 2 dB')
 
 **Expected output**:
 ```
-Comparing Viberesp vs CORRECTED Hornresp (Ang=2.0×Pi):
+Comparing GSD vs CORRECTED Hornresp (Ang=2.0×Pi):
 
-Freq (Hz)  Viberesp    Hornresp    Error
+Freq (Hz)  GSD    Hornresp    Error
 ---------------------------------------------
       100      92.70       93.50     0.80
       200      93.84       94.50     0.66
@@ -243,12 +243,12 @@ All errors should be < 2 dB
 ## EXPECTED RESULTS
 
 ### Before Fix
-- Viberesp with +13.5 dB offset: 104.64 dB at 500 Hz
+- GSD with +13.5 dB offset: 104.64 dB at 500 Hz
 - Hornresp (Ang=0.5×Pi): 105.79 dB at 500 Hz
 - Difference: 1.15 dB ✗ (matching wrong reference)
 
 ### After Fix
-- Viberesp with 0 dB offset: 91.14 dB at 500 Hz
+- GSD with 0 dB offset: 91.14 dB at 500 Hz
 - Hornresp (Ang=2.0×Pi): ~91.8 dB at 500 Hz (estimated)
 - Difference: < 1 dB ✓ (matching correct half-space reference)
 - Both match B&C datasheet when corrected: ~94 dB (no mass roll-off)
@@ -269,7 +269,7 @@ Changes:
 - Update validation tests to expect correct half-space values
 
 Verification:
-- Viberesp SPL: ~91.1 dB at 500 Hz (with mass roll-off)
+- GSD SPL: ~91.1 dB at 500 Hz (with mass roll-off)
 - Hornresp (corrected): ~91.8 dB at 500 Hz (with mass roll-off)
 - Both match B&C datasheet: ~94 dB (half-space, no roll-off)
 

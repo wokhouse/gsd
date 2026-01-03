@@ -16,7 +16,7 @@ Validation Dataset:
 import os
 import pytest
 from pathlib import Path
-from viberesp.driver import load_driver:
+from gsd.driver import load_driver:
     """
     Find Hornresp simulation data for a specific QL value.
 

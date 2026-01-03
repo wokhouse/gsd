@@ -11,9 +11,9 @@ can be closer to correct level).
 import sys
 sys.path.insert(0, 'src')
 
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
-from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
+from gsd.enclosure.ported_box import (
     ported_box_electrical_impedance,
     calculate_optimal_port_dimensions
 )

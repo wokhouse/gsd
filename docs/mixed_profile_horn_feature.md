@@ -12,7 +12,7 @@ Implemented ability to combine exponential, conical, and hyperbolic horn profile
 
 ### New Functions
 
-Added to `src/viberesp/optimization/parameters/multisegment_horn_params.py`:
+Added to `src/gsd/optimization/parameters/multisegment_horn_params.py`:
 
 1. **`get_mixed_profile_parameter_space()`**
    - Creates parameter space for mixed-profile horns
@@ -44,11 +44,11 @@ Added to `src/viberesp/optimization/parameters/multisegment_horn_params.py`:
 ## Example Usage
 
 ```python
-from viberesp.optimization.parameters import (
+from gsd.optimization.parameters import (
     get_mixed_profile_parameter_space,
     build_mixed_profile_horn,
 )
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 import numpy as np
 
 driver = load_driver("BC_DE250")

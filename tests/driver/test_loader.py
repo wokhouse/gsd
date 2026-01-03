@@ -6,8 +6,8 @@ Tests the YAML-based driver loading system.
 
 import pytest
 
-from viberesp.driver import load_driver, list_drivers, get_driver_info
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.driver import load_driver, list_drivers, get_driver_info
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 class TestLoadDriver:

@@ -245,7 +245,7 @@ After extensive investigation and validation, here are the **correct** Hornresp 
 
 ## Files Modified
 
-**File:** `src/viberesp/hornresp/export.py`
+**File:** `src/gsd/hornresp/export.py`
 
 **Changes made:**
 
@@ -314,11 +314,11 @@ Vtc = 19820.00    ← ✅ Correct! Throat chamber volume
 To verify the fix:
 
 ```bash
-# Export horn from viberesp
+# Export horn from gsd
 PYTHONPATH=src python3 -c "
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.hornresp.export import export_front_loaded_horn_to_hornresp
-from viberesp.simulation.types import ExponentialHorn
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.hornresp.export import export_front_loaded_horn_to_hornresp
+from gsd.simulation.types import ExponentialHorn
 
 driver = get_bc_15ds115()
 horn = ExponentialHorn(
@@ -369,7 +369,7 @@ export_front_loaded_horn_to_hornresp(
 - **Hornresp User Manual** - File format specification
 - **GitHub Issue #21** - Original discussion about parameter units
 - **Olson (1947), Eq. 5.18** - f_c = c·m/(2π) (different from Hornresp!)
-- **viberesp validation requirements** - <2% deviation for well-defined horns
+- **gsd validation requirements** - <2% deviation for well-defined horns
 - **Files generated:**
   - `exports/bc15ds115_param_order_fixed.txt` - Validated export
   - `tasks/hornresp_parameter_order_bug.md` - Detailed bug analysis

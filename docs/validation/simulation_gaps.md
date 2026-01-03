@@ -114,7 +114,7 @@ When you discover a missing physics capability, add it here:
 ## Keeping This Document Updated
 
 When you encounter a physics simulation need:
-1. Check if validated function exists in `src/viberesp/simulation/`
+1. Check if validated function exists in `src/gsd/simulation/`
 2. If NO: Add gap to this document
 3. DO NOT create unvalidated approximation (see CLAUDE.md Rule #1)
 4. Either implement properly or use Hornresp directly

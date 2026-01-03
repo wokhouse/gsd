@@ -9,9 +9,9 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from viberesp.simulation import ExponentialHorn
-from viberesp.hornresp import export_front_loaded_horn_to_hornresp
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.hornresp import export_front_loaded_horn_to_hornresp
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 @pytest.fixture

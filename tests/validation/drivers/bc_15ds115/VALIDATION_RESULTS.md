@@ -27,9 +27,9 @@ Validation of the 3 Hornresp simulation files revealed **a critical problem with
 - Target: 27 Hz
 - **Error: -2.4 Hz (-9%)** ✓ Acceptable
 
-**SPL Comparison (Hornresp vs Viberesp):**
+**SPL Comparison (Hornresp vs GSD):**
 
-| Freq | Hornresp | Viberesp | Difference |
+| Freq | Hornresp | GSD | Difference |
 |------|----------|----------|------------|
 | 20 Hz | 82.2 dB | 82.7 dB | **-0.5 dB** ✅ |
 | 30 Hz | 90.4 dB | 100.7 dB | -10.3 dB |
@@ -53,9 +53,9 @@ Validation of the 3 Hornresp simulation files revealed **a critical problem with
 - Target: 33 Hz
 - **Error: -3.3 Hz (-10%)** ✓ Acceptable
 
-**SPL Comparison (Hornresp vs Viberesp):**
+**SPL Comparison (Hornresp vs GSD):**
 
-| Freq | Hornresp | Viberesp | Difference |
+| Freq | Hornresp | GSD | Difference |
 |------|----------|----------|------------|
 | 20 Hz | 75.4 dB | 81.9 dB | **-6.5 dB** |
 | 30 Hz | 102.4 dB | 99.1 dB | +3.3 dB |
@@ -79,9 +79,9 @@ Validation of the 3 Hornresp simulation files revealed **a critical problem with
 - Target: 34 Hz
 - **Error: +21.6 Hz (+64%)** ❌ WAY OFF!
 
-**SPL Comparison (Hornresp vs Viberesp):**
+**SPL Comparison (Hornresp vs GSD):**
 
-| Freq | Hornresp | Viberesp | Difference |
+| Freq | Hornresp | GSD | Difference |
 |------|----------|----------|------------|
 | 20 Hz | 60.2 dB | 72.8 dB | **-12.6 dB** ❌ |
 | 30 Hz | 72.8 dB | 89.3 dB | -16.5 dB ❌ |
@@ -170,7 +170,7 @@ This supports the hypothesis that large boxes interact differently with HF roll-
 
 ### 3. SPL Calibration Offset Needed
 
-All designs show Hornresp ~2-7 dB lower than viberesp in midrange (40-100 Hz), suggesting calibration adjustment is needed.
+All designs show Hornresp ~2-7 dB lower than gsd in midrange (40-100 Hz), suggesting calibration adjustment is needed.
 
 ---
 

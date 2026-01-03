@@ -20,12 +20,12 @@ import math
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from viberesp.driver.bc_drivers import get_bc_15ps100, get_bc_8ndl51
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ps100, get_bc_8ndl51
+from gsd.enclosure.ported_box import (
     calculate_ported_box_system_parameters,
     calculate_port_length_for_area,
 )
-from viberesp.hornresp.export import export_to_hornresp
+from gsd.hornresp.export import export_to_hornresp
 
 
 # Test case definitions
@@ -99,7 +99,7 @@ def generate_ported_box_test_case(
 
     if port_diameter_inches is None:
         # Use optimal port dimensions
-        from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+        from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
         port_area_m2, port_length_m, port_velocity_max = calculate_optimal_port_dimensions(
             driver, vb_m3, fb_hz

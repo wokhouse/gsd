@@ -1,10 +1,10 @@
-# Viberesp Project-Specific Instructions
+# GSD Project-Specific Instructions
 
-This file contains project-specific instructions for Claude Code when working on the viberesp codebase.
+This file contains project-specific instructions for Claude Code when working on the gsd codebase.
 
 ## Project Overview
 
-Viberesp is a CLI tool for loudspeaker enclosure design and simulation, with initial focus on **horn-loaded enclosures**. The simulation engine implements acoustic theory from first principles and validates results against Hornresp (the industry-standard horn simulation tool).
+GSD is a CLI tool for loudspeaker enclosure design and simulation, with initial focus on **horn-loaded enclosures**. The simulation engine implements acoustic theory from first principles and validates results against Hornresp (the industry-standard horn simulation tool).
 
 **Key workflow:**
 1. Import driver parameters (manual entry via CLI)
@@ -19,7 +19,7 @@ Viberesp is a CLI tool for loudspeaker enclosure design and simulation, with ini
 **NEVER create simplified approximations or "fudge factors" for SPL/response calculations.**
 
 When generating frequency response, SPL curves, impedance plots, or ANY physics-based output:
-- ✅ **USE:** Validated functions from `src/viberesp/simulation/` (tested against Hornresp)
+- ✅ **USE:** Validated functions from `src/gsd/simulation/` (tested against Hornresp)
 - ❌ **NEVER:** Create your own simplified models, approximations, or heuristic formulas
 
 **Examples of WRONG approaches (garden paths to avoid):**
@@ -29,7 +29,7 @@ When generating frequency response, SPL curves, impedance plots, or ANY physics-
 - ❌ "Pressure ∝ 1/|Z_throat|" → **WRONG** (throat impedance ≠ radiated SPL)
 
 **What to do INSTEAD:**
-1. Check `src/viberesp/simulation/` for existing validated functions
+1. Check `src/gsd/simulation/` for existing validated functions
 2. If no validated function exists: **STOP** - do not create approximation
 3. Either:
    - Research and implement proper physics (with literature citations)
@@ -42,7 +42,7 @@ When generating frequency response, SPL curves, impedance plots, or ANY physics-
 
 **ALL Simulation Code MUST Cite Literature**
 
-Every function in the `src/viberesp/simulation/` module that implements acoustic theory **MUST** cite the literature it implements.
+Every function in the `src/gsd/simulation/` module that implements acoustic theory **MUST** cite the literature it implements.
 
 ### Citation Format
 
@@ -142,7 +142,7 @@ When implementing a new simulation feature:
 Every simulation algorithm must be validated against Hornresp:
 
 1. Create test cases with known horn parameters
-2. Run viberesp simulation
+2. Run gsd simulation
 3. Run Hornresp with identical parameters
 4. Compare results (impedance, frequency response, etc.)
 5. Document agreement percentage
@@ -156,13 +156,13 @@ Acceptable tolerances:
 
 ### Exporting to Hornresp Format
 
-Viberesp can export driver and enclosure parameters to Hornresp's native `.txt` file format for direct import and validation.
+GSD can export driver and enclosure parameters to Hornresp's native `.txt` file format for direct import and validation.
 
 **Using the export function:**
 
 ```python
-from viberesp.hornresp.export import export_to_hornresp
-from viberesp.driver.bc_drivers import get_bc_15ps100
+from gsd.hornresp.export import export_to_hornresp
+from gsd.driver.bc_drivers import get_bc_15ps100
 
 # Get driver
 driver = get_bc_15ps100()
@@ -186,10 +186,10 @@ export_to_hornresp(
 - `"sealed_box"` - Requires `Vb_liters` (box volume in liters)
 - `"ported_box"` - Requires `Vb_liters`, `Fb_hz`, `port_area_cm2`, `port_length_cm`
 
-**Critical differences between viberesp and Hornresp:**
+**Critical differences between gsd and Hornresp:**
 
 1. **M_md vs M_ms**: Hornresp expects **M_md** (driver mass only, without radiation mass)
-   - Viberesp exports `M_md` automatically via `driver_to_hornresp_record()`
+   - GSD exports `M_md` automatically via `driver_to_hornresp_record()`
    - Hornresp calculates its own radiation mass loading
    - **Never export M_ms** to Hornresp (would double-count radiation mass)
 
@@ -214,7 +214,7 @@ export_to_hornresp(
 
 ```python
 # Calculate optimal design
-from viberesp.enclosure.ported_box import (
+from gsd.enclosure.ported_box import (
     calculate_ported_box_system_parameters,
     calculate_optimal_port_dimensions
 )
@@ -243,7 +243,7 @@ export_to_hornresp(
 
 **Validation workflow:**
 
-1. Export design from viberesp
+1. Export design from gsd
 2. Import into Hornresp (File → Import)
 3. Run simulations in both tools
 4. Compare frequency responses, impedance curves
@@ -251,7 +251,7 @@ export_to_hornresp(
 
 **Literature:**
 - Hornresp User Manual - File format specification
-- `src/viberesp/hornresp/export.py` - Implementation with format details
+- `src/gsd/hornresp/export.py` - Implementation with format details
 
 ## File Organization Guidelines
 
@@ -262,7 +262,7 @@ export_to_hornresp(
 ### Directory Structure for Documentation and Research
 
 ```
-viberesp/
+gsd/
 ├── docs/                    # Documentation (git tracked)
 │   ├── validation/          # Validation investigation reports
 │   │   ├── sealed_box_spl_investigation.md
@@ -307,7 +307,7 @@ viberesp/
 - Reference materials → `literature/{category}/`
 
 **Code:**
-- Source code → `src/viberesp/`
+- Source code → `src/gsd/`
 - Tests → `tests/`
 - Examples → `examples/` (if it exists)
 
@@ -378,7 +378,7 @@ debug_script.py              # Wrong! → tasks/
 ### Directory Organization
 
 ```
-src/viberesp/
+src/gsd/
 ├── cli.py                   # CLI entry point (click commands)
 ├── driver/                  # Driver parameter handling
 │   └── parameters.py        # Thiele-Small parameter data structures
@@ -389,12 +389,12 @@ src/viberesp/
 ├── hornresp/                # Hornresp integration
 │   └── export.py            # Export to Hornresp format
 └── validation/              # Validation framework
-    └── compare.py           # Compare viberesp vs Hornresp results
+    └── compare.py           # Compare gsd vs Hornresp results
 ```
 
 ### Import Conventions
 
-- Use absolute imports: `from viberesp.simulation import horn_theory`
+- Use absolute imports: `from gsd.simulation import horn_theory`
 - Keep simulation modules independent of CLI code
 - Validation code should import both simulation and hornresp modules
 
@@ -443,14 +443,14 @@ def test_exponential_horn_vs_hornresp():
         length=1.5,         # m
     )
 
-    # Calculate impedance with viberesp
-    z_viberesp = calculate_throat_impedance(horn_params, frequency=500)
+    # Calculate impedance with gsd
+    z_gsd = calculate_throat_impedance(horn_params, frequency=500)
 
     # Load Hornresp reference data
     z_hornresp = load_hornresp_reference("test_data/exp_horn_001.csv")
 
     # Compare
-    assert abs(z_viberesp - z_hornresp) / z_hornresp < 0.01  # <1% deviation
+    assert abs(z_gsd - z_hornresp) / z_hornresp < 0.01  # <1% deviation
 ```
 
 ### Test Data Organization
@@ -562,12 +562,12 @@ def optimize_for_bc_15ps100():
 ```
 
 **Where driver-specific code belongs:**
-- Driver parameter definitions → `src/viberesp/driver/bc_drivers.py` or similar
+- Driver parameter definitions → `src/gsd/driver/bc_drivers.py` or similar
 - Test cases and examples → `tests/` or `examples/` (can show usage with specific drivers)
 - User's local workspace (not committed to repo)
 
 **Rationale:**
-The viberesp tool is a general-purpose enclosure design calculator, not a collection of one-off designs for specific drivers. Generic optimization code:
+The gsd tool is a general-purpose enclosure design calculator, not a collection of one-off designs for specific drivers. Generic optimization code:
 - Is reusable across all drivers
 - Makes the codebase more maintainable
 - Allows users to optimize for their own drivers
@@ -641,7 +641,7 @@ where M_ms = M_md + 2×M_rad(F_s)
 ```
 
 The 2× multiplier on radiation mass matches Hornresp's empirical methodology
-(see `src/viberesp/driver/radiation_mass.py` for implementation).
+(see `src/gsd/driver/radiation_mass.py` for implementation).
 
 **Example: BC_8NDL51**
 - M_md = 26.77 g (driver mass only, from datasheet)
@@ -652,13 +652,13 @@ The 2× multiplier on radiation mass matches Hornresp's empirical methodology
 **Literature:**
 - Beranek (1954), Eq. 5.20 - Radiation impedance and mass loading
 - `literature/horns/beranek_1954.md`
-- `src/viberesp/driver/radiation_mass.py` - Implementation with iterative solver
+- `src/gsd/driver/radiation_mass.py` - Implementation with iterative solver
 
 ## When in Doubt
 
 1. **Read the literature** - Check `literature/horns/` for relevant equations
 2. **Cite your sources** - Even if uncertain, cite the literature you're using
-3. **Validate against Hornresp** - When viberesp and Hornresp disagree, investigate why
+3. **Validate against Hornresp** - When gsd and Hornresp disagree, investigate why
 4. **Ask for clarification** - It's better to ask than to implement without citations
 
 ## Using an Online Research Agent
@@ -686,7 +686,7 @@ For difficult questions requiring external research, you can delegate to an onli
 
 **Important:** The online research agent **does NOT have access to the local codebase**, but it **CAN access the public GitHub repository** at:
 ```
-https://github.com/wokhouse/viberesp
+https://github.com/wokhouse/gsd
 ```
 
 When delegating to the research agent, provide relevant context or reference specific files/paths in the repo.
@@ -703,7 +703,7 @@ SUCCESS CRITERIA:
 [What would a successful answer look like? What specific information do you need?]
 
 CONTEXT:
-[Briefly explain the viberesp project context - it's a horn simulation tool, validates against Hornresp, etc.]
+[Briefly explain the gsd project context - it's a horn simulation tool, validates against Hornresp, etc.]
 
 RELEVANT CODE/DETAILS:
 [Paste relevant code snippets, function signatures, or error messages here]
@@ -745,7 +745,7 @@ SUCCESS CRITERIA:
 - Reference any acoustic literature on horn optimization
 
 CONTEXT:
-Viberesp is a Python CLI tool for horn-loaded enclosure design. It calculates horn impedance and frequency response from first principles, validated against Hornresp. We're adding optimization capabilities to help users find optimal horn parameters.
+GSD is a Python CLI tool for horn-loaded enclosure design. It calculates horn impedance and frequency response from first principles, validated against Hornresp. We're adding optimization capabilities to help users find optimal horn parameters.
 
 RELEVANT CODE/DETAILS:
 We have these functions already implemented:
@@ -838,4 +838,4 @@ This ensures the research agent's output can be directly used by Claude Code to 
 
 ---
 
-**Remember: The goal is to create a simulation tool grounded in established acoustic theory, with every algorithm traceable to the literature. This is what makes viberesp trustworthy and useful for horn design.**
+**Remember: The goal is to create a simulation tool grounded in established acoustic theory, with every algorithm traceable to the literature. This is what makes gsd trustworthy and useful for horn design.**

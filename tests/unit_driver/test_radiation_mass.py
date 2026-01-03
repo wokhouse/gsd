@@ -13,12 +13,12 @@ import pytest
 import math
 import numpy as np
 
-from viberesp.driver.radiation_mass import (
+from gsd.driver.radiation_mass import (
     calculate_radiation_mass,
     calculate_resonance_with_radiation_mass,
 )
-from viberesp.driver import load_driver
-from viberesp.simulation.constants import AIR_DENSITY, SPEED_OF_SOUND
+from gsd.driver import load_driver
+from gsd.simulation.constants import AIR_DENSITY, SPEED_OF_SOUND
 
 
 class TestCalculateRadiationMass:

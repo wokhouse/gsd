@@ -171,7 +171,7 @@ Effective tuning (1.46 × r correction): 52.5 Hz
 1. **Modify `tasks/test_vector_summation.py`** to use end-corrected port mass
 2. **Tune the correction factor** (try 0.85, 1.0, 1.2, 1.46, 1.7) to match 52.5 Hz
 3. **Validate against Hornresp data** in `imports/bookshelf_sim.txt`
-4. **Integrate into viberesp** once working
+4. **Integrate into gsd** once working
 5. **Document the physics** with literature citations
 
 ## Literature Citations
@@ -184,5 +184,5 @@ Effective tuning (1.46 × r correction): 52.5 Hz
 ---
 
 **Prepared by:** Claude Code (AI Assistant)
-**Repository:** https://github.com/wokhouse/viberesp
+**Repository:** https://github.com/wokhouse/gsd
 **Branch:** fix/ported-box-spl-transfer-function

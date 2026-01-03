@@ -21,12 +21,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import numpy as np
 import cmath
 import math
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.enclosure.ported_box import (
     helmholtz_resonance_frequency,
     calculate_optimal_port_dimensions,
 )
-from viberesp.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
+from gsd.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
 
 
 def calculate_mechanical_impedance(
@@ -58,7 +58,7 @@ def calculate_mechanical_impedance(
 
     # Calculate radiation mass (frequency dependent)
     if radiation_multiplier > 0:
-        from viberesp.driver.radiation_mass import calculate_radiation_mass
+        from gsd.driver.radiation_mass import calculate_radiation_mass
         M_rad = calculate_radiation_mass(frequency, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
         M_ms = driver.M_md + radiation_multiplier * M_rad
     else:

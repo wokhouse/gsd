@@ -60,7 +60,7 @@ The Gemini agent identified **TWO critical missing elements**:
    Z_box = (Z_box_branch * Z_air_spring) / (Z_box_branch + Z_air_spring)
    ```
 
-**Implementation file:** `src/viberesp/enclosure/ported_box_vector_sum.py`
+**Implementation file:** `src/gsd/enclosure/ported_box_vector_sum.py`
 
 ---
 
@@ -187,7 +187,7 @@ Issue:    Peak at Fb instead of above Fb (Hornresp peaks at 1.68×Fb)
 
 ## Files Modified
 
-- `src/viberesp/enclosure/ported_box_vector_sum.py` - Complete electro-mechanical implementation
+- `src/gsd/enclosure/ported_box_vector_sum.py` - Complete electro-mechanical implementation
 
 ## Validation Status
 

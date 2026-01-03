@@ -32,7 +32,7 @@ Optimized designs exported to Hornresp format for validation:
 
 ## Driver Specifications
 
-**TC2 Compression Driver** (from `src/viberesp/driver/test_drivers.py`)
+**TC2 Compression Driver** (from `src/gsd/driver/test_drivers.py`)
 - Sd = 8.0 cm² (diaphragm area)
 - Mmd = 8.0 g (driver mass only)
 - Cms = 5.00E-05 m/N (compliance)

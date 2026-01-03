@@ -14,7 +14,7 @@ import math
 import cmath
 import pytest
 
-from viberesp.driver import load_driver:
+from gsd.driver import load_driver:
     """Test that force calculation uses I_active at high frequencies.
 
     At 20 kHz, voice coil inductance causes current to lag voltage by ~85°.
@@ -29,7 +29,7 @@ from viberesp.driver import load_driver:
     voltage = 2.83
 
     # Calculate electrical impedance
-    from viberesp.driver.radiation_impedance import radiation_impedance_piston
+    from gsd.driver.radiation_impedance import radiation_impedance_piston
     Z_rad = radiation_impedance_piston(freq, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
 
     Ze = electrical_impedance_bare_driver(
@@ -93,7 +93,7 @@ def test_force_calculation_at_low_frequency():
     voltage = 2.83
 
     # Calculate electrical impedance
-    from viberesp.driver.radiation_impedance import radiation_impedance_piston
+    from gsd.driver.radiation_impedance import radiation_impedance_piston
     Z_rad = radiation_impedance_piston(freq, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
 
     Ze = electrical_impedance_bare_driver(
@@ -140,7 +140,7 @@ def test_i_active_reduces_high_frequency_spl():
     voltage = 2.83
 
     # Calculate electrical impedance
-    from viberesp.driver.radiation_impedance import radiation_impedance_piston
+    from gsd.driver.radiation_impedance import radiation_impedance_piston
     Z_rad = radiation_impedance_piston(freq, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
 
     Ze = electrical_impedance_bare_driver(

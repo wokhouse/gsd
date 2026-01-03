@@ -69,7 +69,7 @@ Now the response correctly:
 - Flat at 108.5 dB above 2*fc
 
 **Files Modified:**
-- `src/viberesp/optimization/api/crossover_assistant.py`
+- `src/gsd/optimization/api/crossover_assistant.py`
 - `tasks/plot_system_spl.py`
 
 ### Issue #2: Crossover Summation Method
@@ -263,7 +263,7 @@ hf_padding = xo_design.hf_padding_db  # Keep the sign from assistant
 ## Files Changed
 
 ### Modified
-- `src/viberesp/optimization/api/crossover_assistant.py`
+- `src/gsd/optimization/api/crossover_assistant.py`
   - Added `_model_compression_driver_horn_datasheet()` method
   - Fixed horn response to use datasheet sensitivity instead of physics
 

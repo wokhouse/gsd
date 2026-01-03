@@ -140,7 +140,7 @@ This is a **CRITICAL BUG** affecting all horn exports:
 
 ## Files to Fix
 
-1. **`src/viberesp/hornresp/export.py`**
+1. **`src/gsd/hornresp/export.py`**
    - Line 795: Change `Exp = 50.00` to `Exp = {l12_cm:.2f}`
    - Line 798: Change `L12 = {l12_cm:.2f}` to `L23 = 0.00`
    - Verify parameter positions for multi-segment horns
@@ -166,4 +166,4 @@ This is a **CRITICAL BUG** affecting all horn exports:
 
 - User feedback: "Exp is functionally L12, and L12 is actually imported as L23"
 - Previous validation: `tasks/hornresp_format_comparison.md`
-- GitHub issue: https://github.com/wokhouse/viberesp/issues/21
+- GitHub issue: https://github.com/wokhouse/gsd/issues/21

@@ -1,12 +1,12 @@
-# Ported Box SPL Analysis: Viberesp vs Hornresp
+# Ported Box SPL Analysis: GSD vs Hornresp
 
 ## Summary
 
-The SPL comparison shows expected deviations due to **missing port contribution** in Viberesp's current implementation. The impedance validation (3.9% error at peak) is the critical metric and is passing.
+The SPL comparison shows expected deviations due to **missing port contribution** in GSD's current implementation. The impedance validation (3.9% error at peak) is the critical metric and is passing.
 
 ## Detailed Results
 
-| Frequency Region | Hornresp SPL | Viberesp SPL | Error | Explanation |
+| Frequency Region | Hornresp SPL | GSD SPL | Error | Explanation |
 |------------------|--------------|--------------|-------|-------------|
 | **10 Hz** (very low) | 26.8 dB | 72.0 dB | +45.2 dB | Port + diaphragm out of phase (destructive interference) |
 | **20 Hz** | 52.6 dB | 79.0 dB | +26.5 dB | Approaching first peak, cancellation effects |
@@ -23,19 +23,19 @@ The SPL comparison shows expected deviations due to **missing port contribution*
 
 ### 1. Low Frequencies (10-30 Hz): Large Positive Error
 
-**Viberesp is 26-45 dB higher than Hornresp.**
+**GSD is 26-45 dB higher than Hornresp.**
 
 This is expected because:
 - Hornresp models the **destructive interference** between port and diaphragm
 - At low frequencies (below Fb), the port and diaphragm are **out of phase**
 - Their outputs partially cancel, reducing total SPL
-- Viberesp only models diaphragm contribution, missing this cancellation
+- GSD only models diaphragm contribution, missing this cancellation
 
 **Physics:** In a ported box, the port and diaphragm form a coupled resonator. Below the tuning frequency, the port mass dominates and moves out of phase with the diaphragm, creating an acoustic high-pass filter effect.
 
 ### 2. First Impedance Peak (~42 Hz): Small Positive Error
 
-**Viberesp is +4.7 dB higher.**
+**GSD is +4.7 dB higher.**
 
 At the first impedance peak (driver resonance with port loading):
 - Diaphragm velocity is maximum
@@ -44,7 +44,7 @@ At the first impedance peak (driver resonance with port loading):
 
 ### 3. Tuning Frequency Region (70-100 Hz): Negative Error
 
-**Viberesp is 5-6 dB lower.**
+**GSD is 5-6 dB lower.**
 
 At and near the box tuning frequency (Fb):
 - Port output is **maximum** and **in phase** with diaphragm
@@ -55,12 +55,12 @@ At and near the box tuning frequency (Fb):
 
 ### 4. High Frequencies (>150 Hz): Excellent Match
 
-**Viberesp matches within 0.1-1.8 dB.**
+**GSD matches within 0.1-1.8 dB.**
 
 At high frequencies:
 - Port contribution is minimal (port acts as acoustic mass, doesn't radiate efficiently)
 - Diaphragm dominates the output
-- Viberesp's diaphragm-only model is accurate here
+- GSD's diaphragm-only model is accurate here
 
 ## Why Impedance Validation is More Critical
 

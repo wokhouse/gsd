@@ -100,7 +100,7 @@ Exponential horns have inherent response variations due to:
 - Cross over to direct radiators for bass/lower-midrange
 - Accept that horns are bandpass devices, not full-range
 
-### For Horn Optimization in Viberesp
+### For Horn Optimization in GSD
 
 1. **Remove flatness as primary objective** for horn optimization
    - Horns excel at efficiency and directivity, not flatness

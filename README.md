@@ -1,8 +1,8 @@
-# Viberesp
+# bugworks GSD (Genetic Speaker Designer)
 
 **Loudspeaker enclosure design and simulation with Hornresp validation**
 
-Viberesp is a CLI tool for simulating horn-loaded loudspeaker enclosures using acoustic theory from first principles. Every algorithm is grounded in established literature and validated against Hornresp, the industry-standard horn simulation tool.
+bugworks GSD (Genetic Speaker Designer) is a CLI tool for simulating horn-loaded loudspeaker enclosures using acoustic theory from first principles. Every algorithm is grounded in established literature and validated against Hornresp, the industry-standard horn simulation tool.
 
 ## Features
 
@@ -17,7 +17,7 @@ Viberesp is a CLI tool for simulating horn-loaded loudspeaker enclosures using a
 
 ## Project Status
 
-**Phase 7.4 Complete** - Viberesp has fully functional optimization and parameter sweep tools. Horn simulation is in development.
+**Phase 7.4 Complete** - bugworks GSD (Genetic Speaker Designer) has fully functional optimization and parameter sweep tools. Horn simulation is in development.
 
 ### ✅ Implemented (Phase 7)
 - Multi-objective optimization (NSGA-II)
@@ -53,8 +53,8 @@ See [ROADMAP.md](ROADMAP.md) for detailed development phases.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/viberesp.git
-cd viberesp
+git clone https://github.com/yourusername/gsd.git
+cd gsd
 
 # Create virtual environment and install dependencies
 python -m venv .venv
@@ -77,7 +77,7 @@ pre-commit install
 ### 1. Import Driver Parameters
 
 ```bash
-viberesp driver import
+gsd driver import
 ```
 
 You'll be prompted to enter Thiele-Small parameters:
@@ -97,7 +97,7 @@ Driver saved as 'eminence-delta-15'
 ### 2. Design a Horn Enclosure
 
 ```bash
-viberesp design new
+gsd design new
 ```
 
 ```
@@ -118,7 +118,7 @@ Design saved as 'eminence-delta-15-exp-horn'
 ### 3. Simulate Performance
 
 ```bash
-viberesp simulate eminence-delta-15-exp-horn --output plot
+gsd simulate eminence-delta-15-exp-horn --output plot
 ```
 
 This generates:
@@ -130,7 +130,7 @@ This generates:
 ### 4. Export to Hornresp
 
 ```bash
-viberesp export eminence-delta-15-exp-horn --format hornresp
+gsd export eminence-delta-15-exp-horn --format hornresp
 ```
 
 Generates a Hornresp input file for cross-validation:
@@ -143,19 +143,19 @@ You can now open this file in Hornresp to verify the results.
 ### 5. Validate Against Hornresp
 
 ```bash
-viberesp validate eminence-delta-15-exp-horn --reference hornresp_results.txt
+gsd validate eminence-delta-15-exp-horn --reference hornresp_results.txt
 ```
 
-Generates a comparison report showing agreement between Viberesp and Hornresp.
+Generates a comparison report showing agreement between bugworks GSD (Genetic Speaker Designer) and Hornresp.
 
 ## AI/Agent Usage
 
-Viberesp provides a **Python API optimized for AI agents** (like Claude Code). All functions return structured data (dataclasses, not text) for easy programmatic processing.
+bugworks GSD (Genetic Speaker Designer) provides a **Python API optimized for AI agents** (like Claude Code). All functions return structured data (dataclasses, not text) for easy programmatic processing.
 
 ### Quick Start for Agents
 
 ```python
-from viberesp.optimization import DesignAssistant
+from gsd.optimization import DesignAssistant
 
 # Create design assistant
 assistant = DesignAssistant()
@@ -354,7 +354,7 @@ for design in result.best_designs:
 ### 6. Complete Example: Design Subwoofer
 
 ```python
-from viberesp.optimization import DesignAssistant
+from gsd.optimization import DesignAssistant
 
 # Goal: Design a subwoofer with BC_12NDL76
 # Constraints: Max 50L volume, target F3 ≤ 55 Hz
@@ -461,7 +461,7 @@ class OptimizationResult:
 
 ### Theory Behind Optimization
 
-Viberesp uses **NSGA-II** (Non-dominated Sorting Genetic Algorithm II) for multi-objective optimization:
+bugworks GSD (Genetic Speaker Designer) uses **NSGA-II** (Non-dominated Sorting Genetic Algorithm II) for multi-objective optimization:
 
 - **Literature**: Deb et al. (2002) - "A fast and elitist multiobjective genetic algorithm: NSGA-II"
 - **Pareto Front**: Set of optimal designs where no objective can be improved without degrading another
@@ -488,7 +488,7 @@ See individual function docstrings for specific citations.
 
 ## Workflow
 
-Viberesp follows a literature-first design workflow:
+bugworks GSD (Genetic Speaker Designer) follows a literature-first design workflow:
 
 ```
 ┌─────────────────┐
@@ -523,7 +523,7 @@ Viberesp follows a literature-first design workflow:
 
 ## Literature and Theory
 
-Viberesp is built on established acoustic theory. Every simulation algorithm cites the literature it implements.
+bugworks GSD (Genetic Speaker Designer) is built on established acoustic theory. Every simulation algorithm cites the literature it implements.
 
 ### Foundational References
 
@@ -576,13 +576,13 @@ def calculate_horn_cutoff(flare_constant: float, speed_of_sound: float = 343.0) 
 
 ## Validation Against Hornresp
 
-Hornresp is the industry standard for horn simulation. Viberesp validates all results against Hornresp:
+Hornresp is the industry standard for horn simulation. bugworks GSD (Genetic Speaker Designer) validates all results against Hornresp:
 
 ### Validation Process
 
 1. Implement algorithm from literature with proper citations
 2. Create test case with known horn parameters
-3. Run Viberesp simulation
+3. Run bugworks GSD (Genetic Speaker Designer) simulation
 4. Run Hornresp with identical parameters
 5. Compare results (impedance, frequency response, etc.)
 6. Document agreement percentage
@@ -594,14 +594,14 @@ Hornresp is the industry standard for horn simulation. Viberesp validates all re
 - **Close to cutoff** (f ≈ f_c): <5% deviation (numerical sensitivity)
 - **Below cutoff** (f < f_c): qualitative agreement only
 
-This ensures Viberesp provides accurate exploration results while maintaining transparency about theoretical foundations.
+This ensures bugworks GSD (Genetic Speaker Designer) provides accurate exploration results while maintaining transparency about theoretical foundations.
 
 ## Development
 
 ### Project Structure
 
 ```
-viberesp/
+gsd/
 ├── README.md              # This file
 ├── CLAUDE.md              # Project-specific instructions (citation requirements)
 ├── ROADMAP.md             # Development phases
@@ -612,7 +612,7 @@ viberesp/
 │       ├── olson_1947.md
 │       ├── beranek_1954.md
 │       └── kinsler_1982.md
-└── src/viberesp/
+└── src/gsd/
     ├── cli.py             # CLI entry point
     ├── driver/            # Driver parameter handling
     ├── simulation/        # Horn simulation engine (cites literature)
@@ -640,7 +640,7 @@ See [`CLAUDE.md`](CLAUDE.md) for detailed coding conventions.
 pytest
 
 # Run with coverage
-pytest --cov=viberesp --cov-report=html
+pytest --cov=gsd --cov-report=html
 
 # Run validation tests only
 pytest tests/validation/
@@ -650,13 +650,13 @@ pytest tests/validation/
 
 ```bash
 # Format code
-black src/viberesp tests
+black src/gsd tests
 
 # Sort imports
-isort src/viberesp tests
+isort src/gsd tests
 
 # Type checking
-mypy src/viberesp
+mypy src/gsd
 ```
 
 ## Dependencies
@@ -681,10 +681,10 @@ mypy src/viberesp
 
 ## Configuration
 
-Viberesp stores configuration and data in `~/.viberesp/`:
+bugworks GSD (Genetic Speaker Designer) stores configuration and data in `~/.gsd/`:
 
 ```
-~/.viberesp/
+~/.gsd/
 ├── config.yaml          # User configuration
 ├── drivers/             # Saved driver profiles
 │   └── eminence-delta-15.json
@@ -695,7 +695,7 @@ Viberesp stores configuration and data in `~/.viberesp/`:
 ### Example Configuration
 
 ```yaml
-# ~/.viberesp/config.yaml
+# ~/.gsd/config.yaml
 defaults:
   temperature: 20        # Celsius
   air_density: 1.18      # kg/m³
@@ -733,9 +733,9 @@ See [ROADMAP.md](ROADMAP.md) for detailed development phases:
 
 ## FAQ
 
-### How accurate is Viberesp compared to Hornresp?
+### How accurate is bugworks GSD (Genetic Speaker Designer) compared to Hornresp?
 
-Viberesp implements the same acoustic theory as Hornresp. For well-behaved cases (frequencies well above cutoff), we expect agreement within <1%. Differences may occur due to:
+bugworks GSD (Genetic Speaker Designer) implements the same acoustic theory as Hornresp. For well-behaved cases (frequencies well above cutoff), we expect agreement within <1%. Differences may occur due to:
 - Numerical methods (discretization vs analytical)
 - Mouth termination models
 - Frequency range and resolution
@@ -752,9 +752,9 @@ This ensures:
 
 Existing libraries often lack proper documentation of theoretical foundations.
 
-### Can I use Viberesp for sealed or ported enclosures?
+### Can I use bugworks GSD (Genetic Speaker Designer) for sealed or ported enclosures?
 
-**Yes!** Viberesp supports sealed and ported enclosures with automated optimization. Use the Python API for design assistance and optimization. See the "AI/Agent Usage" section below.
+**Yes!** bugworks GSD (Genetic Speaker Designer) supports sealed and ported enclosures with automated optimization. Use the Python API for design assistance and optimization. See the "AI/Agent Usage" section below.
 
 ### What horn types are supported?
 
@@ -768,16 +768,16 @@ Planned:
 - Multi-segment horns
 - Transmission line enclosures
 
-### How do I cite Viberesp in my research?
+### How do I cite bugworks GSD (Genetic Speaker Designer) in my research?
 
-If you use Viberesp in your research, please cite both the software and the underlying literature:
+If you use bugworks GSD (Genetic Speaker Designer) in your research, please cite both the software and the underlying literature:
 
 ```bibtex
-@software{viberesp,
+@software{gsd,
   author = {Your Name},
-  title = {Viberesp: Horn-loaded Loudspeaker Simulation with Literature-based Validation},
+  title = {bugworks GSD (Genetic Speaker Designer): Horn-loaded Loudspeaker Simulation with Literature-based Validation},
   year = {2025},
-  url = {https://github.com/yourusername/viberesp}
+  url = {https://github.com/yourusername/gsd}
 }
 
 @book{olson1947,
@@ -792,7 +792,7 @@ If you use Viberesp in your research, please cite both the software and the unde
 
 MIT License
 
-Copyright (c) 2025 Viberesp Contributors
+Copyright (c) 2025 bugworks GSD (Genetic Speaker Designer) Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -820,8 +820,8 @@ SOFTWARE.
 
 ## Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/viberesp/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/viberesp/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/gsd/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/gsd/discussions)
 - **Email**: your.email@example.com
 
 ---

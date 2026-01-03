@@ -9,7 +9,7 @@ This led to discovering that the F3 calculation was using an oversimplified form
 
 ## Root Cause
 
-**File:** `src/viberesp/enclosure/ported_box.py`, lines 468-477
+**File:** `src/gsd/enclosure/ported_box.py`, lines 468-477
 
 **Original Code:**
 ```python
@@ -95,10 +95,10 @@ For this low-Qts driver (0.275 vs optimal 0.38):
 
 ### Response Shape Difference with Hornresp
 
-Viberesp SPL response has different shape than Hornresp:
-- At 40Hz: Viberesp -13.55dB, Hornresp -8.72dB (4.83dB difference)
-- At 80Hz: Viberesp -2.84dB, Hornresp -8.12dB (5.28dB difference)
-- Result: Viberesp F3 (79Hz) < Hornresp F3 (193Hz)
+GSD SPL response has different shape than Hornresp:
+- At 40Hz: GSD -13.55dB, Hornresp -8.72dB (4.83dB difference)
+- At 80Hz: GSD -2.84dB, Hornresp -8.12dB (5.28dB difference)
+- Result: GSD F3 (79Hz) < Hornresp F3 (193Hz)
 
 **Causes:**
 - Box loss modeling differences
@@ -114,7 +114,7 @@ Viberesp SPL response has different shape than Hornresp:
 
 ## Files Modified
 
-1. **`src/viberesp/enclosure/ported_box.py`**
+1. **`src/gsd/enclosure/ported_box.py`**
    - Added `calculate_f3_from_spl()` function (lines 373-449)
    - Updated F3 calculation in `calculate_ported_box_system_parameters()` (lines 542-551)
    - ~80 lines added

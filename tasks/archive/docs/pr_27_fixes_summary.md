@@ -36,7 +36,7 @@ The code review identified 2 critical issues (score ≥ 80):
 ## Additional Findings (from Investigation)
 
 ### Issue #3: Incorrect Docstring (Bonus Finding)
-**Location:** `src/viberesp/enclosure/ported_box.py:654-664`
+**Location:** `src/gsd/enclosure/ported_box.py:654-664`
 
 **Problem:** Docstring incorrectly described transfer function as:
 ```
@@ -65,7 +65,7 @@ Online research agent confirmed:
 ## Fixes Applied
 
 ### Fix #1: Reverted Calibration Offset
-**File:** `src/viberesp/enclosure/ported_box.py`
+**File:** `src/gsd/enclosure/ported_box.py`
 **Line:** 860
 
 **Changed:**
@@ -85,7 +85,7 @@ CALIBRATION_OFFSET_DB = 6.0  # Correct: optimal for BC_18RBX100
 - Documented future work: implement driver-specific calibration lookup table
 
 ### Fix #2: Corrected Docstring
-**File:** `src/viberesp/enclosure/ported_box.py`
+**File:** `src/gsd/enclosure/ported_box.py`
 **Lines:** 654-669
 
 **Changed:**
@@ -187,7 +187,7 @@ The **missing peak at tuning frequency** is still under investigation:
 
 ## Files Modified
 
-1. **src/viberesp/enclosure/ported_box.py**
+1. **src/gsd/enclosure/ported_box.py**
    - Line 658-669: Corrected transfer function docstring
    - Line 852-861: Reverted calibration to +6 dB with driver-specific note
 

@@ -115,7 +115,7 @@ This is **expected behavior** for compression drivers:
 
 ## Conclusion
 
-TC4 validation **PASSES** with excellent agreement between viberesp and Hornresp for the complete horn driver system with both throat and rear chambers.
+TC4 validation **PASSES** with excellent agreement between gsd and Hornresp for the complete horn driver system with both throat and rear chambers.
 
 **All chamber implementations validated:**
 1. ✅ Throat chamber (series compliance)
@@ -137,7 +137,7 @@ TC4 validation **PASSES** with excellent agreement between viberesp and Hornresp
 - The horn driver integration models are correct
 - Chamber implementations are accurate
 - The FrontLoadedHorn enclosure class is production-ready
-- Viberesp matches Hornresp to <1% for horn-loaded systems
+- GSD matches Hornresp to <1% for horn-loaded systems
 
 ## Next Steps
 

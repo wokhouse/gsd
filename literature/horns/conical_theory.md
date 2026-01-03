@@ -263,7 +263,7 @@ Hornresp reports acoustic impedance as:
 Za_hornresp = Z_throat / (ρc/S1) = Z_throat * S1 / (ρc)
 ```
 
-This is different from the typical acoustic impedance Z_throat [Pa·s/m³]. When comparing viberesp results to Hornresp, we must normalize by (ρc/S1):
+This is different from the typical acoustic impedance Z_throat [Pa·s/m³]. When comparing gsd results to Hornresp, we must normalize by (ρc/S1):
 
 ```python
 Z0 = rho * c  # Characteristic impedance of medium
@@ -272,7 +272,7 @@ Za_normalized = Z_throat * S1_m2 / Z0
 ```
 
 **Validation Script:**
-`tests/validation/horn_theory/conical_vs_hornresp.py` contains the complete validation code comparing viberesp conical horn throat impedance against Hornresp simulation results.
+`tests/validation/horn_theory/conical_vs_hornresp.py` contains the complete validation code comparing gsd conical horn throat impedance against Hornresp simulation results.
 
 ## References
 

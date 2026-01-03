@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://viberesp.org/schemas/sim_schema.json",
+  "$id": "https://gsd.org/schemas/sim_schema.json",
   "title": "Hornresp Simulation Results",
   "description": "Schema for parsed Hornresp simulation results",
   "type": "object",

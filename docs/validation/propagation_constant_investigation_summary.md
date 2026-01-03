@@ -5,7 +5,7 @@
 
 ## Overview
 
-Investigated the +38.6 dB discrepancy at 20 Hz between viberesp and Hornresp based on research agent findings about T-matrix propagation constant.
+Investigated the +38.6 dB discrepancy at 20 Hz between gsd and Hornresp based on research agent findings about T-matrix propagation constant.
 
 ## Research Agent Findings
 
@@ -74,9 +74,9 @@ Hornresp F12: 126.06 Hz ✓ MATCHES!
 ```
 
 **Files Modified:**
-- `src/viberesp/enclosure/front_loaded_horn.py:568`
-- `src/viberesp/optimization/parameters/exponential_horn_params.py:261`
-- `src/viberesp/optimization/parameters/multisegment_horn_params.py:406`
+- `src/gsd/enclosure/front_loaded_horn.py:568`
+- `src/gsd/optimization/parameters/exponential_horn_params.py:261`
+- `src/gsd/optimization/parameters/multisegment_horn_params.py:406`
 
 ### 3. Radiation Space Assumption (NOT THE ISSUE)
 

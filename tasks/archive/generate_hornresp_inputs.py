@@ -23,8 +23,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
-from viberesp.hornresp.export import export_to_hornresp
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
+from gsd.hornresp.export import export_to_hornresp
 
 
 def generate_bc_8ndl51_inputs():

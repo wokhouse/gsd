@@ -11,7 +11,7 @@ Successfully updated the response flatness optimizer to use calibrated transfer 
 ## Changes Made
 
 ### 1. Updated Wrapper Functions
-**File:** `src/viberesp/optimization/objectives/response_metrics.py`
+**File:** `src/gsd/optimization/objectives/response_metrics.py`
 
 **Changes:**
 - Added `use_transfer_function_spl: bool = True` parameter to `sealed_box_electrical_impedance()` wrapper (line 317)
@@ -27,7 +27,7 @@ def sealed_box_electrical_impedance(
     Vb: float,
     voltage: float = 2.83
 ) -> dict:
-    from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance as sb_impedance
+    from gsd.enclosure.sealed_box import sealed_box_electrical_impedance as sb_impedance
     return sb_impedance(frequency, driver, Vb, voltage=voltage)
 ```
 
@@ -41,7 +41,7 @@ def sealed_box_electrical_impedance(
     measurement_distance: float = 1.0,
     use_transfer_function_spl: bool = True  # NEW: Use calibrated TF by default
 ) -> dict:
-    from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance as sb_impedance
+    from gsd.enclosure.sealed_box import sealed_box_electrical_impedance as sb_impedance
     return sb_impedance(frequency, driver, Vb, voltage=voltage,
                         measurement_distance=measurement_distance,
                         use_transfer_function_spl=use_transfer_function_spl)  # NEW: Pass parameter
@@ -142,7 +142,7 @@ The transfer function has a **-25.25 dB calibration offset** compared to the leg
 
 ## Files Modified
 
-1. `src/viberesp/optimization/objectives/response_metrics.py` - Updated wrapper functions
+1. `src/gsd/optimization/objectives/response_metrics.py` - Updated wrapper functions
 2. `tasks/test_optimizer_flatness.py` - Updated test script
 3. `tasks/test_optimizer_uses_tf.py` - Created new verification test
 4. `tasks/test_optimizer_verification.py` - Created comprehensive test suite
@@ -152,8 +152,8 @@ The transfer function has a **-25.25 dB calibration offset** compared to the leg
 ## References
 
 - **Calibration documentation:** `tasks/CALIBRATE_SPL_TRANSFER_FUNCTION.md`
-- **Sealed box implementation:** `src/viberesp/enclosure/sealed_box.py:143-285`
-- **Ported box implementation:** `src/viberesp/enclosure/ported_box.py:509-693`
+- **Sealed box implementation:** `src/gsd/enclosure/sealed_box.py:143-285`
+- **Ported box implementation:** `src/gsd/enclosure/ported_box.py:509-693`
 - **Original task:** `tasks/agent_instructions_spl_transfer_function.md`
 
 ---

@@ -20,10 +20,10 @@ from typing import Optional
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from viberesp.driver.bc_drivers import get_bc_8ndl51
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.enclosure.sealed_box import calculate_sealed_box_system_parameters
-from viberesp.hornresp.export import export_to_hornresp
+from gsd.driver.bc_drivers import get_bc_8ndl51
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.enclosure.sealed_box import calculate_sealed_box_system_parameters
+from gsd.hornresp.export import export_to_hornresp
 
 
 def calculate_vb_for_qtc(driver: ThieleSmallParameters, qtc_target: float) -> Optional[float]:

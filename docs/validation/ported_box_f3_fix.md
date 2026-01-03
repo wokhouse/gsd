@@ -103,10 +103,10 @@ For a B4-optimized driver (Qts≈0.38):
 
 ### Response Shape Difference
 
-The viberesp SPL response has a different shape than Hornresp:
+The gsd SPL response has a different shape than Hornresp:
 
 **Normalized SPL at 40Hz tuning:**
-| Frequency | Hornresp | Viberesp | Difference |
+| Frequency | Hornresp | GSD | Difference |
 |-----------|----------|----------|------------|
 | 40 Hz     | -8.72 dB | -13.55 dB | -4.83 dB   |
 | 60 Hz     | -9.25 dB | -6.03 dB  | +3.22 dB   |
@@ -114,8 +114,8 @@ The viberesp SPL response has a different shape than Hornresp:
 | 100 Hz    | -6.83 dB | -1.41 dB  | +5.42 dB   |
 
 **Observations:**
-- Viberesp has deeper dip at Fb (-13.55 vs -8.72 dB)
-- Viberesp rises faster above Fb
+- GSD has deeper dip at Fb (-13.55 vs -8.72 dB)
+- GSD rises faster above Fb
 - Results in lower calculated F3 (79Hz vs 193Hz)
 
 **Possible causes:**
@@ -157,7 +157,7 @@ assert params.F3 != 40.0  # Not just Fb
 
 ## Files Modified
 
-1. **`src/viberesp/enclosure/ported_box.py`**
+1. **`src/gsd/enclosure/ported_box.py`**
    - Added `calculate_f3_from_spl()` function (lines 373-449)
    - Updated `calculate_ported_box_system_parameters()` (lines 542-551)
    - Added docstrings with literature citations

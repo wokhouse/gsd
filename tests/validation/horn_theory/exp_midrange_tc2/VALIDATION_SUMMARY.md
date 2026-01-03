@@ -88,7 +88,7 @@ Chambers:
 
 ## Conclusion
 
-TC2 validation **PASSES** with excellent agreement between viberesp and Hornresp for the complete horn driver system (no chambers).
+TC2 validation **PASSES** with excellent agreement between gsd and Hornresp for the complete horn driver system (no chambers).
 
 The mean errors are well within acceptance criteria (<2% magnitude, <5° phase), confirming that:
 1. ✅ Exponential horn T-matrix method is correct

@@ -8,7 +8,7 @@ Successfully implemented enclosure-specific SPL response calculation for the Plo
 
 ### Core Changes
 
-Modified `src/viberesp/visualization/factory.py` to add three new methods:
+Modified `src/gsd/visualization/factory.py` to add three new methods:
 
 1. **`_calculate_spl_for_design()`** - Main dispatcher that routes to appropriate enclosure type
 2. **`_calculate_horn_spl()`** - Horn-loaded enclosures (exponential, multisegment, conical)
@@ -211,7 +211,7 @@ config = PlotConfig(
 ### Basic Usage
 
 ```python
-from viberesp.visualization import PlotFactory, PlotConfig
+from gsd.visualization import PlotFactory, PlotConfig
 
 config = PlotConfig(
     plot_type="spl_response",
@@ -278,7 +278,7 @@ The implementation uses validated SPL calculation methods from the enclosure mod
 
 ## Files Modified
 
-- `src/viberesp/visualization/factory.py` - Added ~270 lines of SPL calculation code
+- `src/gsd/visualization/factory.py` - Added ~270 lines of SPL calculation code
   - `_calculate_spl_for_design()` - Main dispatcher (40 lines)
   - `_calculate_horn_spl()` - Horn SPL calculation (100 lines)
   - `_calculate_sealed_box_spl()` - Sealed box SPL (50 lines)
@@ -290,7 +290,7 @@ The implementation uses validated SPL calculation methods from the enclosure mod
 
 ## Next Steps
 
-1. **CLI Integration** - Add `viberesp plot-factory create --type spl_response`
+1. **CLI Integration** - Add `gsd plot-factory create --type spl_response`
 2. **Auto-plot from Optimization** - Integrate with OptimizationScriptFactory
 3. **Performance Optimization** - Cache calculated SPL responses
 4. **Additional Enclosure Types** - Add support for bandpass, transmission line, etc.

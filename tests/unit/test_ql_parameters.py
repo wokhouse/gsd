@@ -13,12 +13,12 @@ Literature:
 
 import math
 import pytest
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.enclosure.sealed_box import (
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.enclosure.sealed_box import (
     calculate_sealed_box_system_parameters,
     sealed_box_electrical_impedance,
 )
-from viberesp.enclosure.ported_box import (
+from gsd.enclosure.ported_box import (
     calculate_ported_box_system_parameters,
     ported_box_electrical_impedance,
     calculate_spl_ported_transfer_function,

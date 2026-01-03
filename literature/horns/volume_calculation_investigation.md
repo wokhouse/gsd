@@ -297,12 +297,12 @@ for proper bass loading
    - Remove expanded parameter bounds
    - Add new constraint calls
 
-2. **`src/viberesp/optimization/constraints/physical.py`** (new functions)
+2. **`src/gsd/optimization/constraints/physical.py`** (new functions)
    - `constraint_minimum_expansion()`
    - `constraint_mouth_loading()`
    - `constraint_maximum_horn_size()`
 
-3. **`src/viberesp/optimization/parameters/multisegment_horn_params.py`** (optional)
+3. **`src/gsd/optimization/parameters/multisegment_horn_params.py`** (optional)
    - Consider tightening "bass_horn" preset default bounds
 
 ---
@@ -365,5 +365,5 @@ PYTHONPATH=src python3 tasks/diagnose_horn_volume_calculation.py
 ---
 
 **Report Generated:** 2025-12-31
-**Investigated By:** Claude Code (viberesp project)
+**Investigated By:** Claude Code (gsd project)
 **Next Action:** Implement recommended constraints

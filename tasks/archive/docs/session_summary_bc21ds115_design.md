@@ -54,33 +54,33 @@
 ## Files Created/Modified
 
 ### Driver
-- `src/viberesp/driver/data/BC_21DS115.yaml` - New driver ✓
+- `src/gsd/driver/data/BC_21DS115.yaml` - New driver ✓
 
 ### Parameters (throat sizing fix)
-- `src/viberesp/optimization/parameters/exponential_horn_params.py` ✓
+- `src/gsd/optimization/parameters/exponential_horn_params.py` ✓
   - Lines 86-87: Throat bounds (50-100% Sd)
   - Lines 146-149: Documentation
-- `src/viberesp/optimization/parameters/multisegment_horn_params.py` ✓
+- `src/gsd/optimization/parameters/multisegment_horn_params.py` ✓
   - Lines 102-103: Throat bounds (50-100% Sd)
   - Line 235: Typical ranges
 
 ### Constraints
-- `src/viberesp/optimization/constraints/physical.py` ✓
+- `src/gsd/optimization/constraints/physical.py` ✓
   - Added `constraint_horn_throat_sizing()` (lines 587-679)
   - Added `constraint_exponential_monotonic_expansion()` (lines 682-728)
 
 ### Objectives
-- `src/viberesp/optimization/objectives/response_metrics.py` ✓
+- `src/gsd/optimization/objectives/response_metrics.py` ✓
   - Lines 105-175: Fixed `objective_f3()` for exponential_horn
   - Now calculates from frequency response, not just fc
 
 ### Optimization Framework
-- `src/viberesp/optimization/objectives/composite.py` ✓
+- `src/gsd/optimization/objectives/composite.py` ✓
   - Added import for `constraint_exponential_monotonic_expansion`
   - Line 179: Added to constraint_map
 
 ### Design Assistant
-- `src/viberesp/optimization/api/design_assistant.py` ✓
+- `src/gsd/optimization/api/design_assistant.py` ✓
   - Lines 408, 438: Added "monotonic_expansion" to default constraints
 
 ### Documentation

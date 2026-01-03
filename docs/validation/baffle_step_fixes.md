@@ -5,7 +5,7 @@
 
 ## Issues Identified
 
-From code review and external research, three critical issues were identified in `src/viberesp/enclosure/baffle_step.py`:
+From code review and external research, three critical issues were identified in `src/gsd/enclosure/baffle_step.py`:
 
 ### 1. **Incorrect Physics Formula** (CRITICAL)
 
@@ -172,7 +172,7 @@ Example: 30cm baffle → f_step = 383 Hz
 ## Files Modified
 
 ### Originally Fixed (PR #39)
-1. `src/viberesp/enclosure/baffle_step.py` - Complete rewrite with correct physics
+1. `src/gsd/enclosure/baffle_step.py` - Complete rewrite with correct physics
 2. `literature/crossovers/olson_1951.md` - Created
 3. `literature/crossovers/linkwitz_2003.md` - Created
 4. `docs/validation/baffle_step_fixes.md` - This file
@@ -190,7 +190,7 @@ Run the validation test:
 ```bash
 python3 -c "
 import sys; sys.path.insert(0, 'src')
-from viberesp.enclosure.baffle_step import *
+from gsd.enclosure.baffle_step import *
 
 # Test physics
 assert baffle_step_loss(50, 0.3) < -5.0

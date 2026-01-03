@@ -10,8 +10,8 @@ Literature:
 import math
 import pytest
 
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
 
 
 class TestThieleSmallParameters:

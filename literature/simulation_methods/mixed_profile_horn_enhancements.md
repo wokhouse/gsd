@@ -5,7 +5,7 @@
 ## Completed Tasks
 
 ### ✅ TASK 1: impedance_smoothness Support
-**File:** `src/viberesp/optimization/objectives/response_metrics.py:841-941`
+**File:** `src/gsd/optimization/objectives/response_metrics.py:841-941`
 
 - Added support for "mixed_profile_horn" enclosure type
 - Calls `build_mixed_profile_horn()` when enclosure_type matches
@@ -14,8 +14,8 @@
 
 ### ✅ TASK 2: Discrete Profile Type Optimization
 **Files:** 
-- `src/viberesp/optimization/objectives/composite.py:185-213`
-- `src/viberesp/optimization/objectives/composite.py:238-247`
+- `src/gsd/optimization/objectives/composite.py:185-213`
+- `src/gsd/optimization/objectives/composite.py:238-247`
 
 **Changes:**
 - Added vtype array to Problem initialization
@@ -32,7 +32,7 @@
 - **Tested:** ✅ Con→Exp→Hyp builds correctly
 
 ### ❌ TASK 4: Hornresp Export (SKIPPED)
-**File:** `src/viberesp/hornresp/export.py:1348-1676`
+**File:** `src/gsd/hornresp/export.py:1348-1676`
 
 - Created `export_mixed_profile_horn_to_hornresp()`
 - Handles Con/Exp/Hyp segment types
@@ -74,14 +74,14 @@
 
 ## Files Modified
 
-- `src/viberesp/optimization/objectives/response_metrics.py`
+- `src/gsd/optimization/objectives/response_metrics.py`
   - Added mixed_profile_horn branch to objective_impedance_smoothness()
 
-- `src/viberesp/optimization/objectives/composite.py`
+- `src/gsd/optimization/objectives/composite.py`
   - Added vtype array for mixed-variable optimization
   - Added integer casting for profile types in _evaluate()
 
-- `src/viberesp/hornresp/export.py`
+- `src/gsd/hornresp/export.py`
   - Added export_mixed_profile_horn_to_hornresp() (buggy, unused)
 
 - `tasks/test_mixed_profile_enhancements.py` (NEW)

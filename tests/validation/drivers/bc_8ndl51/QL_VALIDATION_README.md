@@ -2,7 +2,7 @@
 
 ## Overview
 
-This dataset validates viberesp's QL (box losses) implementation against Hornresp simulations across various QL values for both sealed and ported box enclosures.
+This dataset validates gsd's QL (box losses) implementation against Hornresp simulations across various QL values for both sealed and ported box enclosures.
 
 ## Directory Structure
 

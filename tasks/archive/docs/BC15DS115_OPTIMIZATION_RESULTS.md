@@ -190,7 +190,7 @@ The choice depends on your priorities:
 - **Music/Monitoring:** Go with the small box (80L) for flatter response
 - **Home Theater:** Go with the B4 alignment (254L) for maximum bass
 
-All designs calculated using viberesp with calibrated transfer functions validated against Hornresp.
+All designs calculated using gsd with calibrated transfer functions validated against Hornresp.
 
 ---
 

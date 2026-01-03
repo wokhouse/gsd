@@ -98,7 +98,7 @@ Chambers:
 
 ## Conclusion
 
-TC3 validation **PASSES** with excellent agreement between viberesp and Hornresp for the horn driver system with throat chamber.
+TC3 validation **PASSES** with excellent agreement between gsd and Hornresp for the horn driver system with throat chamber.
 
 The results confirm that:
 1. ✅ Throat chamber compliance model is correct

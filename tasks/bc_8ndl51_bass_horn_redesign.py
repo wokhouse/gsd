@@ -15,10 +15,10 @@ import sys
 sys.path.insert(0, 'src')
 
 import numpy as np
-from viberesp.driver.loader import load_driver
-from viberesp.simulation.types import HornSegment
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.simulation.horn_theory import MediumProperties
+from gsd.driver.loader import load_driver
+from gsd.simulation.types import HornSegment
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.simulation.horn_theory import MediumProperties
 
 # Load driver
 driver = load_driver('BC_8NDL51')
@@ -51,7 +51,7 @@ print()
 seg1 = HornSegment(throat_area=throat_area, mouth_area=throat_area, length=length1)
 seg2 = HornSegment(throat_area=throat_area, mouth_area=mouth_area, length=length2)
 
-from viberesp.simulation.types import MultiSegmentHorn
+from gsd.simulation.types import MultiSegmentHorn
 horn = MultiSegmentHorn(segments=[seg1, seg2])
 
 # Create front-loaded horn system

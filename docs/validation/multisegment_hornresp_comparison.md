@@ -1,4 +1,4 @@
-# Multi-Segment Horn Export Comparison: Viberesp vs Hornresp
+# Multi-Segment Horn Export Comparison: GSD vs Hornresp
 
 ## Test Design
 
@@ -15,7 +15,7 @@
 
 ### 1. **F12 and F23 Values - WAY OFF!**
 
-| Parameter | Viberesp Export | Hornresp Output | Difference |
+| Parameter | GSD Export | Hornresp Output | Difference |
 |-----------|----------------|-----------------|------------|
 | F12 | 864.38 Hz | 433.41 Hz | **2× error!** |
 | F23 | 45.98 Hz | 23.06 Hz | **2× error!** |
@@ -54,7 +54,7 @@ This might be because:
 
 | File | Value |
 |------|-------|
-| Viberesp export | 0.42 |
+| GSD export | 0.42 |
 | Hornresp output | 0.08 |
 
 This is a mouth correction factor. Hornresp adjusted it from 0.42 to 0.08 when importing. This appears to be an auto-calculated parameter based on mouth size and radiation angle.
@@ -81,7 +81,7 @@ This is because 0.0037 L rounds to 0.00 with 2 decimal places, which Hornresp tr
 
 ### Horn Parameters (MATCH ✓)
 
-| Parameter | Viberesp | Hornresp | Status |
+| Parameter | GSD | Hornresp | Status |
 |-----------|----------|----------|--------|
 | S1 (throat) | 1.67 | 1.67 | ✓ |
 | S2 (middle) | 305.44 | 305.44 | ✓ |
@@ -91,14 +91,14 @@ This is because 0.0037 L rounds to 0.00 with 2 decimal places, which Hornresp tr
 
 ### Flare Frequencies (WRONG ✗)
 
-| Parameter | Viberesp | Hornresp | Error |
+| Parameter | GSD | Hornresp | Error |
 |-----------|----------|----------|-------|
 | F12 | 864.38 Hz | 433.41 Hz | **2× too high** |
 | F23 | 45.98 Hz | 23.06 Hz | **2× too high** |
 
 ### Radiation Parameters (OK)
 
-| Parameter | Viberesp | Hornresp | Status |
+| Parameter | GSD | Hornresp | Status |
 |-----------|----------|----------|--------|
 | Ang | 2.0 x Pi | 2.0 x Pi | ✓ |
 | Eg | 2.83 | 2.83 | ✓ |
@@ -107,7 +107,7 @@ This is because 0.0037 L rounds to 0.00 with 2 decimal places, which Hornresp tr
 
 ### Chamber Parameters (MATCH ✓)
 
-| Parameter | Viberesp | Hornresp | Status |
+| Parameter | GSD | Hornresp | Status |
 |-----------|----------|----------|--------|
 | Vtc | 12.89 | 12.89 | ✓ |
 | Atc | 1.67 | 1.67 | ✓ |
@@ -115,7 +115,7 @@ This is because 0.0037 L rounds to 0.00 with 2 decimal places, which Hornresp tr
 
 ## Fix Required
 
-### File: `src/viberesp/hornresp/export.py`
+### File: `src/gsd/hornresp/export.py`
 
 **Lines 1071 and 1077**: Change flare constant conversion
 

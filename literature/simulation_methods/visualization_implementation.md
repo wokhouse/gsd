@@ -16,8 +16,8 @@ Phase 1 of plot presets has been completed. The preset system is in place and wo
 
 ## Prerequisites
 
-- Phase 1 is complete: presets system exists in `src/viberesp/visualization/presets.py`
-- PlotFactory exists in `src/viberesp/visualization/factory.py`
+- Phase 1 is complete: presets system exists in `src/gsd/visualization/presets.py`
+- PlotFactory exists in `src/gsd/visualization/factory.py`
 - All existing plot types work: pareto_2d, pareto_3d, spl_response, horn_profile, parameter_distribution
 
 ---
@@ -25,7 +25,7 @@ Phase 1 of plot presets has been completed. The preset system is in place and wo
 ## Task 1: Implement correlation_matrix Plot Type
 
 ### File to Modify
-`src/viberesp/visualization/factory.py`
+`src/gsd/visualization/factory.py`
 
 ### Step 1.1: Add to PLOT_TYPES list
 Add `"correlation_matrix"` to the `PLOT_TYPES` list (around line 64-70):
@@ -158,7 +158,7 @@ def _plot_correlation_matrix(self) -> Figure:
 
 ```bash
 # Test the new plot type
-viberesp plot create --type correlation_matrix --input <results.json> --output test_corr.png
+gsd plot create --type correlation_matrix --input <results.json> --output test_corr.png
 ```
 
 ---
@@ -166,7 +166,7 @@ viberesp plot create --type correlation_matrix --input <results.json> --output t
 ## Task 2: Implement quality_dashboard Plot Type
 
 ### File to Modify
-`src/viberesp/visualization/factory.py`
+`src/gsd/visualization/factory.py`
 
 ### Step 2.1: Add to PLOT_TYPES list
 Add `"quality_dashboard"` to the `PLOT_TYPES` list:
@@ -443,7 +443,7 @@ def _add_composite_quality_plot(
 
 ```bash
 # Test the new plot type
-viberesp plot create --type quality_dashboard --input <results.json> --output test_quality.png
+gsd plot create --type quality_dashboard --input <results.json> --output test_quality.png
 ```
 
 ---
@@ -451,7 +451,7 @@ viberesp plot create --type quality_dashboard --input <results.json> --output te
 ## Task 3: Update Presets to Use New Plot Types
 
 ### File to Modify
-`src/viberesp/visualization/presets.py`
+`src/gsd/visualization/presets.py`
 
 ### Step 3.1: Add new preset using quality_dashboard
 
@@ -478,7 +478,7 @@ Add a new preset after the `quality` preset:
 
 ### Step 3.2: Update CLI to include new preset
 
-### File: `src/viberesp/cli_commands/plot.py`
+### File: `src/gsd/cli_commands/plot.py`
 
 Update the `--preset` choice list (around line 203):
 
@@ -487,7 +487,7 @@ Update the `--preset` choice list (around line 203):
               help='Use preset plot configuration')
 ```
 
-### File: `src/viberesp/cli_commands/optimize.py`
+### File: `src/gsd/cli_commands/optimize.py`
 
 Update the `--plot-preset` choice list (around line 175):
 
@@ -504,12 +504,12 @@ Update the `--plot-preset` choice list (around line 175):
 
 ```bash
 # Test correlation_matrix with actual optimization results
-viberesp plot create --type correlation_matrix \
+gsd plot create --type correlation_matrix \
     --input tasks/BC_15DS115_multisegment_horn_20251231_165015.json \
     --output test_correlation.png
 
 # Test quality_dashboard with actual optimization results
-viberesp plot create --type quality_dashboard \
+gsd plot create --type quality_dashboard \
     --input tasks/BC_15DS115_multisegment_horn_20251231_165015.json \
     --output test_quality.png
 ```
@@ -518,24 +518,24 @@ viberesp plot create --type quality_dashboard \
 
 ```bash
 # Test new correlations preset
-viberesp plot auto \
+gsd plot auto \
     --input tasks/BC_15DS115_multisegment_horn_20251231_165015.json \
     --preset correlations \
     --output-dir test_plots/
 
 # List presets to verify new one appears
-viberesp plot list-presets
+gsd plot list-presets
 ```
 
 ### Step 4.3: Verify help text
 
 ```bash
 # Verify new plot type appears in list
-viberesp plot list-types
+gsd plot list-types
 
 # Verify new preset appears in help
-viberesp plot auto --help | grep correlations
-viberesp optimize preset --help | grep correlations
+gsd plot auto --help | grep correlations
+gsd optimize preset --help | grep correlations
 ```
 
 ---
@@ -598,9 +598,9 @@ If not installed, add to project dependencies:
 
 ✅ **Presets integration:**
 - [x] New `correlations` preset created
-- [x] Appears in `viberesp plot list-presets`
-- [x] Works with `viberesp plot auto --preset correlations`
-- [x] Works with `viberesp optimize preset --plot --plot-preset correlations`
+- [x] Appears in `gsd plot list-presets`
+- [x] Works with `gsd plot auto --preset correlations`
+- [x] Works with `gsd optimize preset --plot --plot-preset correlations`
 
 ✅ **Testing:**
 - [x] All plot types tested with real data

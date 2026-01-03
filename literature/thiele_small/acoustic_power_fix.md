@@ -7,7 +7,7 @@
 ## Problem Statement
 
 The multi-segment horn optimizer was reporting completely wrong efficiency values:
-- **Viberesp optimizer**: -64.92 dB (essentially 0% efficiency)
+- **GSD optimizer**: -64.92 dB (essentially 0% efficiency)
 - **Hornresp simulation**: 1.07% efficiency (~ -19.7 dB)
 - **Error**: 45 dB discrepancy (factor of ~30,000)
 
@@ -17,7 +17,7 @@ This caused the optimizer to search for designs based on incorrect physics, maki
 
 ### The Bug
 
-The `acoustic_power()` method in `src/viberesp/enclosure/front_loaded_horn.py:269-271` was using an incorrect formula:
+The `acoustic_power()` method in `src/gsd/enclosure/front_loaded_horn.py:269-271` was using an incorrect formula:
 
 ```python
 # WRONG (old code)
@@ -81,13 +81,13 @@ Frequency (Hz) | Power (W)    | SPL (dB) | Efficiency (%)
 ## Remaining Discrepancy (~3-4 dB)
 
 ### Current Status
-- **Viberesp**: 0.57% efficiency at 1 kHz
+- **GSD**: 0.57% efficiency at 1 kHz
 - **Hornresp**: 1.04% efficiency at 1 kHz
 - **Difference**: Factor of ~1.8 (about 3-4 dB)
 
 ### Possible Causes
 
-1. **Throat chamber modeling**: Viberesp and Hornresp may model throat chamber compliance differently
+1. **Throat chamber modeling**: GSD and Hornresp may model throat chamber compliance differently
 2. **Compression ratio handling**: The transformation between diaphragm and throat areas (Sd/S1) may have different interpretations
 3. **Rear chamber effects**: Small differences in rear chamber impedance calculation
 4. **Numerical precision**: Different frequency resolution or interpolation methods
@@ -107,7 +107,7 @@ Frequency (Hz) | Power (W)    | SPL (dB) | Efficiency (%)
 ## Files Modified
 
 ### Core Fix
-- `src/viberesp/enclosure/front_loaded_horn.py:209-358`
+- `src/gsd/enclosure/front_loaded_horn.py:209-358`
   - Rewrote `acoustic_power()` method with correct power formula
   - Added T-matrix transformation for single-segment horns
   - Added throat power calculation for multi-segment horns

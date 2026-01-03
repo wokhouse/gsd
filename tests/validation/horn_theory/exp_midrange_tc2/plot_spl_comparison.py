@@ -16,9 +16,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
 import numpy as np
 import matplotlib.pyplot as plt
-from viberesp.simulation import ExponentialHorn
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 def create_systems():

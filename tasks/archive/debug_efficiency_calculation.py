@@ -13,7 +13,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import math
-from viberesp.driver.bc_drivers import get_bc_15ds115
+from gsd.driver.bc_drivers import get_bc_15ds115
 
 
 def debug_efficiency():

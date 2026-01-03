@@ -167,9 +167,9 @@ All code includes proper literature citations:
 
 ```python
 import numpy as np
-from viberesp.simulation.types import ExponentialHorn
-from viberesp.driver import load_driver
-from viberesp.simulation.horn_driver_integration import calculate_horn_spl_flow
+from gsd.simulation.types import ExponentialHorn
+from gsd.driver import load_driver
+from gsd.simulation.horn_driver_integration import calculate_horn_spl_flow
 
 # Define horn
 horn = ExponentialHorn(
@@ -194,7 +194,7 @@ print(f"Electrical Z at 1kHz: {np.abs(result.z_electrical[50]):.1f} Ω")
 ### Use Shared Utility Functions
 
 ```python
-from viberesp.simulation.horn_driver_integration import (
+from gsd.simulation.horn_driver_integration import (
     scale_throat_acoustic_to_mechanical,
     calculate_mouth_volume_velocity,
     calculate_radiated_power,
@@ -215,18 +215,18 @@ power = calculate_radiated_power(U_mouth, Z_mouth)
 
 ## Files Modified
 
-1. **`src/viberesp/simulation/horn_driver_integration.py`**
+1. **`src/gsd/simulation/horn_driver_integration.py`**
    - Added `calculate_horn_spl_flow()` (270 lines)
    - Added `HornSPLResult` dataclass
    - Added shared utility functions: `scale_throat_acoustic_to_mechanical()`, `calculate_mouth_volume_velocity()`, `calculate_radiated_power()`
    - Refactored `horn_electrical_impedance()` to use shared utilities
 
-2. **`src/viberesp/optimization/api/crossover_assistant.py`**
+2. **`src/gsd/optimization/api/crossover_assistant.py`**
    - Refactored `_model_compression_driver_horn()` to use validated physics
    - Updated module docstring (removed unvalidated warnings)
    - Added literature citations
 
-3. **`src/viberesp/enclosure/front_loaded_horn.py`**
+3. **`src/gsd/enclosure/front_loaded_horn.py`**
    - Refactored `acoustic_power()` to use shared `scale_throat_acoustic_to_mechanical()`
    - Fixed RMS factor bug (added 0.5 multiplier)
 
@@ -257,7 +257,7 @@ power = calculate_radiated_power(U_mouth, Z_mouth)
 
 ## Conclusion
 
-The horn SPL calculation in viberesp now uses **validated physics** with:
+The horn SPL calculation in gsd now uses **validated physics** with:
 - ✅ Proper T-matrix method for impedance transformation
 - ✅ Correct compression ratio scaling for compression drivers
 - ✅ Accurate SPL calculation using pressure-based formula

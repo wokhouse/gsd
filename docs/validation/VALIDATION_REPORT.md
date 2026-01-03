@@ -114,11 +114,11 @@ Before using optimization results:
 
 ## Files Requiring Updates
 
-1. **src/viberesp/optimization/objectives/response_metrics.py**
+1. **src/gsd/optimization/objectives/response_metrics.py**
    - Line 118: Change default `frequency_range` to be adaptive based on Fc
    - Lines 189-197: Adjust frequency range calculation for horns
 
-2. **src/viberesp/optimization/parameters/exponential_horn_params.py**
+2. **src/gsd/optimization/parameters/exponential_horn_params.py**
    - Consider adding frequency range presets based on horn type (bass/midrange/tweeter)
 
 3. **tasks/validate_optimized_horn_designs.py**

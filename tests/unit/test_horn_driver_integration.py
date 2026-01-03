@@ -15,17 +15,17 @@ import pytest
 from numpy.testing import assert_allclose
 import math
 
-from viberesp.simulation import (
+from gsd.simulation import (
     ExponentialHorn,
     MediumProperties,
 )
-from viberesp.simulation.horn_driver_integration import (
+from gsd.simulation.horn_driver_integration import (
     throat_chamber_impedance,
     rear_chamber_impedance,
     horn_system_acoustic_impedance,
     horn_electrical_impedance,
 )
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 class TestThroatChamberImpedance:

@@ -16,8 +16,8 @@ sys.path.insert(0, 'src')
 
 import numpy as np
 import pytest
-from viberesp.driver import load_driver
-from viberesp.enclosure.ported_box_vector_sum import calculate_spl_ported_vector_sum_array
+from gsd.driver import load_driver
+from gsd.enclosure.ported_box_vector_sum import calculate_spl_ported_vector_sum_array
 
 
 def test_ported_box_spl_with_end_correction():
@@ -48,7 +48,7 @@ def test_ported_box_spl_with_end_correction():
     port_length_cm = 3.80  # cm
     end_correction_factor = 1.2  # Tuned to match Hornresp's 52.5 Hz peak
     # Calculate Fb from port dimensions
-    from viberesp.simulation.constants import SPEED_OF_SOUND
+    from gsd.simulation.constants import SPEED_OF_SOUND
     port_radius = np.sqrt(port_area_cm2 * 1e-4 / np.pi)
     port_length_m = port_length_cm / 100
     L_eff = port_length_m + (0.732 * port_radius)  # Using default end_correction_factor
@@ -133,7 +133,7 @@ def test_ported_box_no_end_correction():
     port_length_m = port_length_cm / 100
 
     # Calculate Fb from port dimensions
-    from viberesp.simulation.constants import SPEED_OF_SOUND
+    from gsd.simulation.constants import SPEED_OF_SOUND
     port_radius = np.sqrt(port_area_m2 / np.pi)
     L_eff = port_length_m + (0.732 * port_radius)
     Fb = (SPEED_OF_SOUND / (2 * np.pi)) * np.sqrt(port_area_m2 / ((Vb / 1000) * L_eff))
@@ -193,7 +193,7 @@ def test_ported_box_normalization():
     port_length_m = port_length_cm / 100
 
     # Calculate Fb from port dimensions
-    from viberesp.simulation.constants import SPEED_OF_SOUND
+    from gsd.simulation.constants import SPEED_OF_SOUND
     port_radius = np.sqrt(port_area_m2 / np.pi)
     L_eff = port_length_m + (0.732 * port_radius)
     Fb = (SPEED_OF_SOUND / (2 * np.pi)) * np.sqrt(port_area_m2 / ((Vb / 1000) * L_eff))
@@ -252,7 +252,7 @@ def test_ported_box_input_validation():
     Vb_m3 = 49.3 / 1000
 
     # Calculate Fb from port dimensions
-    from viberesp.simulation.constants import SPEED_OF_SOUND
+    from gsd.simulation.constants import SPEED_OF_SOUND
     port_radius = np.sqrt(port_area_m2 / np.pi)
     L_eff = port_length_m + (0.732 * port_radius)
     Fb = (SPEED_OF_SOUND / (2 * np.pi)) * np.sqrt(port_area_m2 / (Vb_m3 * L_eff))

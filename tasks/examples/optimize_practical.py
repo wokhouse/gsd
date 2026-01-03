@@ -15,9 +15,9 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.optimize import minimize
 
-from viberesp.driver.loader import load_driver
-from viberesp.crossover.lr4 import apply_lr4_crossover
-from viberesp.enclosure.ported_box import calculate_spl_ported_transfer_function
+from gsd.driver.loader import load_driver
+from gsd.crossover.lr4 import apply_lr4_crossover
+from gsd.enclosure.ported_box import calculate_spl_ported_transfer_function
 
 
 def calculate_hf_response_simple(hf_driver, flare_constant, frequencies, speed_of_sound=343.0):

@@ -7,7 +7,7 @@
 
 ## Context
 
-The SPL transfer function has been successfully calibrated against Hornresp with a -25.25 dB offset. However, the flatness optimizer in `src/viberesp/optimization/objectives/response_metrics.py` is currently using `direct_radiator_electrical_impedance` (infinite baffle model) instead of the calibrated sealed/ported box transfer functions.
+The SPL transfer function has been successfully calibrated against Hornresp with a -25.25 dB offset. However, the flatness optimizer in `src/gsd/optimization/objectives/response_metrics.py` is currently using `direct_radiator_electrical_impedance` (infinite baffle model) instead of the calibrated sealed/ported box transfer functions.
 
 **Current Issue:**
 - Optimizer uses infinite baffle SPL calculation
@@ -25,7 +25,7 @@ Update the response flatness optimizer to use the calibrated transfer function S
 
 ## Current Implementation
 
-**File:** `src/viberesp/optimization/objectives/response_metrics.py`
+**File:** `src/gsd/optimization/objectives/response_metrics.py`
 
 **Current Code (lines 95-150):**
 ```python
@@ -73,9 +73,9 @@ def objective_response_flatness(
 Add these imports at the top of the file:
 
 ```python
-from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
-from viberesp.enclosure.ported_box import ported_box_electrical_impedance
-from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
+from gsd.enclosure.ported_box import ported_box_electrical_impedance
+from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 ```
 
 ### Step 2: Update Sealed Box Branch
@@ -191,7 +191,7 @@ Freq (Hz) | SPL (dB) | Note
 Test with different drivers to ensure the optimizer works correctly:
 
 ```python
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
 
 # Test BC_8NDL51 sealed box
 driver = get_bc_8ndl51()
@@ -260,15 +260,15 @@ port_area, port_length, _ = calculate_optimal_port_dimensions(driver, Vb, Fb)
 
 ## Files to Modify
 
-1. **`src/viberesp/optimization/objectives/response_metrics.py`**
+1. **`src/gsd/optimization/objectives/response_metrics.py`**
    - Update imports (Step 1)
    - Update sealed box branch (Step 2)
    - Update ported box branch (Step 3)
 
 ## Files to Reference
 
-- **Current implementation:** `src/viberesp/enclosure/sealed_box.py` (lines 280-605)
-- **Current implementation:** `src/viberesp/enclosure/ported_box.py` (lines 884-1413)
+- **Current implementation:** `src/gsd/enclosure/sealed_box.py` (lines 280-605)
+- **Current implementation:** `src/gsd/enclosure/ported_box.py` (lines 884-1413)
 - **Calibration documentation:** `tasks/SPL_CALIBRATION_RESULTS.md`
 - **Test script:** `tasks/test_optimizer_flatness.py`
 
@@ -297,7 +297,7 @@ The optimizer update is successful when:
 
 **Issue: "ImportError: cannot import name 'sealed_box_electrical_impedance'"**
 - **Cause:** Missing import statement
-- **Fix:** Add import: `from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance`
+- **Fix:** Add import: `from gsd.enclosure.sealed_box import sealed_box_electrical_impedance`
 
 **Issue: "TypeError: missing required argument 'port_area'"**
 - **Cause:** Port dimensions not provided for ported box
@@ -346,8 +346,8 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 ## Reference Materials
 
 - **SPL Calibration Results:** `tasks/SPL_CALIBRATION_RESULTS.md`
-- **Sealed Box Transfer Function:** `src/viberesp/enclosure/sealed_box.py:143-277`
-- **Ported Box Transfer Function:** `src/viberesp/enclosure/ported_box.py:509-693`
+- **Sealed Box Transfer Function:** `src/gsd/enclosure/sealed_box.py:143-277`
+- **Ported Box Transfer Function:** `src/gsd/enclosure/ported_box.py:509-693`
 - **Optimizer Test:** `tasks/test_optimizer_flatness.py`
 - **Original Task:** `tasks/agent_instructions_spl_transfer_function.md`
 

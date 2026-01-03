@@ -10,7 +10,7 @@ Usage:
 """
 
 from pathlib import Path
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 
 # Sealed box design (fixed)
 Vb_liters = 10.0  # 10L box

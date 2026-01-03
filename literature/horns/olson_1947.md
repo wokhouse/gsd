@@ -4,7 +4,7 @@
 
 **Status**: Classic reference, needs full PDF review for equation extraction
 
-**Key Equations for Viberesp Implementation**:
+**Key Equations for GSD Implementation**:
 
 ### Exponential Horn Profile
 
@@ -72,7 +72,7 @@ where:
 - `S_m` = mouth area
 - `S_t` = throat area
 
-## Implementation Notes for Viberesp
+## Implementation Notes for GSD
 
 **What to implement**:
 1. ✅ Exponential horn area function (Stage 2)

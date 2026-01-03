@@ -13,7 +13,7 @@ Literature:
 
 import pytest
 import numpy as np
-from viberesp.simulation.types import HornSegment, HyperbolicHorn, MultiSegmentHorn
+from gsd.simulation.types import HornSegment, HyperbolicHorn, MultiSegmentHorn
 
 
 class TestHyperbolicHornGeometry:

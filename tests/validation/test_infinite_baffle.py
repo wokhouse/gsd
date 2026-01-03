@@ -23,15 +23,15 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from viberesp.driver.response import direct_radiator_electrical_impedance
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
-from viberesp.validation.compare import (
+from gsd.driver.response import direct_radiator_electrical_impedance
+from gsd.hornresp.results_parser import load_hornresp_sim_file
+from gsd.validation.compare import (
     compare_electrical_impedance,
     compare_spl,
     compare_electrical_impedance_phase,
     generate_validation_report,
 )
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 
 # Leach (2002) model parameters for BC 8NDL51
 # These values account for eddy current losses in the voice coil former

@@ -13,8 +13,8 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import numpy as np
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
-from viberesp.optimization.objectives.response_metrics import objective_response_flatness
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.optimization.objectives.response_metrics import objective_response_flatness
 
 
 def test_sealed_box():
@@ -55,7 +55,7 @@ def test_sealed_box():
     print("ACTUAL RESPONSE SHAPE: 20L Sealed Box")
     print("=" * 70)
 
-    from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
+    from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
 
     test_freqs = [40, 50, 70, 100, 150, 200, 300]
     spl_values = []
@@ -119,7 +119,7 @@ def test_ported_box():
         Fb = design_vector[1]
 
         # Add port dimensions
-        from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+        from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
         port_area, port_length, _ = calculate_optimal_port_dimensions(driver, Vb, Fb)
         full_vector = np.array([Vb, Fb, port_area, port_length])
 
@@ -139,8 +139,8 @@ def test_ported_box():
     print("ACTUAL RESPONSE SHAPE: 100L Ported Box, Fb=30Hz")
     print("=" * 70)
 
-    from viberesp.enclosure.ported_box import ported_box_electrical_impedance
-    from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+    from gsd.enclosure.ported_box import ported_box_electrical_impedance
+    from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
     Vb, Fb = 0.100, 30.0
     port_area, port_length, _ = calculate_optimal_port_dimensions(driver, Vb, Fb)

@@ -2,7 +2,7 @@
 
 ## Research Objective
 
-Investigate why viberesp's ported box electrical impedance calculation produces values that are exactly **50% of Hornresp's values** across all test cases, and determine the correct fix.
+Investigate why gsd's ported box electrical impedance calculation produces values that are exactly **50% of Hornresp's values** across all test cases, and determine the correct fix.
 
 ## Success Criteria
 
@@ -16,7 +16,7 @@ The research should find:
 ## Context
 
 ### Project Background
-Viberesp is a Python CLI tool for loudspeaker enclosure design. We validate our simulations against Hornresp (the industry-standard tool). Our sealed box implementation validates correctly (<7% error), but ported box has systematic 50% error.
+GSD is a Python CLI tool for loudspeaker enclosure design. We validate our simulations against Hornresp (the industry-standard tool). Our sealed box implementation validates correctly (<7% error), but ported box has systematic 50% error.
 
 ### Current Implementation
 
@@ -32,7 +32,7 @@ Z_e = R_e + R_es * polynomial_ratio
 
 **Results:**
 - Hornresp peak: 23.54 Ω @ 44.9 Hz
-- Viberesp peak: 12.02 Ω @ 44.9 Hz
+- GSD peak: 12.02 Ω @ 44.9 Hz
 - Error: -49% (exactly 2x too low)
 
 ### What We've Tried
@@ -214,5 +214,5 @@ If you find that R_es should be doubled, or that there's a missing factor in the
 ---
 
 **Generated:** 2025-12-27
-**Project:** Viberesp
+**Project:** GSD
 **Contact:** See GitHub repository for context

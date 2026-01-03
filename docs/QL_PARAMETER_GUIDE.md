@@ -10,7 +10,7 @@
 
 ---
 
-## Default Values in viberesp
+## Default Values in gsd
 
 **All ported box functions use QL = 7.0 as the default:**
 
@@ -295,8 +295,8 @@ Z_box_branch = s × Map + Ral
 ---
 
 **Files Updated:**
-- `src/viberesp/enclosure/ported_box_vector_sum.py` - QL parameter now used (was hardcoded to 100)
-- `src/viberesp/enclosure/ported_box.py` - QL = 7.0 default (already correct)
+- `src/gsd/enclosure/ported_box_vector_sum.py` - QL parameter now used (was hardcoded to 100)
+- `src/gsd/enclosure/ported_box.py` - QL = 7.0 default (already correct)
 
 **Validation:**
 - All main functions use QL = 7.0 default

@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "viberesp"
+name = "gsd"
 version = "0.1.0"
-description = "Loudspeaker enclosure design and optimization using Thiele-Small parameters"
+description = "bugworks GSD (Genetic Speaker Designer) - Loudspeaker enclosure design and optimization using Thiele-Small parameters"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
@@ -68,13 +68,13 @@ pdf = [
 ]
 
 [project.scripts]
-viberesp = "viberesp.cli:cli"
+gsd = "gsd.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/viberesp"
-Documentation = "https://viberesp.readthedocs.io"
-Repository = "https://github.com/yourusername/viberesp"
-Issues = "https://github.com/yourusername/viberesp/issues"
+Homepage = "https://github.com/yourusername/gsd"
+Documentation = "https://gsd.readthedocs.io"
+Repository = "https://github.com/yourusername/gsd"
+Issues = "https://github.com/yourusername/gsd/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -97,4 +97,4 @@ plugins = ["pydantic.mypy"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=src/viberesp --cov-report=term-missing"
+addopts = "-v --cov=src/gsd --cov-report=term-missing"

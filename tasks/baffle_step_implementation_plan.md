@@ -27,7 +27,7 @@ From `docs/validation/baffle_step_fixes.md`, the baffle step implementation was 
 - **Clarified physics vs compensation** - Proper docstrings explaining the phenomenon
 
 **Current Status:**
-- ✅ Code corrected in `src/viberesp/enclosure/baffle_step.py`
+- ✅ Code corrected in `src/gsd/enclosure/baffle_step.py`
 - ✅ Literature files created
 - ✅ Manual test script exists (`tasks/test_baffle_step_olson.py`)
 - ❌ No pytest unit tests
@@ -90,7 +90,7 @@ Create comprehensive pytest unit tests in `tests/unit/test_baffle_step.py`.
 # File: tests/unit/test_baffle_step.py
 import pytest
 import numpy as np
-from viberesp.enclosure.baffle_step import (
+from gsd.enclosure.baffle_step import (
     baffle_step_frequency,
     baffle_step_loss,
     baffle_step_loss_olson,
@@ -254,7 +254,7 @@ Update the two-way system design scripts to include baffle step correction.
    - Apply to LF response only
    - Update plot to show "with baffle step" curve
 
-2. **`src/viberesp/optimization/api/crossover_assistant.py`**
+2. **`src/gsd/optimization/api/crossover_assistant.py`**
    - Check if this is used for two-way design
    - If so, add baffle step option
 
@@ -262,7 +262,7 @@ Update the two-way system design scripts to include baffle step correction.
 
 ```python
 # In plot_two_way_response.py
-from viberesp.enclosure.baffle_step import apply_baffle_step_to_spl
+from gsd.enclosure.baffle_step import apply_baffle_step_to_spl
 
 def calculate_lf_response(driver, Vb, Fb, frequencies, baffle_width=None):
     """Calculate LF response (ported box) with optional baffle step."""
@@ -350,7 +350,7 @@ The baffle step implementation is complete when:
 ## References
 
 - `docs/validation/baffle_step_fixes.md` - Original issue report
-- `src/viberesp/enclosure/baffle_step.py` - Corrected implementation
+- `src/gsd/enclosure/baffle_step.py` - Corrected implementation
 - `literature/crossovers/olson_1951.md` - Olson reference
 - `literature/crossovers/linkwitz_2003.md` - Linkwitz reference
 - `tests/validation/test_infinite_baffle.py` - Example validation test structure

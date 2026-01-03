@@ -15,10 +15,10 @@ import pytest
 from numpy.testing import assert_allclose
 import math
 
-from viberesp.simulation.types import ExponentialHorn
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.simulation.horn_theory import MediumProperties
+from gsd.simulation.types import ExponentialHorn
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.simulation.horn_theory import MediumProperties
 
 
 class TestFrontLoadedHorn:

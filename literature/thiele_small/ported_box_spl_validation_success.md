@@ -39,7 +39,7 @@ Our BC_12NDL76 driver definition had **completely different parameters** than th
 
 ### Created Hornresp-Matched Driver
 
-**New file:** `src/viberesp/driver/data/BC_12NDL76_HORNRESP.yaml`
+**New file:** `src/gsd/driver/data/BC_12NDL76_HORNRESP.yaml`
 
 This file contains the exact parameters from the Hornresp simulation file `imports/12ndl76_params.txt`, enabling accurate validation.
 
@@ -106,7 +106,7 @@ Results:
 
 ### Electro-Mechanical Coupling (Final Version)
 
-**File:** `src/viberesp/enclosure/ported_box_vector_sum.py`
+**File:** `src/gsd/enclosure/ported_box_vector_sum.py`
 
 **Key Features:**
 1. **Voice coil inductance Le included** - Essential for low-Qts drivers
@@ -171,13 +171,13 @@ For accurate validation against Hornresp:
 ## Files Created/Modified
 
 ### New Files
-- `src/viberesp/driver/data/BC_12NDL76_HORNRESP.yaml` - Corrected driver
+- `src/gsd/driver/data/BC_12NDL76_HORNRESP.yaml` - Corrected driver
 - `tasks/ROOT_CAUSE_PARAMETER_MISMATCH.md` - Investigation notes
 - `tasks/gemini_research_agent_fix_summary.md` - Implementation summary
 - `tasks/research_brief_ql_infinite_not_issue.md` - Follow-up brief
 
 ### Implementation
-- `src/viberesp/enclosure/ported_box_vector_sum.py` - Electro-mechanical coupling
+- `src/gsd/enclosure/ported_box_vector_sum.py` - Electro-mechanical coupling
 
 ### Deleted (buggy exports)
 - `exports/validation/` - Deleted (exporter is buggy)
