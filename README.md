@@ -2,7 +2,7 @@
 
 **A loudspeaker simulation engine with genetic algorithm optimization for enclosure and horn design**
 
-> **⚠️ LLM Generated Code Disclaimer:** This repository was created with GLM 4.7 using Claude Code. While the physics models are validated against Hornresp and the code is tested, **AI-generated code may contain mistakes**. Always verify results, validate in Hornresp before building, and review critical calculations carefully.
+> **⚠️ LLM Generated Code Disclaimer:** This repository was created with GLM 4.7 using Claude Code. While the physics models are validated against Hornresp and the code is tested, **LLM-generated code may contain mistakes**. Always verify results, validate in Hornresp before building, and review critical calculations carefully.
 
 bugworks GSD is a Python-based tool that simulates loudspeaker enclosures and horns using acoustic theory from first principles, then uses genetic algorithms (NSGA-II) to automatically optimize designs for your objectives: flatness, F3, size, efficiency, and more.
 
