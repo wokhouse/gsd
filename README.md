@@ -1,4 +1,5 @@
 # bugworks GSD (Genetic Speaker Designer)
+Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
 **A loudspeaker simulation engine with genetic algorithm optimization for enclosure and horn design**
 
@@ -294,10 +295,6 @@ If you use GSD in your research:
   url = {https://github.com/wokhouse/gsd}
 }
 ```
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
