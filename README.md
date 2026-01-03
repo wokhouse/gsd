@@ -15,8 +15,11 @@ GSD combines two capabilities:
 - Multi-objective optimization using NSGA-II (find Pareto-optimal designs)
 - Optimize for: F3 (cutoff frequency), response flatness, enclosure size, efficiency
 - Supports sealed boxes, ported enclosures, and horns
-- Export to Hornresp for validation
+- **Physics models validated against Hornresp** (industry-standard simulation tool)
+- Export to Hornresp for final validation before building
 - All algorithms cite established acoustic literature
+
+> **⚠️ Important:** While GSD's physics models are validated against Hornresp, **always validate your final design in Hornresp before building**. Use GSD for rapid exploration and optimization, then export to Hornresp for verification.
 
 ## Quick Start
 
@@ -109,8 +112,12 @@ GSD can optimize for any combination of these objectives:
          │
          ▼
 ┌─────────────────┐
-│   Export        │  Generate Hornresp file for
-│                 │  validation and comparison
+│   Export        │  Generate Hornresp file
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  ⚠️ Validate    │  Verify in Hornresp BEFORE building
 └─────────────────┘
 ```
 
@@ -202,7 +209,9 @@ Add your own by creating YAML files in `src/gsd/driver/data/`.
 
 ## Validation
 
-GSD validates all simulations against Hornresp (industry standard):
+### Physics Model Validation
+
+GSD's acoustic simulation algorithms are validated against Hornresp (industry standard):
 
 ```bash
 # Compare GSD vs Hornresp for specific configuration
@@ -215,6 +224,33 @@ gsd validate compare BC_8NDL51 infinite_baffle
 - Close to cutoff: <5% deviation
 
 See `tests/validation/` for validation datasets and results.
+
+### ⚠️ Always Validate in Hornresp Before Building
+
+**Workflow:**
+1. Use GSD to explore and optimize designs rapidly
+2. Export best designs to Hornresp format
+3. Verify in Hornresp before building
+
+**Why?**
+- GSD provides validated physics models and genetic optimization
+- Hornresp has decades of validation and real-world verification
+- Different numerical approaches may produce slight variations
+- **Your final design should always be verified in Hornresp**
+
+```python
+# After optimization, export to Hornresp
+from gsd.hornresp.export import export_to_hornresp
+
+export_to_hornresp(
+    driver=driver,
+    driver_name="MyDesign",
+    output_path="my_design.txt",
+    enclosure_type="sealed",
+    Vb_liters=35.2
+)
+# Then import my_design.txt into Hornresp for final verification
+```
 
 ## Development
 
