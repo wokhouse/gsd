@@ -4,7 +4,7 @@
 
 **Status**: Classic reference, needs full PDF review for equation extraction
 
-**Key Equations for Viberesp Implementation**:
+**Key Equations for GSD Implementation**:
 
 ### Radiation Impedance of Circular Piston
 
@@ -97,8 +97,8 @@ Hornresp uses a 2× multiplier on radiation mass (empirically determined from va
 2. Additional mass loading effects not captured by simple piston theory
 3. Empirical correction factor to match measured driver response
 
-**Viberesp implementation**:
-- File: `src/viberesp/driver/radiation_mass.py`
+**GSD implementation**:
+- File: `src/gsd/driver/radiation_mass.py`
 - Function: `calculate_radiation_mass(frequency, piston_area, ...)`
 - Function: `calculate_resonance_with_radiation_mass(M_md, C_ms, S_d, ...)`
 - Iterative solver converges in <10 iterations for typical drivers
@@ -106,14 +106,14 @@ Hornresp uses a 2× multiplier on radiation mass (empirically determined from va
 
 **Validation results** (December 2025):
 
-| Driver | Viberesp F_s | Hornresp F_s | Error | Radiation Mass |
+| Driver | GSD F_s | Hornresp F_s | Error | Radiation Mass |
 |--------|-------------|--------------|-------|----------------|
 | BC_8NDL51 | 64.0 Hz | 64.2 Hz | 0.2 Hz | 3.7g (14%) |
 | BC_12NDL76 | 44.8 Hz | 44.9 Hz | 0.1 Hz | 13.4g (20%) |
 | BC_15DS115 | 19.0 Hz | 19.0 Hz | 0.05 Hz | 28.2g (10%) |
 | BC_18PZW100 | 24.1 Hz | 23.9 Hz | 0.2 Hz | 47.5g (19%) |
 
-## Implementation Notes for Viberesp
+## Implementation Notes for GSD
 
 **What to implement**:
 1. ✅ Bessel J₁ function via scipy.special.j1 (Stage 5)
@@ -121,7 +121,7 @@ Hornresp uses a 2× multiplier on radiation mass (empirically determined from va
 3. ✅ Aarts approximation for Struve H₁ (optional, for speed) (Stage 5)
 4. ✅ Radiation impedance calculation (Stage 5, Stage 1B)
 5. ✅ **Radiation mass calculation for resonance frequency** (Stage 1B, December 2025)
-   - Implemented in `src/viberesp/driver/radiation_mass.py`
+   - Implemented in `src/gsd/driver/radiation_mass.py`
    - Iterative solver matching Hornresp's 2× radiation mass methodology
    - Validated against 4 B&C drivers with <0.5 Hz F_s error
 

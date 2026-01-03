@@ -1,7 +1,7 @@
 # Ported Box Impedance Fix - Implementation Summary
 
 **Date:** 2025-12-27
-**Component:** `src/viberesp/enclosure/ported_box.py`
+**Component:** `src/gsd/enclosure/ported_box.py`
 **Status:** Partial fix implemented - improved but not fully validated
 
 ## What Was Changed
@@ -65,7 +65,7 @@ Z_a_port_compliance = complex(0, -1 / (omega * C_mb)) * (port_area ** 2)
 
 ### At Tuning Frequency (Fb = 37 Hz)
 
-| Metric | viberesp | Hornresp | Error | Status |
+| Metric | gsd | Hornresp | Error | Status |
 |--------|----------|----------|-------|--------|
 | Ze     | 6.7 Ω    | 5.6 Ω    | 1.1 Ω (20%) | ✓ Good |
 
@@ -73,7 +73,7 @@ Z_a_port_compliance = complex(0, -1 / (omega * C_mb)) * (port_area ** 2)
 
 ### At Second Peak (~60 Hz)
 
-| Metric | viberesp | Hornresp | Error | Status |
+| Metric | gsd | Hornresp | Error | Status |
 |--------|----------|----------|-------|--------|
 | Ze     | 46 Ω     | 65 Ω     | 19 Ω (29%) | ✗ Too low |
 
@@ -81,7 +81,7 @@ Z_a_port_compliance = complex(0, -1 / (omega * C_mb)) * (port_area ** 2)
 
 ### At First Peak (~20 Hz)
 
-| Metric | viberesp | Hornresp | Error | Status |
+| Metric | gsd | Hornresp | Error | Status |
 |--------|----------|----------|-------|--------|
 | Ze     | 17.6 Ω   | 24.8 Ω   | 7.2 Ω (29%) | ✗ Too low |
 
@@ -165,7 +165,7 @@ M_ms_enclosed calculation may not be correct for ported boxes (currently uses se
 
 ## Files Modified
 
-- `src/viberesp/enclosure/ported_box.py` - Main implementation (lines 505-636)
+- `src/gsd/enclosure/ported_box.py` - Main implementation (lines 505-636)
 
 ## Testing
 
@@ -176,8 +176,8 @@ PYTHONPATH=src python3 scripts/validate_ported_box.py imports/ported_sim.txt
 
 Quick test at Fb:
 ```python
-from viberesp.driver.bc_drivers import get_bc_15ps100
-from viberesp.enclosure.ported_box import ported_box_electrical_impedance
+from gsd.driver.bc_drivers import get_bc_15ps100
+from gsd.enclosure.ported_box import ported_box_electrical_impedance
 
 driver = get_bc_15ps100()
 result = ported_box_electrical_impedance(

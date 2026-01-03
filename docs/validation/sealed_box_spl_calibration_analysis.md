@@ -50,7 +50,7 @@ At **500 Hz** with BC_8NDL51 driver (Fs=75Hz, Vas=10.1L, Qes=0.689, Re=2.6Ω):
 | Eighth space (π/2) | 1.571 | 100.79 dB | -5.00 dB |
 | **Hornresp (Ang=0.5π)** | π/2 | **105.79 dB** | **0 dB (reference)** |
 
-### 4. Viberesp Calibration Offset Decomposition
+### 4. GSD Calibration Offset Decomposition
 
 **Current implementation**: +13.5 dB offset
 
@@ -60,7 +60,7 @@ At **500 Hz** with BC_8NDL51 driver (Fs=75Hz, Vas=10.1L, Qes=0.689, Re=2.6Ω):
 - **Total**: +13.5 dB
 
 **This is WRONG because**:
-1. Viberesp should use **half-space (2π)** as standard (matches datasheet)
+1. GSD should use **half-space (2π)** as standard (matches datasheet)
 2. Hornresp validation file should be reconfigured for half-space
 3. The +13.5 dB offset is empirically matching a non-standard configuration
 
@@ -70,7 +70,7 @@ At **500 Hz** with BC_8NDL51 driver (Fs=75Hz, Vas=10.1L, Qes=0.689, Re=2.6Ω):
 
 ### B&C 8NDL51 Datasheet
 - **Sensitivity**: 94 dB (2.83V @ 1m)
-- **Viberesp half-space**: 94.77 dB ✓ MATCHES
+- **GSD half-space**: 94.77 dB ✓ MATCHES
 - **Hornresp eighth-space**: 105.79 dB ✗ 11.8 dB too high
 
 ### Small's Theoretical Formula
@@ -83,7 +83,7 @@ SPL_1W/1m = 112.2 + 10·log₁₀(η₀)  (half-space)
 At 3.08W:
 SPL = 90.02 + 10·log₁₀(3.08)
     = 90.02 + 4.88
-    = 94.90 dB  ✓ Matches viberesp (94.77 dB)
+    = 94.90 dB  ✓ Matches gsd (94.77 dB)
 ```
 
 ---
@@ -92,18 +92,18 @@ SPL = 90.02 + 10·log₁₀(3.08)
 
 ### The +13.5 dB Offset Problem
 
-**Original issue**: Viberesp calculated 91.14 dB, Hornresp showed 105.79 dB
+**Original issue**: GSD calculated 91.14 dB, Hornresp showed 105.79 dB
 
 **Breakdown of the 14.65 dB difference**:
 1. **Mass roll-off**: -3.49 dB (f_mass=450 Hz @ 500 Hz)
 2. **Half-space calculation**: 94.77 dB (correct theoretical value)
-3. **With mass roll-off**: 91.28 dB (matches viberesp's 91.14 dB) ✓
+3. **With mass roll-off**: 91.28 dB (matches gsd's 91.14 dB) ✓
 4. **Hornresp eighth-space**: Should be 97.30 dB
 5. **Actual Hornresp**: 105.79 dB
 6. **Unexplained gain**: +8.49 dB
 
 **The +13.5 dB calibration was wrong** because:
-- It forced viberesp to match a non-standard Hornresp configuration
+- It forced gsd to match a non-standard Hornresp configuration
 - It masked the fact that Hornresp was using eighth-space radiation
 - It didn't address the unexplained ~8.5 dB gain in Hornresp
 
@@ -111,7 +111,7 @@ SPL = 90.02 + 10·log₁₀(3.08)
 
 ## Correct Implementation
 
-### What Viberesp Should Do
+### What GSD Should Do
 
 ```python
 # 1. Calculate efficiency (Small 1972, Eq. 24) - CORRECT ✓
@@ -139,7 +139,7 @@ spl += hf_rolloff         # Mass and inductance roll-off
 ### Expected Result
 
 At 500 Hz, BC_8NDL51 in 31.65L sealed box:
-- **Viberesp SPL**: ~91.1 dB (half-space + mass roll-off)
+- **GSD SPL**: ~91.1 dB (half-space + mass roll-off)
 - **Matches B&C datasheet**: 94 dB ✓ (when referenced to half-space, no mass roll-off)
 
 ---
@@ -199,7 +199,7 @@ Mean error: 0.85 dB
 
 ### After Fix (expected)
 With corrected Hornresp file (Ang=2.0×π):
-- Viberesp (no offset) should match within ±2 dB
+- GSD (no offset) should match within ±2 dB
 - Both should match B&C datasheet (94 dB)
 
 ---
@@ -208,8 +208,8 @@ With corrected Hornresp file (Ang=2.0×π):
 
 ### Immediate Actions
 
-1. **Remove the +13.5 dB calibration offset** from viberesp
-   - File: `src/viberesp/enclosure/sealed_box.py:429`
+1. **Remove the +13.5 dB calibration offset** from gsd
+   - File: `src/gsd/enclosure/sealed_box.py:429`
    - Change: `CALIBRATION_OFFSET_DB = 0.0`
 
 2. **Regenerate Hornresp validation files**
@@ -222,7 +222,7 @@ With corrected Hornresp file (Ang=2.0×π):
    - Expected sensitivity should be ~94 dB (matches datasheet)
 
 4. **Document the standard**
-   - Viberesp uses **half-space (2π steradians)** as standard
+   - GSD uses **half-space (2π steradians)** as standard
    - This matches B&C datasheet and IEEE/IEC standards
    - Infinite baffle mounting is the reference condition
 
@@ -255,7 +255,7 @@ With corrected Hornresp file (Ang=2.0×π):
 ```bash
 # Verify efficiency calculation
 PYTHONPATH=src python -c "
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 driver = load_driver('BC_8NDL51')
 import math
 k = (4 * math.pi ** 2) / (343 ** 3)
@@ -268,12 +268,12 @@ PYTHONPATH=src python tasks/test_radiation_space_hypothesis.py
 
 # Compare with Hornresp
 PYTHONPATH=src python -c "
-from viberesp.driver import load_driver
-from viberesp.enclosure.sealed_box import calculate_spl_from_transfer_function
+from gsd.driver import load_driver
+from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
 driver = load_driver('BC_8NDL51')
 spl = calculate_spl_from_transfer_function(500, driver, 0.03165, f_mass=450)
-print(f'Viberesp SPL at 500 Hz: {spl:.2f} dB (with +13.5 dB offset)')
-print(f'Viberesp SPL at 500 Hz: {spl-13.5:.2f} dB (without offset)')
+print(f'GSD SPL at 500 Hz: {spl:.2f} dB (with +13.5 dB offset)')
+print(f'GSD SPL at 500 Hz: {spl-13.5:.2f} dB (without offset)')
 "
 ```
 

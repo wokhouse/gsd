@@ -3,7 +3,7 @@
 **Citation:**
 Olson, H. F. (1951). Direct Radiator Loudspeaker Enclosures. *Journal of the Audio Engineering Society*, 2(4).
 
-**Relevance to Viberesp:**
+**Relevance to GSD:**
 Primary reference for baffle diffraction phenomena. Olson experimentally verified that a point source on a finite baffle transitions from unity pressure (4π full space) at low frequencies to double pressure (2π half space, +6 dB gain) at high frequencies.
 
 **Key Figures:**

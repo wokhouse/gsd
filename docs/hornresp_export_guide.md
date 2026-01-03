@@ -2,7 +2,7 @@
 
 ## Overview
 
-Viberesp can export front-loaded horn designs to Hornresp format for validation and simulation. This guide covers exporting horn-loaded systems with throat and rear chambers.
+GSD can export front-loaded horn designs to Hornresp format for validation and simulation. This guide covers exporting horn-loaded systems with throat and rear chambers.
 
 ## Function Reference
 
@@ -11,9 +11,9 @@ Viberesp can export front-loaded horn designs to Hornresp format for validation 
 Exports a complete front-loaded horn system to Hornresp .txt format.
 
 ```python
-from viberesp.simulation import ExponentialHorn
-from viberesp.hornresp import export_front_loaded_horn_to_hornresp
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.hornresp import export_front_loaded_horn_to_hornresp
+from gsd.driver.parameters import ThieleSmallParameters
 
 # Create driver
 driver = ThieleSmallParameters(
@@ -62,7 +62,7 @@ export_front_loaded_horn_to_hornresp(
 
 The function automatically converts SI units to Hornresp format:
 
-| Parameter | Viberesp (SI) | Hornresp Format |
+| Parameter | GSD (SI) | Hornresp Format |
 |-----------|---------------|-----------------|
 | Horn areas | m² | cm² (×10000) |
 | Horn length | m | m (same) |
@@ -132,18 +132,18 @@ export_front_loaded_horn_to_hornresp(
 
 The typical validation workflow is:
 
-1. **Design in Viberesp**: Create your horn system using FrontLoadedHorn
+1. **Design in GSD**: Create your horn system using FrontLoadedHorn
 2. **Export to Hornresp**: Use `export_front_loaded_horn_to_hornresp()`
 3. **Import into Hornresp**: File → Import in Hornresp
 4. **Run Simulations**: Generate impedance, SPL, etc.
 5. **Compare Results**: Use validation scripts to verify agreement
 
 ```python
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.hornresp import export_front_loaded_horn_to_hornresp
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.hornresp import export_front_loaded_horn_to_hornresp
 import numpy as np
 
-# 1. Design system in viberesp
+# 1. Design system in gsd
 flh = FrontLoadedHorn(
     driver=driver,
     horn=horn,
@@ -269,12 +269,12 @@ head -20 your_export.txt
 
 ```python
 #!/usr/bin/env python3
-"""Export viberesp horn design to Hornresp."""
+"""Export gsd horn design to Hornresp."""
 
-from viberesp.simulation import ExponentialHorn
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.hornresp import export_front_loaded_horn_to_hornresp
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.hornresp import export_front_loaded_horn_to_hornresp
+from gsd.driver.parameters import ThieleSmallParameters
 import numpy as np
 
 # Define system
@@ -369,8 +369,8 @@ F45 = 0.00
 ### Export Function for Multi-Segment
 
 ```python
-from viberesp.simulation import MultiSegmentHorn, HornSegment
-from viberesp.hornresp import export_multisegment_horn_to_hornresp
+from gsd.simulation import MultiSegmentHorn, HornSegment
+from gsd.hornresp import export_multisegment_horn_to_hornresp
 
 # Create multi-segment horn
 segments = [
@@ -513,7 +513,7 @@ Before exporting a multi-segment horn, verify:
 
 ### Implementation Reference
 
-**File**: `src/viberesp/hornresp/export.py`
+**File**: `src/gsd/hornresp/export.py`
 
 **Key sections**:
 - Lines 961-1250: `export_multisegment_horn_to_hornresp()`

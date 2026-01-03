@@ -121,8 +121,8 @@ All test cases in this validation satisfy these constraints.
 
 ## Notes
 
-- All Hornresp input files were generated using `viberesp.hornresp.export.export_to_hornresp()`
-- This ensures driver parameters match exactly between viberesp and Hornresp
+- All Hornresp input files were generated using `gsd.hornresp.export.export_to_hornresp()`
+- This ensures driver parameters match exactly between gsd and Hornresp
 - Port dimensions calculated using `calculate_port_length_for_area()` from Helmholtz resonance formula
 - Test cases validate Thiele (1971) alignment theory for both drivers
 - Port sweeps validate port physics across different diameter-to-length ratios

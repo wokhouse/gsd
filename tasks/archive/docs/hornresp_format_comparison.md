@@ -1,9 +1,9 @@
-# Hornresp Format Comparison: viberesp vs Manual Entry
+# Hornresp Format Comparison: gsd vs Manual Entry
 
 **Date:** 2025-12-28
 **Files compared:**
 - `imports/15ds115_params.txt` - Your manual entry exported from Hornresp
-- `exports/bc15ds115_bass_horn_CORRECTED.txt` - viberesp automated export
+- `exports/bc15ds115_bass_horn_CORRECTED.txt` - gsd automated export
 
 ---
 
@@ -16,14 +16,14 @@
 Exp = 266.00
 ```
 
-**Viberesp export:**
+**GSD export:**
 ```
 Exp = 50.00
 ```
 
 **Analysis:**
 - Hornresp shows `Exp = 266.00` (the horn LENGTH in cm!)
-- viberesp exports `Exp = 50.00` (hard-coded value for exponential)
+- gsd exports `Exp = 50.00` (hard-coded value for exponential)
 - **This suggests Hornresp uses Exp field differently than we thought!**
 
 Looking at the Hornresp format, it appears:
@@ -41,7 +41,7 @@ S3 = 0.00
 L23 = 0.00      ← Wrong position!
 ```
 
-**Viberesp export:**
+**GSD export:**
 ```
 S2 = 0.00
 S3 = 0.00
@@ -66,7 +66,7 @@ F34 = 0.00
 AT = 1.38
 ```
 
-**Viberesp export:**
+**GSD export:**
 ```
 AT = 86.38
 ```
@@ -86,7 +86,7 @@ AT = 86.38
 Cir = 0.12
 ```
 
-**Viberesp export:**
+**GSD export:**
 ```
 Cir = 0.42
 ```
@@ -109,7 +109,7 @@ F45 = 0.00
 F45 = 0.00    ← Duplicate!
 ```
 
-**Viberesp export:**
+**GSD export:**
 ```
 L34 = 0.00
 F34 = 0.00

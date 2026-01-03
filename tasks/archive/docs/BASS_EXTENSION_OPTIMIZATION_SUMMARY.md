@@ -9,8 +9,8 @@
 **Root Cause:** The objective functions `objective_f3()` and `objective_efficiency()` didn't support `enclosure_type="mixed_profile_horn"`, causing them to raise `ValueError: Unsupported enclosure type`.
 
 **Fix Applied:**
-1. Added "mixed_profile_horn" support to `objective_f3()` in `src/viberesp/optimization/objectives/response_metrics.py` (lines 119-192)
-2. Added "mixed_profile_horn" support to `objective_efficiency()` in `src/viberesp/optimization/objectives/efficiency.py` (multiple locations)
+1. Added "mixed_profile_horn" support to `objective_f3()` in `src/gsd/optimization/objectives/response_metrics.py` (lines 119-192)
+2. Added "mixed_profile_horn" support to `objective_efficiency()` in `src/gsd/optimization/objectives/efficiency.py` (multiple locations)
 3. Improved `analyze_results()` to filter out invalid designs with penalty values
 4. Fixed efficiency display (converts negative pymoo values to positive percentages)
 

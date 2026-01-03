@@ -1,6 +1,6 @@
 # Literature Library
 
-This directory will contain the foundational references for the viberesp simulation engine. All algorithms implemented in viberesp must be derived from and cite the literature contained in this library.
+This directory will contain the foundational references for the gsd simulation engine. All algorithms implemented in gsd must be derived from and cite the literature contained in this library.
 
 ## Status
 
@@ -11,7 +11,7 @@ The literature citation framework is established, but specific reference documen
 ## Purpose
 
 The literature library will serve as:
-1. **Authoritative source** for all acoustic theory and equations implemented in viberesp
+1. **Authoritative source** for all acoustic theory and equations implemented in gsd
 2. **Reference documentation** linking code implementations to theoretical foundations
 3. **Validation framework** ensuring the simulation engine is grounded in established science
 4. **Educational resource** for understanding the acoustic principles behind horn design
@@ -67,10 +67,10 @@ When adding new references:
 
 ## Validation Against Hornresp
 
-Hornresp is the industry-standard tool for horn simulation. All viberesp implementations must:
+Hornresp is the industry-standard tool for horn simulation. All gsd implementations must:
 1. Implement the theory as described in literature/
 2. Validate results against Hornresp for test cases
 3. Document any discrepancies and their causes
 4. Maintain agreement within acceptable tolerances (typically <1% for key parameters)
 
-This ensures viberesp provides accurate exploration results while being grounded in established acoustic theory.
+This ensures gsd provides accurate exploration results while being grounded in established acoustic theory.

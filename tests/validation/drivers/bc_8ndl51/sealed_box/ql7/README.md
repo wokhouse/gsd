@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Validate viberesp's sealed box QL implementation with Quc=7 (Hornresp default).
+Validate gsd's sealed box QL implementation with Quc=7 (Hornresp default).
 
 ## Design Parameters
 

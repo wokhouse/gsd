@@ -9,7 +9,7 @@ Validation against Hornresp simulation data for BC_15DS115 ported box revealed s
 ## Validation Results
 
 ### Before Fixes
-- **Electrical impedance peaks**: ~30 Ω (viberesp) vs 143-151 Ω (Hornresp) - **4-5× error**
+- **Electrical impedance peaks**: ~30 Ω (gsd) vs 143-151 Ω (Hornresp) - **4-5× error**
 - **SPL error**: 6-16 dB too low across frequency range
 - **Overall assessment**: POOR - significant differences
 
@@ -23,7 +23,7 @@ Validation against Hornresp simulation data for BC_15DS115 ported box revealed s
 
 ### Bug 1: Incorrect R_es Calculation (Line 607)
 
-**Location**: `src/viberesp/enclosure/ported_box.py:607`
+**Location**: `src/gsd/enclosure/ported_box.py:607`
 
 **Problem**:
 ```python
@@ -50,7 +50,7 @@ R_es = (driver.BL ** 2) / R_ms
 
 ### Bug 2: Incorrect Diaphragm Velocity Calculation (Lines 963, 1109)
 
-**Location**: `src/viberesp/enclosure/ported_box.py:963, 1109`
+**Location**: `src/gsd/enclosure/ported_box.py:963, 1109`
 
 **Problem**:
 ```python
@@ -90,14 +90,14 @@ u_diaphragm_mag = F_mag / abs(Z_mechanical_total)
 
 ### Key Results at 100 Hz
 
-| Parameter | Hornresp | Viberesp (Fixed) | Error |
+| Parameter | Hornresp | GSD (Fixed) | Error |
 |-----------|----------|------------------|-------|
 | Impedance | 45.8 Ω | 36.3 Ω | 21% |
 | SPL | 92.2 dB | 91.6 dB | 0.6 dB |
 
 ### Impedance Peaks
 
-| Peak | Hornresp | Viberesp (Fixed) | Error |
+| Peak | Hornresp | GSD (Fixed) | Error |
 |------|----------|------------------|-------|
 | Lower (12.2 Hz) | 151.4 Ω | 127.9 Ω | 15% |
 | Upper (64.2 Hz) | 143.3 Ω | 137.3 Ω | 4% |
@@ -128,7 +128,7 @@ Expected results:
 
 ## Files Modified
 
-- `src/viberesp/enclosure/ported_box.py`:
+- `src/gsd/enclosure/ported_box.py`:
   - Line 607: Fixed R_es calculation
   - Lines 958-966: Fixed diaphragm velocity (Small model)
   - Lines 1105-1112: Fixed diaphragm velocity (circuit model)

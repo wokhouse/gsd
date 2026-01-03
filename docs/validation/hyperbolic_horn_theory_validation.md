@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The HyperbolicHorn implementation in viberesp has been validated against established acoustic theory. All key components (profile equation, T-matrix formulation, cutoff handling, and optimization strategy) are theoretically sound and match the literature.
+The HyperbolicHorn implementation in gsd has been validated against established acoustic theory. All key components (profile equation, T-matrix formulation, cutoff handling, and optimization strategy) are theoretically sound and match the literature.
 
 **Validation Result:** The implementation is mathematically correct and ready for production use.
 
@@ -182,7 +182,7 @@ Impedance Smoothness: 2.33
    - Horn profiles and flare constant conventions
 
 ### All citations now included in:
-- `src/viberesp/simulation/types.py` - HyperbolicHorn class
+- `src/gsd/simulation/types.py` - HyperbolicHorn class
 - Docstrings for `calculate_t_matrix()`
 - Inline comments explaining gradient calculations
 
@@ -218,7 +218,7 @@ tests/test_hyperbolic_horn.py::23 tests [100% passed]
 ```
 
 ### Code Coverage
-- `src/viberesp/simulation/types.py`: 84% coverage
+- `src/gsd/simulation/types.py`: 84% coverage
 - All critical paths tested
 - Edge cases handled (very short/long horns, T→0, T=1.0)
 
@@ -298,4 +298,4 @@ The solution is exact because the curvature term is constant for this profile fa
 
 **Validation completed:** 2025-12-30
 **Validated by:** External Research Agent (Acoustic Literature Review)
-**Implementation:** viberesp/src/viberesp/simulation/types.py:HyperbolicHorn
+**Implementation:** gsd/src/gsd/simulation/types.py:HyperbolicHorn

@@ -9,7 +9,7 @@ Literature:
 import numpy as np
 import pytest
 
-from viberesp.simulation.constants import (
+from gsd.simulation.constants import (
     AIR_DENSITY,
     ATMOSPHERIC_PRESSURE,
     CHARACTERISTIC_IMPEDANCE_AIR,

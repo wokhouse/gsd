@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://viberesp.org/schemas/validation_schema.json",
+  "$id": "https://gsd.org/schemas/validation_schema.json",
   "title": "Validation Results",
-  "description": "Schema for validation results comparing viberesp to Hornresp",
+  "description": "Schema for validation results comparing gsd to Hornresp",
   "type": "object",
   "required": [
     "test_case_id",
@@ -19,9 +19,9 @@
       "format": "date",
       "description": "Date validation was performed (YYYY-MM-DD)"
     },
-    "viberesp_version": {
+    "gsd_version": {
       "type": "string",
-      "description": "Viberesp version used for validation"
+      "description": "GSD version used for validation"
     },
     "hornresp_version": {
       "type": "string",
@@ -180,9 +180,9 @@
             "minimum": 0,
             "description": "Frequency of worst error"
           },
-          "viberesp_value": {
+          "gsd_value": {
             "type": "number",
-            "description": "Viberesp value at this frequency"
+            "description": "GSD value at this frequency"
           },
           "hornresp_value": {
             "type": "number",

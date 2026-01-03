@@ -13,8 +13,8 @@ The transfer function approach for SPL calculation has been successfully impleme
 ### ✅ Completed
 
 1. **Implementation Review**
-   - Reviewed `src/viberesp/enclosure/sealed_box.py` - Line 270 (reference SPL calculation)
-   - Reviewed `src/viberesp/enclosure/ported_box.py` - Line 686 (reference SPL calculation)
+   - Reviewed `src/gsd/enclosure/sealed_box.py` - Line 270 (reference SPL calculation)
+   - Reviewed `src/gsd/enclosure/ported_box.py` - Line 686 (reference SPL calculation)
    - Both use the same efficiency formula from Small (1972)
 
 2. **Hornresp Export Files Created**
@@ -23,7 +23,7 @@ The transfer function approach for SPL calculation has been successfully impleme
 
 3. **Validation Scripts Created**
    - ✅ `tasks/export_hornresp_test_cases.py` - Exports designs to Hornresp format
-   - ✅ `tasks/validate_transfer_function_calibration.py` - Compares viberesp vs Hornresp
+   - ✅ `tasks/validate_transfer_function_calibration.py` - Compares gsd vs Hornresp
    - ✅ `tasks/analyze_spl_offset.py` - Analyzes offset between SPL calculation methods
 
 4. **Initial Analysis Complete**
@@ -71,7 +71,7 @@ PYTHONPATH=src python3 tasks/validate_transfer_function_calibration.py
 
 This will:
 - Load Hornresp SPL data
-- Compare with viberesp transfer function results
+- Compare with gsd transfer function results
 - Calculate exact calibration offset needed
 - Report statistics and validation criteria
 
@@ -79,7 +79,7 @@ This will:
 
 Once the validation script reports the calibration offset, update both transfer functions:
 
-**File: `src/viberesp/enclosure/sealed_box.py`** (around line 270)
+**File: `src/gsd/enclosure/sealed_box.py`** (around line 270)
 
 ```python
 # Reference SPL (flat response at high frequencies)
@@ -91,7 +91,7 @@ CALIBRATION_OFFSET_DB = -XX.X  # REPLACE WITH ACTUAL VALUE FROM VALIDATION
 spl_ref += CALIBRATION_OFFSET_DB
 ```
 
-**File: `src/viberesp/enclosure/ported_box.py`** (around line 686)
+**File: `src/gsd/enclosure/ported_box.py`** (around line 686)
 
 ```python
 # Reference SPL (flat response at high frequencies)
@@ -118,7 +118,7 @@ Expected results after calibration:
 
 ```python
 # Test with more drivers to ensure calibration is universal
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
 
 # Add more drivers as needed...
 ```
@@ -176,7 +176,7 @@ Based on initial analysis, we expect the calibration offset to be approximately 
 
 After applying calibration, the following criteria must be met:
 
-- ✅ Average offset between viberesp and Hornresp < 0.5 dB
+- ✅ Average offset between gsd and Hornresp < 0.5 dB
 - ✅ Max deviation at any frequency < 2 dB
 - ✅ Frequency response shape correct (SPL rolls off at high frequencies)
 - ✅ Works for both sealed and ported boxes

@@ -12,7 +12,7 @@ Fix the SPL calculation bug by implementing Small's transfer function approach i
 
 ### 1. Sealed Box Transfer Function
 
-**File:** `src/viberesp/enclosure/sealed_box.py`
+**File:** `src/gsd/enclosure/sealed_box.py`
 
 **New Function:** `calculate_spl_from_transfer_function()`
 
@@ -39,7 +39,7 @@ where:
 
 ### 2. Ported Box Transfer Function
 
-**File:** `src/viberesp/enclosure/ported_box.py`
+**File:** `src/gsd/enclosure/ported_box.py`
 
 **New Function:** `calculate_spl_ported_transfer_function()`
 
@@ -194,7 +194,7 @@ spl_ref = 20 * math.log10(pressure_rms / p_ref)
 
 **Steps:**
 1. Run Hornresp simulation for BC_8NDL51 in 10L sealed box at 100Hz
-2. Compare Hornresp SPL with viberesp transfer function SPL
+2. Compare Hornresp SPL with gsd transfer function SPL
 3. Calculate calibration factor (difference)
 4. Apply calibration to reference SPL calculation
 5. Repeat for BC_15DS115 ported box
@@ -221,7 +221,7 @@ spl_ref = 20 * math.log10(pressure_rms / p_ref)
 **Test drivers:**
 - BC_8NDL51 (moderate BL)
 - BC_15DS115 (high BL)
-- Additional drivers from `viberesp.driver.bc_drivers`
+- Additional drivers from `gsd.driver.bc_drivers`
 
 **Validation criteria:**
 - Frequency response shape: Correct roll-off
@@ -230,7 +230,7 @@ spl_ref = 20 * math.log10(pressure_rms / p_ref)
 
 ### 4. UPDATE OPTIMIZER
 
-**File:** `src/viberesp/optimization/flatness.py` (if exists)
+**File:** `src/gsd/optimization/flatness.py` (if exists)
 
 **Action:** Ensure optimizer uses transfer function approach
 
@@ -268,12 +268,12 @@ spl_ref = 20 * math.log10(pressure_rms / p_ref)
 
 ### Files Modified
 
-1. `src/viberesp/enclosure/sealed_box.py`
+1. `src/gsd/enclosure/sealed_box.py`
    - Added: `calculate_spl_from_transfer_function()`
    - Modified: `sealed_box_electrical_impedance()` - Added `use_transfer_function_spl` parameter
    - Lines added: ~150
 
-2. `src/viberesp/enclosure/ported_box.py`
+2. `src/gsd/enclosure/ported_box.py`
    - Added: `calculate_spl_ported_transfer_function()`
    - Modified: `ported_box_electrical_impedance()` - Added `use_transfer_function_spl` parameter
    - Lines added: ~200

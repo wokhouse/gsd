@@ -22,14 +22,14 @@ import os
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.enclosure.ported_box import (
     calculate_ported_box_system_parameters,
     calculate_optimal_port_dimensions,
     calculate_port_length_for_area,
     helmholtz_resonance_frequency,
 )
-from viberesp.hornresp.export import export_to_hornresp
+from gsd.hornresp.export import export_to_hornresp
 
 
 def main():

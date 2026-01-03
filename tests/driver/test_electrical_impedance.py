@@ -9,12 +9,12 @@ Literature:
 import math
 import pytest
 
-from viberesp.driver.electrical_impedance import (
+from gsd.driver.electrical_impedance import (
     electrical_impedance_bare_driver,
     electrical_impedance_at_resonance,
     electrical_impedance_high_frequency_limit,
 )
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 class TestElectricalImpedanceBareDriver:

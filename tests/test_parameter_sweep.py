@@ -4,7 +4,7 @@ Tests for parameter sweep functionality (Phase 7.4).
 
 import numpy as np
 import pytest
-from viberesp.optimization.api import DesignAssistant
+from gsd.optimization.api import DesignAssistant
 
 
 def test_sealed_box_vb_sweep():

@@ -57,7 +57,7 @@ These are in **parallel** because they share the same pressure point. Volume vel
 
 ## The Fix
 
-**File:** `src/viberesp/simulation/horn_driver_integration.py`
+**File:** `src/gsd/simulation/horn_driver_integration.py`
 **Function:** `horn_system_acoustic_impedance()`
 
 ### Before (Buggy Code)

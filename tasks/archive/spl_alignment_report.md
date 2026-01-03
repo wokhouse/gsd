@@ -7,7 +7,7 @@
 ### ✅ What Aligns Well
 
 1. **F3 (Cutoff Frequency)** - PERFECT match
-   - Viberesp: 50.3 Hz
+   - GSD: 50.3 Hz
    - Hornresp: 50.3 Hz
    - Error: 0.0%
 
@@ -75,7 +75,7 @@ This is the **documented Hornresp internal inconsistency**:
 
 3. **Do NOT rely on high-frequency SPL** for validation
    - Known modeling differences
-   - Not a viberesp bug
+   - Not a gsd bug
 
 ### For Test Cases
 
@@ -109,4 +109,4 @@ This is acceptable because:
 1. Sealed box design is primarily about low-frequency response
 2. F3 alignment is perfect
 3. Electrical impedance validates the physics
-4. High-frequency difference is a Hornresp issue, not viberesp
+4. High-frequency difference is a Hornresp issue, not gsd

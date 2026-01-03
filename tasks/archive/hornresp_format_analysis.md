@@ -242,7 +242,7 @@ tests/validation/drivers/
 
 ### Workflow
 
-1. **Export driver:** `viberesp export BC_12NDL76 -o exports/bc_12ndl76_inf.txt`
+1. **Export driver:** `gsd export BC_12NDL76 -o exports/bc_12ndl76_inf.txt`
 2. **Copy to Hornresp VM:** Paste file, run simulation
 3. **Import results:** Export Hornresp output as `imports/bc_12ndl76_inf_sim.txt`
 4. **Move to validation:**
@@ -253,7 +253,7 @@ tests/validation/drivers/
 5. **Update metadata:** Add `date_run` and `hornresp_version` to metadata.json
 
 **Directory Convention:**
-- `exports/` - Viberesp parameter outputs (Hornresp input files, gitignored)
+- `exports/` - GSD parameter outputs (Hornresp input files, gitignored)
 - `imports/` - Hornresp simulation results (validation data, gitignored)
 - `tests/validation/drivers/` - Permanent validation data (version controlled)
 
@@ -376,7 +376,7 @@ F12 = horn_length   # Non-zero
 
 ## Implementation Details
 
-**Location:** `src/viberesp/hornresp/export.py`
+**Location:** `src/gsd/hornresp/export.py`
 
 **Key Functions:**
 - `export_to_hornresp()` - Export single driver to Hornresp .txt file

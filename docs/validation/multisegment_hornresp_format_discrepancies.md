@@ -107,7 +107,7 @@ F23 = {f23:.2f}
 
 ## Fix Required
 
-In `src/viberesp/hornresp/export.py`, function `export_multisegment_horn_to_hornresp()`:
+In `src/gsd/hornresp/export.py`, function `export_multisegment_horn_to_hornresp()`:
 
 Replace lines 1098-1115 (horn_section format) with multi-segment format using `Exp` instead of `L12`, `L23`, etc.
 
@@ -125,8 +125,8 @@ Replace lines 1098-1115 (horn_section format) with multi-segment format using `E
 
 ## Files to Reference
 
-- **Correct format**: `/Users/fungj/vscode/viberesp/imports/tc2_multiseg.txt`
-- **Our export**: `/Users/fungj/vscode/viberesp/exports/tc2_optimized_multisegment_horn.txt`
+- **Correct format**: `/Users/fungj/vscode/gsd/imports/tc2_multiseg.txt`
+- **Our export**: `/Users/fungj/vscode/gsd/exports/tc2_optimized_multisegment_horn.txt`
 
 ## Next Steps
 

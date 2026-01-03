@@ -12,8 +12,8 @@ The SPL transfer function has been successfully calibrated against Hornresp refe
 
 ## Calibration Applied
 
-**File: `src/viberesp/enclosure/sealed_box.py` (line 277)**
-**File: `src/viberesp/enclosure/ported_box.py` (line 693)**
+**File: `src/gsd/enclosure/sealed_box.py` (line 277)**
+**File: `src/gsd/enclosure/ported_box.py` (line 693)**
 
 ```python
 # CALIBRATION: Adjust reference SPL to match Hornresp
@@ -31,7 +31,7 @@ spl_ref += CALIBRATION_OFFSET_DB
 
 ### BC_8NDL51 (8" driver, 20L sealed box)
 
-| Frequency | Viberesp | Hornresp | Difference | Status |
+| Frequency | GSD | Hornresp | Difference | Status |
 |-----------|----------|----------|------------|--------|
 | 20 Hz     | 81.6 dB  | 81.4 dB  | +0.2 dB    | ✅     |
 | 100 Hz    | 106.4 dB | 104.9 dB | +1.5 dB    | ✅     |
@@ -48,7 +48,7 @@ spl_ref += CALIBRATION_OFFSET_DB
 
 ### BC_15PS100 (15" driver, 50L sealed box)
 
-| Frequency | Viberesp | Hornresp | Difference | Status |
+| Frequency | GSD | Hornresp | Difference | Status |
 |-----------|----------|----------|------------|--------|
 | 20 Hz     | 84.0 dB  | 87.2 dB  | -3.2 dB    | ⚠️     |
 | 100 Hz    | 104.6 dB | 106.5 dB | -1.9 dB    | ✅     |
@@ -89,7 +89,7 @@ From task instructions:
 ### Why BC_15PS100 Shows Larger Deviation
 
 1. **Voice Coil Inductance Effects**
-   - Viberesp uses simple jωL model
+   - GSD uses simple jωL model
    - Hornresp uses Leach (2002) lossy inductance model
    - Difference becomes significant above 200Hz
 

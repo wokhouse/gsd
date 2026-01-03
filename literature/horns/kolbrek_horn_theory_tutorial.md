@@ -5,7 +5,7 @@
 **URL:** https://www.grc.com/acoustics/an-introduction-to-horn-theory.pdf
 **DOI:** N/A (Magazine article)
 
-**Relevance to Viberesp:** Comprehensive modern tutorial on horn theory covering Webster's horn equation, exponential/hyperbolic/conical horns, throat impedance calculations, cutoff frequency, and finite horn behavior. This is the primary reference for understanding horn simulation methodology used in Hornresp.
+**Relevance to GSD:** Comprehensive modern tutorial on horn theory covering Webster's horn equation, exponential/hyperbolic/conical horns, throat impedance calculations, cutoff frequency, and finite horn behavior. This is the primary reference for understanding horn simulation methodology used in Hornresp.
 
 ---
 
@@ -463,7 +463,7 @@ Kolbrek's tutorial updates classical horn theory (1930s-1960s) with modern insig
    - Driver working into nonlinear load
    - Higher distortion with lower T values (hyperbolic)
 
-**Implementation Priorities for Viberesp:**
+**Implementation Priorities for GSD:**
 
 1. **Radiation impedance at mouth:**
    - Use piston in infinite baffle (Kolbrek Eq. 16, Z_m parameter)

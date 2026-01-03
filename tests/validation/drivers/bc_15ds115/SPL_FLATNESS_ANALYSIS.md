@@ -137,11 +137,11 @@ SPL (dB)
 
 ---
 
-## Comparison: Viberesp vs Hornresp
+## Comparison: GSD vs Hornresp
 
 ### Optimal (300L) - Model Accuracy
 
-| Freq | Hornresp | Viberesp | Error | Assessment |
+| Freq | Hornresp | GSD | Error | Assessment |
 |------|----------|----------|-------|------------|
 | 20 Hz | 82.2 dB | 82.7 dB | -0.5 dB | ✓ Excellent |
 | 30 Hz | 90.4 dB | 100.7 dB | **-10.3 dB** | ✗ Over-predicted |
@@ -150,7 +150,7 @@ SPL (dB)
 | 100 Hz | 92.2 dB | 95.8 dB | -3.6 dB | - Over-predicted |
 | 200 Hz | 99.4 dB | 97.8 dB | +1.6 dB | ~ Under-predicted |
 
-**Mean error: -4.5 dB** (Viberesp over-predicts in mid-bass)
+**Mean error: -4.5 dB** (GSD over-predicts in mid-bass)
 
 **Issue:** Transfer function overestimates response in 30-100 Hz range by 6-10 dB.
 
@@ -158,7 +158,7 @@ SPL (dB)
 
 ### B4 (254L) - Model Accuracy
 
-| Freq | Hornresp | Viberesp | Error | Assessment |
+| Freq | Hornresp | GSD | Error | Assessment |
 |------|----------|----------|-------|------------|
 | 20 Hz | 75.4 dB | 81.9 dB | -6.5 dB | ✗ Over-predicted |
 | 30 Hz | 102.4 dB | 99.1 dB | +3.3 dB | ~ Under-predicted |
@@ -175,7 +175,7 @@ SPL (dB)
 
 ### Compact (60L) - Invalid Design
 
-| Freq | Hornresp | Viberesp | Error | Assessment |
+| Freq | Hornresp | GSD | Error | Assessment |
 |------|----------|----------|-------|------------|
 | 20 Hz | 60.2 dB | 72.8 dB | **-12.6 dB** | ✗ Wrong design |
 | 30 Hz | 72.8 dB | 89.3 dB | **-16.5 dB** | ✗ Wrong design |
@@ -194,7 +194,7 @@ SPL (dB)
 
 ### 1. Tuning Region (30-40 Hz)
 
-**Problem:** Viberesp over-predicts SPL by 6-10 Hz for Optimal design.
+**Problem:** GSD over-predicts SPL by 6-10 Hz for Optimal design.
 
 **Likely causes:**
 - Transfer function assumes ideal Helmholtz resonance
@@ -263,7 +263,7 @@ SPL (dB)
 
 ### Calibration Required
 
-**Viberesp transfer function needs adjustment:**
+**GSD transfer function needs adjustment:**
 
 1. **Tuning region (30-40 Hz):**
    - Optimal: Reduce output by ~8-10 dB
@@ -306,7 +306,7 @@ SPL (dB)
 
 ---
 
-### For Viberesp Model
+### For GSD Model
 
 **Required improvements:**
 

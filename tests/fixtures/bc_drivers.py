@@ -11,7 +11,7 @@ Literature:
 """
 
 import pytest
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 
 
 @pytest.fixture

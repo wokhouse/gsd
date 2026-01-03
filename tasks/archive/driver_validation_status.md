@@ -52,7 +52,7 @@ All 4 B&C drivers now have complete Hornresp validation setups with input files,
 - ✅ SPL: PASS (max error: 5.0 dB, RMS: 2.8 dB)
 
 **Resonance Analysis**:
-- Viberesp F_s: **64.0 Hz** (was 68.3 Hz)
+- GSD F_s: **64.0 Hz** (was 68.3 Hz)
 - Hornresp F_s: 64.2 Hz
 - Error: **0.2 Hz (0.3%)** ✅ EXCELLENT
 
@@ -83,7 +83,7 @@ All 4 B&C drivers now have complete Hornresp validation setups with input files,
 - ❌ SPL: FAIL (max error: 7.7 dB at 28 Hz, RMS: 3.4 dB)
 
 **Resonance Analysis**:
-- Viberesp F_s: **44.8 Hz** (was 50.2 Hz)
+- GSD F_s: **44.8 Hz** (was 50.2 Hz)
 - Hornresp F_s: 44.9 Hz
 - Error: **0.1 Hz (0.2%)** ✅ EXCELLENT
 
@@ -114,7 +114,7 @@ All 4 B&C drivers now have complete Hornresp validation setups with input files,
 - ❌ SPL: FAIL (max error: 10.0 dB at 905 Hz, RMS: 7.9 dB)
 
 **Resonance Analysis**:
-- Viberesp F_s: **19.0 Hz** (was 20.0 Hz with wrong M_md)
+- GSD F_s: **19.0 Hz** (was 20.0 Hz with wrong M_md)
 - Hornresp F_s: 19.0 Hz
 - Error: **0.05 Hz (0.3%)** ✅ EXCELLENT
 
@@ -145,7 +145,7 @@ All 4 B&C drivers now have complete Hornresp validation setups with input files,
 - ❌ SPL: FAIL (max error: 8.0 dB at 17 Hz, RMS: 3.2 dB)
 
 **Resonance Analysis**:
-- Viberesp F_s: **24.1 Hz** (was 26.7 Hz)
+- GSD F_s: **24.1 Hz** (was 26.7 Hz)
 - Hornresp F_s: 23.9 Hz
 - Error: **0.2 Hz (0.8%)** ✅ EXCELLENT
 
@@ -170,16 +170,16 @@ All 4 B&C drivers now have complete Hornresp validation setups with input files,
 
 ### Files Modified
 
-1. **`src/viberesp/driver/radiation_mass.py`** (NEW)
+1. **`src/gsd/driver/radiation_mass.py`** (NEW)
    - `calculate_radiation_mass()`: Beranek (1954) Eq. 5.20 implementation
    - `calculate_resonance_with_radiation_mass()`: Iterative solver with 2× radiation mass
 
-2. **`src/viberesp/driver/parameters.py`**
+2. **`src/gsd/driver/parameters.py`**
    - Changed `M_ms` parameter → `M_md` (driver mass only)
    - Added `M_ms` as derived property (total mass including radiation)
    - Updated `__post_init__()` to use iterative solver
 
-3. **`src/viberesp/driver/bc_drivers.py`**
+3. **`src/gsd/driver/bc_drivers.py`**
    - Updated all 4 drivers to use `M_md` instead of `M_ms`
    - Fixed BC_15DS115 (M_md: 254g, not 101g)
    - Fixed BC_18PZW100 (M_md: 209g, not 153g)
@@ -284,7 +284,7 @@ Standard fields across all drivers:
 
 **Implemented**: December 26, 2025
 **Commit**: 1e9abc8
-**File**: `src/viberesp/driver/response.py` (lines 212-269)
+**File**: `src/gsd/driver/response.py` (lines 212-269)
 
 ### Theory
 The Lorentz force on the voice coil is `F = BL × i(t)`. For time-averaged acoustic power, only the in-phase component of current contributes:
@@ -355,7 +355,7 @@ At high frequencies, voice coil inductance causes current to lag voltage by ~90�
 
 - **Implementation plan**: `tasks/IMPLEMENT_I_ACTIVE_MODEL.md`
 - **Investigation report**: `tasks/investigate_high_frequency_spl_rolloff.md`
-- **I_active implementation**: `src/viberesp/driver/response.py` (lines 212-269)
+- **I_active implementation**: `src/gsd/driver/response.py` (lines 212-269)
 - **Unit tests**: `tests/unit_driver/test_response_force_model.py`
 - **Validation tests**: `tests/validation/test_infinite_baffle.py`
 
@@ -464,7 +464,7 @@ Based on theoretical verification:
 
 - **Implementation plan**: `tasks/IMPLEMENT_I_ACTIVE_MODEL.md`
 - **Investigation report**: `tasks/investigate_high_frequency_spl_rolloff.md`
-- **I_active implementation**: `src/viberesp/driver/response.py` (lines 212-269)
+- **I_active implementation**: `src/gsd/driver/response.py` (lines 212-269)
 - **Unit tests**: `tests/unit_driver/test_response_force_model.py`
 - **Validation tests**: `tests/validation/test_infinite_baffle.py`
 - **Research validation plan**: `tasks/research_validation_plan.md`

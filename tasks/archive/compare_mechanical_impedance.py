@@ -14,9 +14,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import math
 import cmath
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.driver.electrical_impedance import electrical_impedance_bare_driver
-from viberesp.driver.radiation_impedance import radiation_impedance_piston
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.driver.electrical_impedance import electrical_impedance_bare_driver
+from gsd.driver.radiation_impedance import radiation_impedance_piston
 
 # BC 8NDL51 driver parameters
 driver = ThieleSmallParameters(

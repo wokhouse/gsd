@@ -6,7 +6,7 @@
 
 ## Problem Statement
 
-The ported box SPL transfer function in `src/viberesp/enclosure/ported_box.py` does **NOT** match Hornresp validation data. The response shape is fundamentally wrong regardless of parameter values.
+The ported box SPL transfer function in `src/gsd/enclosure/ported_box.py` does **NOT** match Hornresp validation data. The response shape is fundamentally wrong regardless of parameter values.
 
 ## Validation Data
 
@@ -31,7 +31,7 @@ The ported box SPL transfer function in `src/viberesp/enclosure/ported_box.py` d
 | 60 Hz | +2.49 dB | |
 | **Difference** | **53 Hz > 60 Hz by +3.75 dB** | **Shows peak, then decreases** |
 
-### Viberesp Results (Normalized to Passband)
+### GSD Results (Normalized to Passband)
 
 | Frequency | SPL (dB) | Behavior |
 |-----------|----------|----------|
@@ -121,7 +121,7 @@ This produces:
 
 ## Changes Made (Do NOT Fix the Issue)
 
-### File: `src/viberesp/enclosure/ported_box.py`
+### File: `src/gsd/enclosure/ported_box.py`
 
 **Change 1 (Line 840-848): Q_T Definition**
 ```python
@@ -176,7 +176,7 @@ All test scripts in `tasks/` directory:
 
 3. **Follow-up 2:** Showed definitive proof that shapes DON'T match
    - Provided normalized comparison showing Hornresp has +6.4 dB peak at 52.5 Hz
-   - Viberesp shows monotonic increase with no peak
+   - GSD shows monotonic increase with no peak
    - Agent still claimed transfer function is correct
 
 4. **Follow-up 3 (FINAL):** Requested OCR verification from PDF

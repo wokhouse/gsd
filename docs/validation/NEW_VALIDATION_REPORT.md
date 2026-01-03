@@ -48,7 +48,7 @@ f_min = max(frequency_range[0], fc * 1.5)
 
 ### Code Changes
 
-**File:** `src/viberesp/optimization/objectives/response_metrics.py` (lines 189-214)
+**File:** `src/gsd/optimization/objectives/response_metrics.py` (lines 189-214)
 
 **Before:**
 ```python
@@ -110,21 +110,21 @@ Design #3 from old optimization:
 
 Design #1:
 - **Optimizer predicted:** 6.49 dB flatness
-- **Viberesp simulation:** 10.83 dB flatness (100-5000 Hz)
+- **GSD simulation:** 10.83 dB flatness (100-5000 Hz)
 - **Cutoff frequency:** 454.4 Hz
 - **Volume:** 2.41 L
 - **Bandwidth evaluated:** 4320 Hz (681-5000 Hz) ✅
 
 Design #2:
 - **Optimizer predicted:** 6.40 dB flatness
-- **Viberesp simulation:** 10.60 dB flatness (100-5000 Hz)
+- **GSD simulation:** 10.60 dB flatness (100-5000 Hz)
 - **Cutoff frequency:** 437.8 Hz
 - **Volume:** 2.41 L
 - **Bandwidth evaluated:** 4096 Hz (657-5000 Hz) ✅
 
 Design #3:
 - **Optimizer predicted:** 6.13 dB flatness
-- **Viberesp simulation:** 10.22 dB flatness (100-5000 Hz)
+- **GSD simulation:** 10.22 dB flatness (100-5000 Hz)
 - **Cutoff frequency:** 381.5 Hz
 - **Volume:** 2.66 L
 - **Bandwidth evaluated:** 4428 Hz (572-5000 Hz) ✅
@@ -167,14 +167,14 @@ The new designs have been exported to Hornresp format but not yet validated:
 **Validation steps:**
 1. Import each file into Hornresp
 2. Run simulation over **full passband** (100-5000 Hz, not 420-500 Hz!)
-3. Export results and compare with viberesp
+3. Export results and compare with gsd
 4. Document agreement percentage
 
 ---
 
 ## Files Modified
 
-1. **src/viberesp/optimization/objectives/response_metrics.py**
+1. **src/gsd/optimization/objectives/response_metrics.py**
    - Lines 189-214: Fixed frequency range calculation for horns
    - Added adaptive range based on horn type (bass/midrange/tweeter)
    - Changed from fixed 500 Hz upper limit to 20×Fc (up to 5000+ Hz)
@@ -236,7 +236,7 @@ The critical frequency range bug has been **fixed**. The optimization now correc
 - Bug fix: ✅ Complete
 - Code review: ✅ Complete
 - Re-optimization: ✅ Complete
-- Viberesp validation: ✅ Complete
+- GSD validation: ✅ Complete
 - Hornresp validation: ⏳ Pending (user action required)
 
 **Next step:** Validate new designs against Hornresp over the **full passband** (100-5000 Hz for midrange horns).

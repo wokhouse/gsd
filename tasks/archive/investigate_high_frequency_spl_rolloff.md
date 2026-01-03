@@ -2,14 +2,14 @@
 
 ## Context
 
-During validation of the BC 8NDL51 infinite baffle simulation, we discovered a significant discrepancy in high-frequency SPL predictions between viberesp and Hornresp:
+During validation of the BC 8NDL51 infinite baffle simulation, we discovered a significant discrepancy in high-frequency SPL predictions between gsd and Hornresp:
 
 ### Observed Issue
 - **Low frequencies (<500 Hz)**: Excellent agreement (<2 dB error)
 - **High frequencies (>5 kHz)**: Large errors (15-26 dB)
 
 Specifically:
-| Frequency | Hornresp SPL | Viberesp SPL | Error |
+| Frequency | Hornresp SPL | GSD SPL | Error |
 |-----------|--------------|--------------|-------|
 | 500 Hz    | 92.8 dB      | 94.2 dB      | 1.4 dB |
 | 2 kHz     | 84.6 dB      | 90.8 dB      | 6.2 dB |
@@ -17,7 +17,7 @@ Specifically:
 | 10 kHz    | 58.1 dB      | 78.6 dB     | 20.5 dB |
 | 20 kHz    | 46.2 dB      | 72.7 dB     | 26.5 dB |
 
-Hornresp shows **-47 dB roll-off** from 500 Hz to 20 kHz, while viberesp shows only **-21 dB roll-off**.
+Hornresp shows **-47 dB roll-off** from 500 Hz to 20 kHz, while gsd shows only **-21 dB roll-off**.
 
 ### Known Working Areas
 1. **Driver parameters**: Perfect match (Mms, Cms, BL, Re, Le all identical)
@@ -27,7 +27,7 @@ Hornresp shows **-47 dB roll-off** from 500 Hz to 20 kHz, while viberesp shows o
 
 ## Investigation Goals
 
-Identify why viberesp's SPL calculation doesn't roll off at high frequencies like Hornresp does.
+Identify why gsd's SPL calculation doesn't roll off at high frequencies like Hornresp does.
 
 ## Investigation Steps
 
@@ -43,9 +43,9 @@ Check:
 
 **Confirm**: Hornresp is using simple voice coil model (jωL inductor only)
 
-### 2. Analyze SPL Calculation in Viberesp
+### 2. Analyze SPL Calculation in GSD
 
-**File**: `src/viberesp/driver/response.py`
+**File**: `src/gsd/driver/response.py`
 
 **Location**: Lines 240-263 (SPL calculation)
 
@@ -78,7 +78,7 @@ where `Z_mechanical = R_ms + j(ω*M_ms - 1/(ω*C_ms)) + Z_radiation`
 
 ### 4. Investigate Radiation Impedance Effects
 
-**File**: `src/viberesp/driver/radiation_impedance.py`
+**File**: `src/gsd/driver/radiation_impedance.py`
 
 **Current implementation**: Circular piston in infinite baffle (Beranek 1954)
 
@@ -111,7 +111,7 @@ where `Z_mechanical = R_ms + j(ω*M_ms - 1/(ω*C_ms)) + Z_radiation`
 3. **Cone break-up modes**:
    - Real drivers have resonances in the mid-high frequency range
    - These can cause additional roll-off
-   - Hornresp may model these; viberesp currently does not
+   - Hornresp may model these; gsd currently does not
 
 4. **Inductance parameter effects**:
    - Even with Le = 0.5 mH, the inductance affects current
@@ -152,7 +152,7 @@ Look for:
 **Hypothesis 1**: Missing inductance effect on SPL calculation
 - **Test**: Manually calculate expected SPL reduction due to inductance
 - **Expected**: At 20 kHz, current should be `I = 2.83V / 63Ω ≈ 45 mA` (vs 533 mA at DC)
-- **Check**: Does viberesp show this current reduction?
+- **Check**: Does gsd show this current reduction?
 
 **Hypothesis 2**: Incorrect mechanical impedance calculation
 - **Test**: Verify that mechanical impedance increases correctly with frequency
@@ -190,9 +190,9 @@ Look for:
 
 - Driver parameters: `tests/validation/drivers/bc_8ndl51/infinite_baffle/BC_8NDL51_input.txt`
 - Hornresp results: `tests/validation/drivers/bc_8ndl51/infinite_baffle/8ndl51_sim.txt`
-- SPL calculation: `src/viberesp/driver/response.py` lines 240-263
-- Radiation impedance: `src/viberesp/driver/radiation_impedance.py`
-- Electrical impedance: `src/viberesp/driver/electrical_impedance.py`
+- SPL calculation: `src/gsd/driver/response.py` lines 240-263
+- Radiation impedance: `src/gsd/driver/radiation_impedance.py`
+- Electrical impedance: `src/gsd/driver/electrical_impedance.py`
 
 Start with the diagnostic script (Step 6) to isolate where the calculation diverges.
 
@@ -200,9 +200,9 @@ Start with the diagnostic script (Step 6) to isolate where the calculation diver
 
 ### Current Analysis - Phase 1 Complete
 
-**Extracted Hornresp Iin values and compared with viberesp:**
+**Extracted Hornresp Iin values and compared with gsd:**
 
-| Freq | Hornresp Iin | Viberesp |I| | Ratio | Hornresp SPL | Viberesp SPL | Error |
+| Freq | Hornresp Iin | GSD |I| | Ratio | Hornresp SPL | GSD SPL | Error |
 |------|--------------|---------------|-------|--------------|--------------|-------|
 | 100 Hz | 0.187 A | 0.196 A | 0.96 | 88.3 dB | 87.8 dB | -0.4 dB |
 | 1 kHz | 0.484 A | 0.448 A | 1.08 | 91.2 dB | 92.6 dB | +1.5 dB |
@@ -212,7 +212,7 @@ Start with the diagnostic script (Step 6) to isolate where the calculation diver
 **KEY FINDING: Current magnitudes MATCH PERFECTLY at high frequencies!** (ratio ≈ 1.00)
 
 This means:
-1. ✅ Voice coil inductance is correctly modeled in viberesp
+1. ✅ Voice coil inductance is correctly modeled in gsd
 2. ✅ Electrical impedance calculation is correct
 3. ✅ Current calculation is correct
 4. ❌ **The problem is NOT in the electrical domain**
@@ -221,7 +221,7 @@ This means:
 
 **Reverse-engineered Hornresp mechanical impedance from SPL values:**
 
-| Freq | Viberesp Z_mech | Hornresp Z_mech | Ratio (HR/Vib) |
+| Freq | GSD Z_mech | Hornresp Z_mech | Ratio (HR/Vib) |
 |------|-----------------|-----------------|----------------|
 | 100 Hz | 12.8 Ω_mech | 11.6 Ω_mech | 0.91× |
 | 1 kHz | 168.0 Ω_mech | 214.7 Ω_mech | 1.28× |
@@ -232,10 +232,10 @@ This means:
 
 **CRITICAL DISCOVERY:**
 
-The mechanical impedance ratio (Hornresp/Viberesp) **perfectly matches** the volume velocity ratio:
+The mechanical impedance ratio (Hornresp/GSD) **perfectly matches** the volume velocity ratio:
 
 At 20 kHz:
-- Volume velocity ratio: U_viberesp / U_HR = 21.2× (= 26.5 dB)
+- Volume velocity ratio: U_gsd / U_HR = 21.2× (= 26.5 dB)
 - Mechanical impedance ratio: Z_mech_HR / Z_mech_vib = 21.2×
 
 This is EXACTLY what we expect from `u = F/Z_mech` when force is the same!
@@ -267,7 +267,7 @@ But Hornresp has Z_mech ≈ 71300 Ω_mech, which is **21.2× higher**!
 ### Possible Explanations
 
 1. **Hornresp uses different force calculation**
-   - Viberesp: F = BL × |I| (current magnitude)
+   - GSD: F = BL × |I| (current magnitude)
    - Hornresp: F = BL × I_active (only in-phase component)
    - At 20 kHz: I = 45 mA ∠ -85°, I_active = 45 × cos(-85°) = 3.9 mA
    - Force ratio: 45/3.9 = 11.5× (not quite 21×, but in the right direction)
@@ -359,13 +359,13 @@ In an electromechanical transducer:
   - Energy-conserving model: F = BL × I_active (uses only active component)
   - At 20 kHz: I_active = |I| × cos(-85°) = 0.05 × |I| (20× smaller!)
 
-**This explains why viberesp overestimates high-frequency SPL by 26.5 dB!**
+**This explains why gsd overestimates high-frequency SPL by 26.5 dB!**
 
 ## Final Conclusions and Recommendations (2025-12-26)
 
 ### Root Cause Identified
 
-**Viberesp uses F = BL × |I| (current magnitude), while Hornresp appears to use F = BL × I_active (active component only).**
+**GSD uses F = BL × |I| (current magnitude), while Hornresp appears to use F = BL × I_active (active component only).**
 
 This difference explains **78% of the 26.5 dB discrepancy** at 20 kHz.
 
@@ -381,7 +381,7 @@ At high frequencies (>2 kHz):
 - Voice coil inductance causes current to lag voltage by ~70-85°
 - I_active = |I| × cos(θ) << |I|
 - I_active is 5-20× smaller than |I|
-- Viberesp overestimates force and SPL by 20-26 dB
+- GSD overestimates force and SPL by 20-26 dB
 
 ### Hornresp's Additional Corrections
 
@@ -408,7 +408,7 @@ The remaining 5-6 dB error suggests Hornresp uses:
 
 **Implementation:**
 ```python
-# In src/viberesp/driver/response.py
+# In src/gsd/driver/response.py
 
 # Calculate complex current
 I_complex = voltage / Ze
@@ -435,14 +435,14 @@ If the I_active model cannot be adequately justified from literature:
 
 1. **Problem**: 26.5 dB high-frequency SPL discrepancy
 2. **Root cause**: Different force calculation models
-   - Viberesp: F = BL × |I| (standard Thiele-Small model)
+   - GSD: F = BL × |I| (standard Thiele-Small model)
    - Hornresp: F = BL × I_active (energy-conserving, undocumented)
 3. **Frequency ranges**:
    - <500 Hz: Both models agree within 2 dB
    - 500 Hz - 2 kHz: Difference of 2-6 dB
    - >2 kHz: Difference of 14-26 dB
 4. **Recommendations**:
-   - Use viberesp for low-frequency design (<500 Hz)
+   - Use gsd for low-frequency design (<500 Hz)
    - Use Hornresp for full-range validation
    - Future work: Implement energy-conserving model with literature support
 
@@ -467,7 +467,7 @@ Implement a frequency-dependent model:
 
 **Investigation Status**: ✅ **ROOT CAUSE IDENTIFIED**
 
-- ✅ Current magnitudes match perfectly between viberesp and Hornresp
+- ✅ Current magnitudes match perfectly between gsd and Hornresp
 - ✅ Mechanical impedance ratio matches volume velocity ratio (as expected from u = F/Z)
 - ✅ Identified that force calculation is the issue (I_mag vs I_active)
 - ✅ I_active model explains 78% of the discrepancy
@@ -499,7 +499,7 @@ Ran diagnostic script `tasks/diagnose_spl_rolloff.py` with key findings:
 ### 🚨 Problem Identified
 **Consistent 25-26 dB offset at high frequencies** (above 2 kHz):
 
-| Freq | Hornresp SPL | Viberesp SPL | Difference |
+| Freq | Hornresp SPL | GSD SPL | Difference |
 |------|--------------|--------------|------------|
 | 2 kHz  | 84.5 dB | 90.7 dB | +6.1 dB |
 | 5 kHz  | 69.6 dB | 84.3 dB | +14.7 dB |
@@ -511,7 +511,7 @@ Ran diagnostic script `tasks/diagnose_spl_rolloff.py` with key findings:
 ### 🔍 Most Likely Causes (in order of probability)
 
 1. **Different SPL calculation formula**
-   - Viberesp uses: `p = (ω × ρ₀ × U) / (2πr)` (on-axis monopole)
+   - GSD uses: `p = (ω × ρ₀ × U) / (2πr)` (on-axis monopole)
    - Hornresp may use: Different directivity pattern or piston formula
    - **Check**: Beranek (1954) for circular piston directivity
 
@@ -521,7 +521,7 @@ Ran diagnostic script `tasks/diagnose_spl_rolloff.py` with key findings:
    - **Check**: Hornresp documentation for efficiency model
 
 3. **Measurement distance or reference difference**
-   - Viberesp calculates at 1m
+   - GSD calculates at 1m
    - Hornresp might use different reference
    - **Check**: Verify measurement distance is same
 
@@ -542,10 +542,10 @@ Ran diagnostic script `tasks/diagnose_spl_rolloff.py` with key findings:
    - At 20 kHz: Hornresp SPL = 46.2 dB
    - This implies: `p = 20e-6 × 10^(46.2/20) = 3.62e-3 Pa`
    - Required U for this p: `U = (2πr × p) / (ω × ρ₀) = (2π × 1 × 3.62e-3) / (2π × 20000 × 1.18) = 1.53e-7 m³/s = 0.153 cm³/s`
-   - Compare to viberesp U: 3.639 cm³/s
-   - **Hornresp's volume velocity is 23.8× LOWER than viberesp's at 20 kHz!**
+   - Compare to gsd U: 3.639 cm³/s
+   - **Hornresp's volume velocity is 23.8× LOWER than gsd's at 20 kHz!**
 
-3. **Critical finding**: Hornresp must be calculating a MUCH lower volume velocity than viberesp
+3. **Critical finding**: Hornresp must be calculating a MUCH lower volume velocity than gsd
    - This suggests the mechanical system modeling is different
    - Possible causes:
      - Additional mechanical resistance/damping at high frequencies
@@ -588,7 +588,7 @@ Completed comprehensive literature review and found strong support for the energ
 
 ### Implementation Details
 
-**Modified File**: `src/viberesp/driver/response.py`
+**Modified File**: `src/gsd/driver/response.py`
 
 **Changes**:
 1. Replaced force calculation from `F = BL × |I|` to `F = BL × I_active`
@@ -625,7 +625,7 @@ u_diaphragm = complex(u_diaphragm_mag, 0)
 
 **Hornresp Validation**: ✅ **Significant improvement achieved**
 
-| Frequency | Hornresp SPL | Viberesp (I_active) | Error | Previous Error | Improvement |
+| Frequency | Hornresp SPL | GSD (I_active) | Error | Previous Error | Improvement |
 |-----------|--------------|-------------------|-------|----------------|-------------|
 | 20 Hz     | 71.13 dB     | 69.02 dB          | -2.12 dB | ~2 dB          | Maintained   |
 | 100 Hz    | 88.26 dB     | 83.75 dB          | -4.51 dB | -0.42 dB       | Slightly worse |
@@ -670,7 +670,7 @@ The I_active model achieves ~80% of the needed correction. The remaining 5 dB er
    - Frequency-dependent BL factor
 
 2. **Additional physical effects**:
-   - Cone break-up modes (not modeled in viberesp)
+   - Cone break-up modes (not modeled in gsd)
    - Voice coil inductance losses beyond simple jωL
    - Mechanical resistance changes with frequency
 
@@ -681,7 +681,7 @@ The I_active model achieves ~80% of the needed correction. The remaining 5 dB er
 ### Recommendations
 
 **For users**:
-- Viberesp with I_active model is accurate to within **±5 dB** across 20 Hz - 20 kHz
+- GSD with I_active model is accurate to within **±5 dB** across 20 Hz - 20 kHz
 - Best accuracy below 2 kHz: **±3 dB**
 - High-frequency accuracy (2-20 kHz): **±5 dB** (much improved from ±20 dB)
 
@@ -693,7 +693,7 @@ The I_active model achieves ~80% of the needed correction. The remaining 5 dB er
 
 ### Files Modified
 
-1. ✅ `src/viberesp/driver/response.py` - Implemented I_active force calculation
+1. ✅ `src/gsd/driver/response.py` - Implemented I_active force calculation
 2. ✅ `tests/unit_driver/test_response_force_model.py` - New comprehensive unit tests
 3. ✅ `tasks/investigate_high_frequency_spl_rolloff.md` - This document updated with results
 
@@ -708,5 +708,5 @@ The I_active force model has been successfully implemented with:
 - Comprehensive test coverage
 - Proper documentation and citations
 
-**viberesp now provides industry-accurate SPL predictions** for loudspeaker enclosure design work.
+**gsd now provides industry-accurate SPL predictions** for loudspeaker enclosure design work.
 

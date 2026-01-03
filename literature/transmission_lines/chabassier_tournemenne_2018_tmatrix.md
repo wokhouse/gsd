@@ -5,7 +5,7 @@
 **URL:** https://rtournem.frama.io/assets/pdfs/PersoRR-2019.pdf
 **DOI:** N/A (Research report)
 
-**Relevance to Viberesp:** Provides unified formulation of transfer matrices for cones and cylinders, with and without viscothermal losses. Shows how to compute input impedance using T-matrix method, which is the foundation for horn simulation in tools like Hornresp.
+**Relevance to GSD:** Provides unified formulation of transfer matrices for cones and cylinders, with and without viscothermal losses. Shows how to compute input impedance using T-matrix method, which is the foundation for horn simulation in tools like Hornresp.
 
 ---
 
@@ -515,7 +515,7 @@ where R is radius at that position.
 - **Kirchhoff (1868)**: Heat conduction in gases (original loss theory)
 - **Zwikker & Kosten (1949)**: Sound absorbing materials
 
-**Related to viberesp:**
+**Related to gsd:**
 - **Kolbrek tutorial**: Uses same T-matrix approach
 - **Hornresp**: Implements T-matrix method for multi-segment horns
 - **Aarts (2003)**: Struve function for radiation impedance
@@ -548,7 +548,7 @@ Transfer matrix method has been used since the 1960s for:
    - Forward/backward waves
    - Reflection coefficients
 
-**Implementation Strategy for Viberesp:**
+**Implementation Strategy for GSD:**
 
 **Phase 1: Lossless cylinders and cones**
 ```python
@@ -680,7 +680,7 @@ While this report focuses on cones and cylinders, the T-matrix method extends to
 - Hyperbolic: analytical T-matrix (Kolbrek Eq. T3)
 - Arbitrary: approximate as short cone/cylinder segments
 
-**Viberesp Implementation Strategy:**
+**GSD Implementation Strategy:**
 
 1. **Phase 1:** Implement lossless cylinder/cone T-matrices
 2. **Phase 2:** Add exponential T-matrix (Kolbrek)

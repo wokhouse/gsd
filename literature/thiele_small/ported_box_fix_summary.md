@@ -5,7 +5,7 @@
 ## Fixes Applied
 
 ### 1. Efficiency Formula (FIXED ✓)
-**Location:** `src/viberesp/enclosure/ported_box.py:669`
+**Location:** `src/gsd/enclosure/ported_box.py:669`
 
 **Before (BROKEN):**
 ```python
@@ -23,7 +23,7 @@ eta_0 = K_ETA * (driver.F_s ** 3 * driver.V_as) / driver.Q_es
 Result: η₀ = 0.141 (14.1% - reasonable for high-BL driver)
 
 ### 2. Transfer Function Numerator (FIXED ✓)
-**Location:** `src/viberesp/enclosure/ported_box.py:638`
+**Location:** `src/gsd/enclosure/ported_box.py:638`
 
 **Before (BROKEN):**
 ```python
@@ -39,14 +39,14 @@ numerator = (s ** 4) * a4  # where a4 = Tb² × Ts²
 Result: Transfer function correctly approaches 1 (0 dB) at high frequencies
 
 ### 3. SPL Response Uses Qts (FIXED ✓)
-**Location:** `src/viberesp/enclosure/ported_box.py:622`
+**Location:** `src/gsd/enclosure/ported_box.py:622`
 
 **Change:** SPL denominator now uses `Qt = driver.Q_ts` instead of `driver.Q_es`
 
 **Rationale:** Small (1973) uses Q_T (total Q) for SPL response, Q_ES (electrical Q) only for impedance.
 
 ### 4. Calibration Updated (PARTIAL FIX)
-**Location:** `src/viberesp/enclosure/ported_box.py:708`
+**Location:** `src/gsd/enclosure/ported_box.py:708`
 
 **New calibration:** -8.2 dB (calibrated at 500 Hz)
 
@@ -75,7 +75,7 @@ Result: Transfer function correctly approaches 1 (0 dB) at high frequencies
 **Issue:** Small's transfer function only models the vented-box 4th-order high-pass response. It does NOT include the driver's mass-controlled roll-off at high frequencies.
 
 **Evidence:**
-- At 5 kHz: Viberesp predicts ~91 dB (flat), Hornresp shows 59.2 dB (rolled off)
+- At 5 kHz: GSD predicts ~91 dB (flat), Hornresp shows 59.2 dB (rolled off)
 - Our transfer function approaches 0 dB (-0.05 dB at 5 kHz)
 - Hornresp includes mass roll-off (1st-order low-pass)
 
@@ -121,7 +121,7 @@ where `G_mass_roll_off(s)` is a 1st-order low-pass related to driver mass and vo
 
 ## Files Modified
 
-- `src/viberesp/enclosure/ported_box.py`:
+- `src/gsd/enclosure/ported_box.py`:
   - Efficiency formula (line 669)
   - Transfer function numerator (line 638)
   - SPL response uses Qts (line 622)

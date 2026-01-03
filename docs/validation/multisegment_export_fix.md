@@ -36,7 +36,7 @@ F23 = <frequency>
 
 ## Fix Applied
 
-**File:** `src/viberesp/hornresp/export.py`
+**File:** `src/gsd/hornresp/export.py`
 **Function:** `export_multisegment_horn_to_hornresp()`
 **Lines:** 1096-1117
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Validate viberesp's sealed box QL implementation across various Quc (mechanical + absorption losses) values.
+Validate gsd's sealed box QL implementation across various Quc (mechanical + absorption losses) values.
 
 ## Enclosure Design
 

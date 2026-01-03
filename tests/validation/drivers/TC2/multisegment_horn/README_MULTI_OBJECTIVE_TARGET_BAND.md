@@ -96,7 +96,7 @@ Include these columns:
 - Electrical Impedance magnitude (Ω)
 - Electrical Impedance phase (°)
 
-### 4. Compare with Viberesp
+### 4. Compare with GSD
 Run validation script (to be created):
 ```bash
 python3 /path/to/validate_multiobjective_target_band.py
@@ -135,7 +135,7 @@ Optimization based on:
 
 1. ✅ Export to Hornresp
 2. ⏳ Run Hornresp simulation
-3. ⏳ Compare results with viberesp
+3. ⏳ Compare results with gsd
 4. ⏳ Document any discrepancies
 5. ⏳ If validation passes, add to test suite
 

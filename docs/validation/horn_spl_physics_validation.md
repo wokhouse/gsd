@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes the successful implementation of validated physics-based horn SPL calculation in viberesp, replacing the previous unvalidated approximations.
+This document summarizes the successful implementation of validated physics-based horn SPL calculation in gsd, replacing the previous unvalidated approximations.
 
 ## Implementation Summary
 
@@ -26,13 +26,13 @@ This document summarizes the successful implementation of validated physics-base
 
 ### Files Modified
 
-1. **`src/viberesp/simulation/horn_driver_integration.py`**
+1. **`src/gsd/simulation/horn_driver_integration.py`**
    - Added `calculate_horn_spl_flow()` function with complete electro-mechano-acoustical chain
    - Added `HornSPLResult` dataclass for results
    - Added `calculate_horn_cutoff_frequency()` helper
    - Added `estimate_horn_sensitivity()` for passband averaging
 
-2. **`src/viberesp/optimization/api/crossover_assistant.py`**
+2. **`src/gsd/optimization/api/crossover_assistant.py`**
    - Replaced `_model_compression_driver_horn()` with validated physics
    - Updated module docstring to remove unvalidated warnings
    - Now uses `calculate_horn_spl_flow()` internally
@@ -142,7 +142,7 @@ Frequency (Hz)    SPL (dB)
 
 From validation data (`tasks/validation/case_1_comparison_data.csv`):
 
-| Frequency | Hornresp (dB) | Viberesp (dB) | Difference |
+| Frequency | Hornresp (dB) | GSD (dB) | Difference |
 |-----------|---------------|---------------|------------|
 | 20 Hz     | 29.2          | 27.0          | -2.2 dB    |
 | 100 Hz    | 65.9          | 55.4          | -10.5 dB   |
@@ -167,9 +167,9 @@ All code includes proper literature citations:
 
 ```python
 import numpy as np
-from viberesp.simulation.types import ExponentialHorn
-from viberesp.driver import load_driver
-from viberesp.simulation.horn_driver_integration import calculate_horn_spl_flow
+from gsd.simulation.types import ExponentialHorn
+from gsd.driver import load_driver
+from gsd.simulation.horn_driver_integration import calculate_horn_spl_flow
 
 # Define horn
 horn = ExponentialHorn(
@@ -229,7 +229,7 @@ print(f"Radiated power at 1kHz: {result.radiated_power[50]:.6f} W")
 
 ## Conclusion
 
-The horn SPL calculation in viberesp now uses **validated physics** derived from first principles. The implementation:
+The horn SPL calculation in gsd now uses **validated physics** derived from first principles. The implementation:
 
 - ✅ Uses T-matrix method for horn impedance transformation
 - ✅ Calculates complete electro-mechano-acoustical chain

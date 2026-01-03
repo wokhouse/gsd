@@ -21,7 +21,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from viberesp.enclosure.baffle_step import (
+from gsd.enclosure.baffle_step import (
     baffle_step_frequency,
     baffle_step_loss,
     baffle_step_loss_olson,
@@ -30,7 +30,7 @@ from viberesp.enclosure.baffle_step import (
     apply_baffle_step_to_spl,
     calculate_baffle_step_correction,
 )
-from viberesp.simulation.constants import SPEED_OF_SOUND
+from gsd.simulation.constants import SPEED_OF_SOUND
 
 
 class TestBaffleStepFrequency:

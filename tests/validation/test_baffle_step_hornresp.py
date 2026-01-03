@@ -41,10 +41,10 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from viberesp.driver import load_driver
-from viberesp.enclosure.baffle_step import baffle_step_loss_olson
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
-from viberesp.validation.compare import compare_spl
+from gsd.driver import load_driver
+from gsd.enclosure.baffle_step import baffle_step_loss_olson
+from gsd.hornresp.results_parser import load_hornresp_sim_file
+from gsd.validation.compare import compare_spl
 
 
 class TestBaffleStepHornrespValidation:
@@ -131,7 +131,7 @@ class TestBaffleStepHornrespValidation:
         The empirical formula f_step = 115/W should align with the
         -3 dB point in both Hornresp and the Olson model.
         """
-        from viberesp.enclosure.baffle_step import baffle_step_frequency
+        from gsd.enclosure.baffle_step import baffle_step_frequency
 
         baffle_width = 0.3  # 30 cm
         f_step = baffle_step_frequency(baffle_width)
@@ -168,7 +168,7 @@ class TestBaffleStepHornrespValidation:
         olson_response = baffle_step_loss_olson(transition_freqs, baffle_width, baffle_height)
 
         # Calculate Linkwitz (smooth) response for comparison
-        from viberesp.enclosure.baffle_step import baffle_step_loss
+        from gsd.enclosure.baffle_step import baffle_step_loss
         linkwitz_response = baffle_step_loss(transition_freqs, baffle_width)
 
         # Olson should have higher variation (ripples) than Linkwitz
@@ -248,8 +248,8 @@ class TestBaffleStepIntegrationWithDirectRadiator:
 
         This demonstrates how to use baffle_step with existing SPL calculations.
         """
-        from viberesp.enclosure.baffle_step import apply_baffle_step_to_spl
-        from viberesp.driver.response import direct_radiator_electrical_impedance
+        from gsd.enclosure.baffle_step import apply_baffle_step_to_spl
+        from gsd.driver.response import direct_radiator_electrical_impedance
 
         # Define test parameters
         baffle_width = 0.3  # 30 cm
@@ -285,7 +285,7 @@ class TestBaffleStepIntegrationWithDirectRadiator:
 
     def test_baffle_step_frequency_calculation(self):
         """Test baffle step frequency calculation for various baffle sizes."""
-        from viberesp.enclosure.baffle_step import baffle_step_frequency
+        from gsd.enclosure.baffle_step import baffle_step_frequency
 
         # Test various baffle sizes
         test_cases = [

@@ -11,8 +11,8 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import math
-from viberesp.driver.bc_drivers import get_bc_8ndl51
-from viberesp.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
+from gsd.driver.bc_drivers import get_bc_8ndl51
+from gsd.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
 
 
 def test_driver(driver, name):
@@ -39,7 +39,7 @@ def test_driver(driver, name):
         omega = 2 * math.pi * freq
 
         # Calculate mechanical impedance
-        from viberesp.driver.radiation_mass import calculate_radiation_mass
+        from gsd.driver.radiation_mass import calculate_radiation_mass
         M_rad = calculate_radiation_mass(freq, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
         M_ms = driver.M_md + 2.0 * M_rad
 
@@ -61,7 +61,7 @@ def test_driver(driver, name):
     omega1 = 2 * math.pi * driver.F_s
     omega2 = 2 * math.pi * (driver.F_s * 6)
 
-    from viberesp.driver.radiation_mass import calculate_radiation_mass
+    from gsd.driver.radiation_mass import calculate_radiation_mass
     M_rad1 = calculate_radiation_mass(driver.F_s, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
     M_ms1 = driver.M_md + 2.0 * M_rad1
     Zm1 = complex(driver.R_ms, omega1 * M_ms1 + (-1 / (omega1 * driver.C_ms)))
@@ -112,7 +112,7 @@ def main():
     print("=" * 70)
 
     # High BL driver (problematic)
-    from viberesp.driver.bc_drivers import get_bc_15ds115
+    from gsd.driver.bc_drivers import get_bc_15ds115
     test_driver(get_bc_15ds115(), "BC_15DS115 (High BL: 38.7)")
 
     # Low BL driver (might work better)

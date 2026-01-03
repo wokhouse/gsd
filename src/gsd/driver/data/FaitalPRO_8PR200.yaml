@@ -1,0 +1,72 @@
+name: "FaitalPRO_8PR200"
+manufacturer: "FaitalPRO"
+model: "8PR200"
+description: "8 inch midrange woofer"
+
+# Datasheet specifications
+datasheet:
+  fs: 58  # Hz
+  impedance_nominal: 8  # Ohms (from Re=5.1, typically 8 ohm nominal)
+  power_continuous: 200  # W (estimated for 8" woofer)
+  power_nominal: 100  # W (estimated)
+  voice_coil_diameter: 38  # mm (typical for 8" woofers)
+  inductance: 0.55  # mH
+  sensitivity: 96  # dB (estimated from Eta=0.84%)
+  frequency_range: "60 Hz - 5 kHz"
+
+# Thiele-Small parameters (from datasheet)
+parameters:
+  M_md: 0.0238  # kg - driver mass only (23.8g from datasheet Mmd)
+  C_ms: 0.28e-3  # m/N - compliance (0.28 mm/N)
+  R_ms: 1.1  # N·s/m - mechanical resistance (Rms from datasheet)
+  R_e: 5.1  # Ohms - voice coil DC resistance
+  L_e: 0.55e-3  # H - voice coil inductance
+  BL: 11.5  # T·m - force factor
+  S_d: 0.0209  # m² - effective diaphragm area (209 cm²)
+  X_max: 0.00815  # m - maximum linear excursion (8.15mm)
+
+# Derived parameters will be calculated automatically:
+# - F_s = 58 Hz (datasheet value)
+# - Q_es = 0.38 (datasheet value)
+# - Q_ms = 9.4 (datasheet value)
+# - Q_ts = 0.37 (datasheet value)
+# - V_as = 16.9 L (datasheet value)
+
+# Notes and warnings
+notes: |
+  FaitalPRO 8PR200 - 8 inch midrange woofer.
+
+  Datasheet Thiele-Small parameters:
+  - Fs: 58 Hz
+  - Re: 5.1 Ohm
+  - Qes: 0.38
+  - Qms: 9.4
+  - Qts: 0.37
+  - Vas: 16.9 dm³ (0.60 ft³)
+  - Sd: 209 cm² (32.40 in²)
+  - Xmax: 8.15 mm
+  - Xdamage: 13.5 mm
+  - Mms: 27.2 g (includes radiation mass)
+  - Mmd: 23.8 g (driver mass only)
+  - Cms: 0.28 mm/N
+  - Rms: 1.1 kg/s
+  - BL: 11.5 N/A
+  - Le: 0.55 mH
+  - Eta zero: 0.84 % (reference efficiency)
+  - EBP: 153 Hz (Efficiency Bandwidth Product)
+
+  Using M_md (23.8g) not M_ms (27.2g) because M_ms includes radiation mass.
+  GSD automatically calculates radiation mass loading.
+
+  Enclosure recommendations:
+  - EBP = 153 Hz (> 100) → Suitable for ported enclosures
+  - Vas = 16.9 L
+  - Fs = 58 Hz
+  - Good for two-way systems with crossover around 1-2 kHz
+
+# Literature references
+literature:
+  - "FaitalPRO 8PR200 datasheet"
+  - "https://www.faitalpro.com/"
+  - "Thiele (1971) - T/S parameter definitions"
+  - "Small (1972) - Vented-box systems"

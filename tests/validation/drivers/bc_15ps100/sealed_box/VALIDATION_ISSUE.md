@@ -36,7 +36,7 @@ Hornresp (reference):
   SPL: 103.4 dB
   Current: 0.0505 A
 
-Viberesp (current):
+GSD (current):
   Ze: 73.5 Ω @ -5.0°
   Velocity: 0.124 m/s
   SPL: 91.5 dB
@@ -78,7 +78,7 @@ Hornresp's exported data shows 41% difference between electrical and mechanical 
 ## Known Limitations ⚠️
 
 1. **SPL validation**: Fails due to Hornresp internal inconsistency
-   - Viberesp velocity/SPL are theoretically correct per Small (1972)
+   - GSD velocity/SPL are theoretically correct per Small (1972)
    - Hornresp uses proprietary algorithm with undocumented corrections
    - Cannot be resolved without Hornresp source code access
    - Documented in `docs/validation/sealed_box_spl_research_summary.md`
@@ -90,7 +90,7 @@ Hornresp's exported data shows 41% difference between electrical and mechanical 
 3. ✅ Research agent investigation completed
 4. ✅ Box damping fix implemented and validated
 5. ✅ Electrical impedance validation PASSING for both drivers
-6. ⏸️ SPL validation on hold (Hornresp limitation, not viberesp issue)
+6. ⏸️ SPL validation on hold (Hornresp limitation, not gsd issue)
 
 ## Test Results
 

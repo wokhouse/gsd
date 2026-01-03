@@ -102,7 +102,7 @@ Successfully optimized bass horn design for **B&C 21DS115** with corrected throa
 
 ## Files Created
 
-1. `src/viberesp/driver/data/BC_21DS115.yaml` - Driver parameters
+1. `src/gsd/driver/data/BC_21DS115.yaml` - Driver parameters
 2. `tasks/design_bc21ds115_bass_horn.py` - Full design comparison
 3. `tasks/BC21DS115_bass_horn_comparison.png` - Visual comparison plot
 4. `tasks/BC21DS115_large_bass_horn_summary.txt` - Build guide
@@ -140,8 +140,8 @@ New design has 2.0:1 compression (throat = 840 cm², driver = 1680 cm²):
 
 - Driver: [B&C 21DS115 Datasheet](https://www.bcspeakers.com/)
 - Literature: Olson (1947), Beranek (1954), Kolbrek (2018)
-- Constraint implementation: `src/viberesp/optimization/constraints/physical.py`
-- Parameter bounds: `src/viberesp/optimization/parameters/exponential_horn_params.py`
+- Constraint implementation: `src/gsd/optimization/constraints/physical.py`
+- Parameter bounds: `src/gsd/optimization/parameters/exponential_horn_params.py`
 
 ---
 

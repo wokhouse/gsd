@@ -4,7 +4,7 @@ This directory contains **Hornresp simulation result files** (validation data).
 
 ## Purpose
 Temporary working directory for simulation results exported from Hornresp.
-These files are used to validate Viberesp calculations against Hornresp.
+These files are used to validate GSD calculations against Hornresp.
 
 ## Usage
 1. Run simulation in Hornresp using parameters from `exports/`
@@ -27,5 +27,5 @@ Hornresp exports tab-separated text files with columns:
 - Move completed simulations to `tests/validation/drivers/` for permanent storage
 
 ## Related Directories
-- `exports/` - Viberesp parameter outputs (Hornresp inputs)
+- `exports/` - GSD parameter outputs (Hornresp inputs)
 - `tests/validation/drivers/` - Permanent validation data (version controlled)

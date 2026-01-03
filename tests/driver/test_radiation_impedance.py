@@ -9,11 +9,11 @@ Literature:
 import math
 import pytest
 
-from viberesp.driver.radiation_impedance import (
+from gsd.driver.radiation_impedance import (
     radiation_impedance_piston,
     radiation_impedance_piston_asymptotic_check,
 )
-from viberesp.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
+from gsd.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
 
 
 class TestRadiationImpedancePiston:

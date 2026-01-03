@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from viberesp.hornresp.results_parser import load_hornresp_sim_file, HornrespSimulationResult
+from gsd.hornresp.results_parser import load_hornresp_sim_file, HornrespSimulationResult
 
 
 class TestHornrespResultsParser:

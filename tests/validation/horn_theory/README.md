@@ -119,16 +119,16 @@ Validates complete front-loaded horn system.
    - SPL (for TC4)
 4. Save as `sim.txt` in the test case directory
 
-### Running Viberesp Validation
+### Running GSD Validation
 
 ```python
 import sys
 sys.path.insert(0, 'src')
 
 import numpy as np
-from viberesp.simulation import ExponentialHorn
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.driver.parameters import ThieleSmallParameters
 
 # TC2: Driver + Horn (no chambers)
 driver = ThieleSmallParameters(

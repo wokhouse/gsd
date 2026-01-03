@@ -46,7 +46,7 @@ The correct -3dB point is where it **crosses** the threshold (around 193 Hz for 
 
 ## The Fix
 
-**File:** `src/viberesp/optimization/objectives/response_metrics.py`
+**File:** `src/gsd/optimization/objectives/response_metrics.py`
 **Function:** `objective_f3()`
 
 ### Before (Buggy Code)

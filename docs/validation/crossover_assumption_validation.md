@@ -6,7 +6,7 @@
 
 ## Summary
 
-All acoustic theory assumptions used in viberesp's crossover calculations have been **validated against authoritative sources**. Our recent fixes were **correct** and based on solid physics.
+All acoustic theory assumptions used in gsd's crossover calculations have been **validated against authoritative sources**. Our recent fixes were **correct** and based on solid physics.
 
 ## Validation Results
 
@@ -148,7 +148,7 @@ This is **correct** for an LR4 crossover!
 
 ### Implementation Checklist
 
-**Viberesp passes all requirements:**
+**GSD passes all requirements:**
 1. ✅ Filter gain at fc yields voltage × 0.5 (-6dB)
 2. ✅ Horn modeled as high-pass with rolloff below fc
 3. ✅ Pressure summation: P_total = P_1 + P_2 (linear addition)

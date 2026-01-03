@@ -2,7 +2,7 @@
 Integration tests for viberesp optimization system (Phases 7.1 & 7.2)
 """
 import numpy as np
-from viberesp.optimization.api import DesignAssistant
+from gsd.optimization.api import DesignAssistant
 
 def test_multi_objective_optimization():
     """Test multi-objective optimization (F3 vs Size)."""

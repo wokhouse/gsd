@@ -1,6 +1,6 @@
 # Validation Data
 
-This directory contains **permanent validation data** for comparing Viberesp
+This directory contains **permanent validation data** for comparing GSD
 calculations against Hornresp simulations.
 
 ## Directory Structure
@@ -47,7 +47,7 @@ Each configuration has a `metadata.json` file:
 ## Working Directories
 
 For day-to-day workflow, use the staging directories:
-- `exports/` - Viberesp parameter outputs (Hornresp inputs)
+- `exports/` - GSD parameter outputs (Hornresp inputs)
 - `imports/` - Hornresp simulation results
 
 Move completed validations to this directory for permanent storage.

@@ -4,7 +4,7 @@
 Linkwitz, S. (2003). Diffraction from baffle edges. LinkwitzLab.
 https://linkwitzlab.com/diffraction.htm
 
-**Relevance to Viberesp:**
+**Relevance to GSD:**
 Practical implementation of baffle step compensation circuits. Linkwitz provides the shelf filter topology used to correct the +6 dB HF gain described by Olson (1951).
 
 **Key Concepts:**

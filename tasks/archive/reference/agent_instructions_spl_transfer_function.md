@@ -16,7 +16,7 @@ Fix the SPL calculation bug by implementing Small's transfer function approach i
 
 ### 1. Sealed Box Transfer Function
 
-Create a new function in `src/viberesp/enclosure/sealed_box.py`:
+Create a new function in `src/gsd/enclosure/sealed_box.py`:
 
 ```python
 def calculate_spl_from_transfer_function(
@@ -92,7 +92,7 @@ def calculate_spl_from_transfer_function(
 
 ### 2. Ported Box Transfer Function
 
-Create in `src/viberesp/enclosure/ported_box.py`:
+Create in `src/gsd/enclosure/ported_box.py`:
 
 ```python
 def calculate_spl_ported_transfer_function(
@@ -209,15 +209,15 @@ for freq in [20, 28, 40, 50, 70, 100, 150, 200]:
 
 ## Files to Modify
 
-1. `src/viberesp/enclosure/sealed_box.py`
+1. `src/gsd/enclosure/sealed_box.py`
    - Add `calculate_spl_from_transfer_function()`
    - Update `sealed_box_electrical_impedance()` to use it
 
-2. `src/viberesp/enclosure/ported_box.py`
+2. `src/gsd/enclosure/ported_box.py`
    - Add `calculate_spl_ported_transfer_function()`
    - Update `ported_box_electrical_impedance()` to use it
 
-3. `src/viberesp/driver/response.py`
+3. `src/gsd/driver/response.py`
    - Update `direct_radiator_electrical_impedance()` to use transfer function
 
 4. `tests/test_*.py`

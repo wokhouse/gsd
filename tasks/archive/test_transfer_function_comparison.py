@@ -11,8 +11,8 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import numpy as np
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
-from viberesp.optimization.objectives.response_metrics import objective_response_flatness
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ds115
+from gsd.optimization.objectives.response_metrics import objective_response_flatness
 
 
 def compare_transfer_function_usage():
@@ -26,7 +26,7 @@ def compare_transfer_function_usage():
 
     # Test WITH transfer function (default, should be calibrated)
     print("\nTesting with use_transfer_function_spl=True (calibrated)...")
-    from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
+    from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
 
     test_freqs = [50, 100, 200]
     spl_with_tf = []
@@ -83,7 +83,7 @@ def compare_ported_box():
     driver = get_bc_15ds115()
     Vb, Fb = 0.100, 30.0
 
-    from viberesp.enclosure.ported_box import (
+    from gsd.enclosure.ported_box import (
         ported_box_electrical_impedance,
         calculate_optimal_port_dimensions
     )

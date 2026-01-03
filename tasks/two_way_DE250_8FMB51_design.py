@@ -19,14 +19,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
-from viberesp.driver import load_driver
-from viberesp.optimization.api.design_assistant import DesignAssistant
-from viberesp.optimization.api.crossover_assistant import CrossoverDesignAssistant
-from viberesp.enclosure.ported_box import (
+from gsd.driver import load_driver
+from gsd.optimization.api.design_assistant import DesignAssistant
+from gsd.optimization.api.crossover_assistant import CrossoverDesignAssistant
+from gsd.enclosure.ported_box import (
     calculate_spl_ported_transfer_function,
     calculate_ported_box_system_parameters
 )
-from viberesp.enclosure.sealed_box import (
+from gsd.enclosure.sealed_box import (
     calculate_spl_from_transfer_function,
     calculate_sealed_box_system_parameters
 )

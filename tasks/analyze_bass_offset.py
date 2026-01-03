@@ -9,8 +9,8 @@ import sys
 sys.path.insert(0, 'src')
 
 import numpy as np
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.enclosure.sealed_box import calculate_spl_from_transfer_function
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
 
 # Driver parameters
 driver = ThieleSmallParameters(

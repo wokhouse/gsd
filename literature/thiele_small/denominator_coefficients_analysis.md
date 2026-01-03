@@ -62,7 +62,7 @@ Where:
 ## CRITICAL BUG FOUND: Incorrect Docstring
 
 ### Location
-File: `src/viberesp/enclosure/ported_box.py`
+File: `src/gsd/enclosure/ported_box.py`
 Lines: 654-664 (docstring)
 
 ### Current (Incorrect) Docstring
@@ -198,7 +198,7 @@ If the denominator coefficients are correct, why is there no peak at Fb?
 
 ### Priority 1: Fix Incorrect Docstring ✅ TODO
 
-**File:** `src/viberesp/enclosure/ported_box.py`
+**File:** `src/gsd/enclosure/ported_box.py`
 **Lines:** 654-664
 
 Change from:

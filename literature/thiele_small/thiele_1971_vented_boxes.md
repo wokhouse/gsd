@@ -373,7 +373,7 @@ Lpt = Lp_eff - ΔL
 
 ---
 
-## Implementation Notes for Viberesp
+## Implementation Notes for GSD
 
 ### 1. Use Consistent Notation
 - Follow Thiele's notation (α, h, Fb, Vb)
@@ -418,4 +418,4 @@ The validation generator should handle these gracefully.
 ---
 
 **Last Updated:** 2025-12-26 (Fungj)
-**Purpose:** Implementation reference for viberesp ported enclosure simulation
+**Purpose:** Implementation reference for gsd ported enclosure simulation

@@ -7,7 +7,7 @@
 
 ## Overview
 
-This document provides a step-by-step guide for validating the viberesp simulation improvements using Hornresp as the reference standard.
+This document provides a step-by-step guide for validating the gsd simulation improvements using Hornresp as the reference standard.
 
 **Three designs spanning the design space:**
 1. **Compact (60L, 34Hz)** - Old model approach, space-saving
@@ -82,11 +82,11 @@ Compare at these frequencies:
 **Critical validation point for improved model:**
 
 At 200 Hz:
-- **Viberesp predicts:** -7.77 dB roll-off from mass + inductance
+- **GSD predicts:** -7.77 dB roll-off from mass + inductance
 - **Hornresp should show:** Similar roll-off (check SPL slope 150-300 Hz)
 
 At 500 Hz:
-- **Viberesp predicts:** Additional -1-2 dB roll-off
+- **GSD predicts:** Additional -1-2 dB roll-off
 - **Hornresp should show:** Continued roll-off
 
 **What to look for:**
@@ -121,7 +121,7 @@ Calculate standard deviation in different ranges:
 **Method:**
 1. Export SPL data from Hornresp
 2. Calculate σ = std(SPL) for frequency range
-3. Compare with viberesp predictions
+3. Compare with gsd predictions
 
 **Expected results:**
 
@@ -284,9 +284,9 @@ After validation:
 - http://www.hornresp.net/
 - User manual: File format specification
 
-**Viberesp:**
-- `src/viberesp/enclosure/ported_box.py` - Simulation model
-- `src/viberesp/hornresp/export.py` - Export function
+**GSD:**
+- `src/gsd/enclosure/ported_box.py` - Simulation model
+- `src/gsd/hornresp/export.py` - Export function
 - `tasks/optimized_bc15ds115_study.py` - Study script
 
 **Literature:**

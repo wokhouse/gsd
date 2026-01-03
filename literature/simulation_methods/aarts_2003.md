@@ -7,7 +7,7 @@
 **DOI:** 10.1121/1.1564019
 **URL:** https://asa.scitation.org/doi/10.1121/1.1564019
 
-**Relevance to Viberesp:** Provides an efficient numerical approximation for the Struve H₁ function used in radiation impedance calculations. Essential for implementing radiation impedance without relying on external special function libraries, or for faster computation than generic scipy implementations.
+**Relevance to GSD:** Provides an efficient numerical approximation for the Struve H₁ function used in radiation impedance calculations. Essential for implementing radiation impedance without relying on external special function libraries, or for faster computation than generic scipy implementations.
 
 ---
 
@@ -269,7 +269,7 @@ This allows users to choose:
 - **scipy**: Default, most accurate
 - **aarts**: Faster, still very accurate
 
-**Validation in Viberesp:**
+**Validation in GSD:**
 
 Use Aarts approximation to validate scipy implementation:
 ```python

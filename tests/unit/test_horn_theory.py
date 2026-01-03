@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from viberesp.simulation import (
+from gsd.simulation import (
     ConicalHorn,
     ExponentialHorn,
     MediumProperties,
@@ -27,7 +27,7 @@ from viberesp.simulation import (
     exponential_horn_tmatrix,
     throat_impedance_from_tmatrix,
 )
-from viberesp.simulation.horn_theory import (
+from gsd.simulation.horn_theory import (
     conical_horn_area,
     calculate_conical_x0,
     conical_horn_impedance_infinite,

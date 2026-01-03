@@ -148,11 +148,11 @@ Use for:
 
 ### Files Updated
 
-1. `src/viberesp/driver/data/BC_DH350.yaml`
+1. `src/gsd/driver/data/BC_DH350.yaml`
    - Updated beaming_freq: 13700 (throat-based)
    - Added explanation of throat vs diaphragm calculation
 
-2. `src/viberesp/driver/data/BC_DH450.yaml`
+2. `src/gsd/driver/data/BC_DH450.yaml`
    - Updated beaming_freq: 13700 (throat-based)
    - Added comparison to DH350
    - Added HLX technology explanation

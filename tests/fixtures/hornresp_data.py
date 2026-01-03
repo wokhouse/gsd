@@ -42,7 +42,7 @@ def sample_exponential_horn():
             - Mouth area: 500 cm² (0.05 m²)
             - Length: 1.5 m
     """
-    from viberesp.simulation.types import ExponentialHorn
+    from gsd.simulation.types import ExponentialHorn
 
     return ExponentialHorn(
         throat_area=0.001,  # 10 cm²

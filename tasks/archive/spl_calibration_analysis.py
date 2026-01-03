@@ -9,8 +9,8 @@ including frequency-by-frequency breakdown and recommendations.
 import sys
 sys.path.insert(0, 'src')
 
-from viberesp.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
-from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
+from gsd.driver.bc_drivers import get_bc_8ndl51, get_bc_15ps100
+from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
 
 
 def load_hornresp_spl(sim_txt_path):

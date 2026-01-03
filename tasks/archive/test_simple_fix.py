@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import numpy as np
 import cmath
 import math
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.simulation.constants import SPEED_OF_SOUND, AIR_DENSITY
 
 
 def calculate_mechanical_impedance_ib(
@@ -25,7 +25,7 @@ def calculate_mechanical_impedance_ib(
     omega = 2 * math.pi * frequency
 
     # Infinite baffle: 2× radiation mass
-    from viberesp.driver.radiation_mass import calculate_radiation_mass
+    from gsd.driver.radiation_mass import calculate_radiation_mass
     M_rad = calculate_radiation_mass(frequency, driver.S_d, SPEED_OF_SOUND, AIR_DENSITY)
     M_ms = driver.M_md + 2.0 * M_rad
 

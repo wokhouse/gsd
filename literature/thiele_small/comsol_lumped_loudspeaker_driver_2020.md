@@ -5,7 +5,7 @@
 **URL:** https://www.comsol.com/model/download/1179101/models.aco.lumped_loudspeaker_driver.pdf
 **DOI:** N/A (Application documentation)
 
-**Relevance to Viberesp:** Provides complete electro-mechano-acoustical equivalent circuit model for moving-coil loudspeakers. Shows how to transform electrical, mechanical, and acoustic domains using impedance and mobility analogies. Includes all Thiele-Small parameters and their relationships.
+**Relevance to GSD:** Provides complete electro-mechano-acoustical equivalent circuit model for moving-coil loudspeakers. Shows how to transform electrical, mechanical, and acoustic domains using impedance and mobility analogies. Includes all Thiele-Small parameters and their relationships.
 
 ---
 
@@ -381,7 +381,7 @@ S_ref = 20·log₁₀(ρc/2π) + 10·log₁₀(η₀) + 20·log₁₀(BL²·R_es
 
 ---
 
-## Implementation Approach for Viberesp
+## Implementation Approach for GSD
 
 ### Phase 1: Define Data Structures
 
@@ -616,7 +616,7 @@ For horn-loaded drivers:
 
 **Implementation Priority:**
 
-For viberesp Phase 3 (Driver Equivalent Circuit):
+For gsd Phase 3 (Driver Equivalent Circuit):
 1. Implement Thiele-Small parameter class
 2. Implement electrical impedance calculation
 3. Implement diaphragm velocity calculation

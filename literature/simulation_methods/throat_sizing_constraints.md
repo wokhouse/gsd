@@ -12,8 +12,8 @@ User correctly identified that bass horn designs had **throat area << driver are
 ### 1. Updated Parameter Space Bounds
 
 **Files Modified:**
-- `src/viberesp/optimization/parameters/exponential_horn_params.py`
-- `src/viberesp/optimization/parameters/multisegment_horn_params.py`
+- `src/gsd/optimization/parameters/exponential_horn_params.py`
+- `src/gsd/optimization/parameters/multisegment_horn_params.py`
 
 **Change:**
 ```python
@@ -33,7 +33,7 @@ throat_max = 1.0 * S_d   # 100% of driver area (no compression)
 
 ### 2. Added Explicit Constraint Function
 
-**File:** `src/viberesp/optimization/constraints/physical.py`
+**File:** `src/gsd/optimization/constraints/physical.py`
 
 **New Function:** `constraint_horn_throat_sizing()`
 
@@ -84,7 +84,7 @@ The constraint is now **automatically active** for all `bass_horn` presets. No c
 
 ### Manual Validation
 ```python
-from viberesp.optimization.constraints.physical import constraint_horn_throat_sizing
+from gsd.optimization.constraints.physical import constraint_horn_throat_sizing
 
 violation = constraint_horn_throat_sizing(
     design_vector, driver, "exponential_horn"
@@ -112,15 +112,15 @@ violation = constraint_horn_throat_sizing(
 
 ## Files Changed
 
-1. `src/viberesp/optimization/parameters/exponential_horn_params.py`
+1. `src/gsd/optimization/parameters/exponential_horn_params.py`
    - Updated bass_horn throat bounds (lines 86-87)
    - Updated documentation (lines 77-85, 146-149)
 
-2. `src/viberesp/optimization/parameters/multisegment_horn_params.py`
+2. `src/gsd/optimization/parameters/multisegment_horn_params.py`
    - Updated bass_horn throat bounds (lines 102-103)
    - Updated typical_ranges (line 235)
 
-3. `src/viberesp/optimization/constraints/physical.py`
+3. `src/gsd/optimization/constraints/physical.py`
    - Added `constraint_horn_throat_sizing()` function (lines 587-679)
 
 ## Next Steps

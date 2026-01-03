@@ -8,7 +8,7 @@
 
 ## What We Implemented
 
-### Core Module: `src/viberesp/simulation/horn_theory.py`
+### Core Module: `src/gsd/simulation/horn_theory.py`
 
 Based on the research agent's recommendations, we implemented the **T-matrix method** for exponential horn simulation.
 
@@ -133,9 +133,9 @@ To validate against Hornresp:
    - Tools → Export → Acoustical Impedance
    - Save as CSV
 
-3. **Run viberesp simulation** with identical parameters:
+3. **Run gsd simulation** with identical parameters:
    ```python
-   from viberesp.simulation import ExponentialHorn, exponential_horn_throat_impedance
+   from gsd.simulation import ExponentialHorn, exponential_horn_throat_impedance
    import numpy as np
 
    horn = ExponentialHorn(throat_area=0.005, mouth_area=0.05, length=0.3)
@@ -188,11 +188,11 @@ Key edge cases handled:
 ## Files Created/Modified
 
 ### Created:
-- `src/viberesp/simulation/horn_theory.py` (384 lines, 96% coverage)
+- `src/gsd/simulation/horn_theory.py` (384 lines, 96% coverage)
 - `tests/unit/test_horn_theory.py` (397 lines, 22 tests)
 
 ### Modified:
-- `src/viberesp/simulation/__init__.py` (added horn theory exports)
+- `src/gsd/simulation/__init__.py` (added horn theory exports)
 
 ### Documentation:
 - `tasks/horn_simulation_research_prompt.md` (research agent prompt)
@@ -202,17 +202,17 @@ Key edge cases handled:
 
 ## Integration with Existing Code
 
-The horn simulation integrates seamlessly with existing viberesp infrastructure:
+The horn simulation integrates seamlessly with existing gsd infrastructure:
 
 ```python
-from viberesp.simulation import (
+from gsd.simulation import (
     ExponentialHorn,           # Existing (uses Olson convention)
     exponential_horn_throat_impedance,  # NEW
     MediumProperties,          # NEW
 )
 
 # Works with existing validation framework
-from viberesp.validation.compare import compare_electrical_impedance
+from gsd.validation.compare import compare_electrical_impedance
 ```
 
 ---

@@ -18,7 +18,7 @@ We need to implement **ported box SPL calculation using vector summation with po
 ## Problem Statement
 
 ### Current Issue
-Viberesp's ported box SPL produces a **fundamentally inverted response** compared to Hornresp:
+GSD's ported box SPL produces a **fundamentally inverted response** compared to Hornresp:
 
 **Hornresp (BC_8FMB51 test case):**
 - Peak: +6.40 dB at **52.5 Hz**
@@ -26,7 +26,7 @@ Viberesp's ported box SPL produces a **fundamentally inverted response** compare
 - 60 Hz: +2.49 dB
 - **Behavior:** 53 Hz > 60 Hz by +3.75 dB (peaks then decreases)
 
-**Viberesp (all 15+ approaches tested):**
+**GSD (all 15+ approaches tested):**
 - Peak: at 60-61 Hz (wrong frequency!)
 - Behavior: 53 Hz < 60 Hz by -4 to -8 dB (monotonic increase)
 
@@ -62,7 +62,7 @@ All standard Small/Thiele transfer function approaches fail because they don't a
 ## Implementation Instructions
 
 ### File to Modify
-`src/viberesp/enclosure/ported_box.py`
+`src/gsd/enclosure/ported_box.py`
 
 ### Function to Implement
 
@@ -420,7 +420,7 @@ The implementation is successful when:
 
 ## Implementation Checklist
 
-- [ ] Read existing code in `src/viberesp/enclosure/ported_box.py`
+- [ ] Read existing code in `src/gsd/enclosure/ported_box.py`
 - [ ] Read validation data in `imports/bookshelf_sim.txt`
 - [ ] Implement `calculate_spl_ported_with_end_correction()`
 - [ ] Add proper docstrings with literature citations
@@ -455,7 +455,7 @@ The implementation is successful when:
 
 **Prepared by:** Claude Code (AI Assistant)
 **Date:** 2025-12-29
-**Repository:** https://github.com/wokhouse/viberesp
+**Repository:** https://github.com/wokhouse/gsd
 **Branch:** fix/ported-box-spl-transfer-function
 **Status:** Ready for implementation
 

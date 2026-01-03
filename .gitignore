@@ -127,7 +127,7 @@ outputs/
 figures/
 examples/output/
 
-# Viberesp working directories
+# GSD working directories
 exports/*.txt
 imports/*.txt
 
@@ -166,7 +166,7 @@ $RECYCLE.BIN/
 # Project-specific
 data/
 # Exception: driver definitions are tracked
-!src/viberesp/driver/data/
+!src/gsd/driver/data/
 *.csv
 *.xlsx
 *.json.bak

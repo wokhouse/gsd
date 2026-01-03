@@ -19,13 +19,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import numpy as np
-from viberesp.driver.bc_drivers import get_bc_8ndl51
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_8ndl51
+from gsd.enclosure.ported_box import (
     calculate_ported_box_system_parameters,
     ported_box_electrical_impedance,
 )
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
-from viberesp.validation.compare import (
+from gsd.hornresp.results_parser import load_hornresp_sim_file
+from gsd.validation.compare import (
     compare_electrical_impedance,
     compare_electrical_impedance_phase,
     compare_spl,

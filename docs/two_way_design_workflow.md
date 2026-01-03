@@ -2,11 +2,11 @@
 
 **Date:** 2025-12-30
 **Status:** Validated and Production Ready
-**Authors:** Viberesp Project with External Research Validation
+**Authors:** GSD Project with External Research Validation
 
 ## Overview
 
-This document describes the validated workflow for designing time-aligned two-way horn-loaded loudspeaker systems using viberesp. The workflow has been validated against external acoustic research and includes proper LR4 crossover simulation with phase modeling.
+This document describes the validated workflow for designing time-aligned two-way horn-loaded loudspeaker systems using gsd. The workflow has been validated against external acoustic research and includes proper LR4 crossover simulation with phase modeling.
 
 ## Quick Start
 
@@ -39,11 +39,11 @@ cat docs/validation/two_way_cabinet_dimensions.md
 
 ### Phase 2: Design LF Enclosure
 
-Use ported box design tools (existing viberesp functionality):
+Use ported box design tools (existing gsd functionality):
 
 ```python
-from viberesp.enclosure.ported_box import calculate_ported_box_system_parameters
-from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+from gsd.enclosure.ported_box import calculate_ported_box_system_parameters
+from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
 # For BC_10NW64 with B4 alignment:
 Vb = driver.V_as  # Use Vas for B4
@@ -60,7 +60,7 @@ port_area, port_length, _ = calculate_optimal_port_dimensions(driver, Vb, Fb)
 For exponential horn with HF driver:
 
 ```python
-from viberesp.simulation.horn_theory import exponential_horn_throat_impedance
+from gsd.simulation.horn_theory import exponential_horn_throat_impedance
 
 # Horn parameters
 throat_area = 0.001  # m² (1" compression driver)
@@ -84,7 +84,7 @@ throat_impedance = exponential_horn_throat_impedance(
 Use the validated LR4 crossover module:
 
 ```python
-from viberesp.crossover.lr4 import apply_lr4_crossover, optimize_crossover_and_alignment
+from gsd.crossover.lr4 import apply_lr4_crossover, optimize_crossover_and_alignment
 
 # Calculate driver responses
 lf_spl = calculate_ported_box_response(...)
@@ -331,8 +331,8 @@ Before building:
 
 ### Core Implementation
 
-- `src/viberesp/crossover/lr4.py` - LR4 crossover implementation
-- `src/viberesp/crossover/__init__.py` - Module exports
+- `src/gsd/crossover/lr4.py` - LR4 crossover implementation
+- `src/gsd/crossover/__init__.py` - Module exports
 
 ### Example Scripts
 

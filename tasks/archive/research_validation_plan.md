@@ -39,7 +39,7 @@ This document outlines a comprehensive research plan for validating the recent w
   - Units used
 
 **Files to Review**:
-- `src/viberesp/driver/radiation_mass.py` (lines 19-86)
+- `src/gsd/driver/radiation_mass.py` (lines 19-86)
 - `literature/horns/beranek_1954.md`
 
 ---
@@ -49,7 +49,7 @@ This document outlines a comprehensive research plan for validating the recent w
 **Objective**: Validate the literature support for the I_active energy-conserving force model.
 
 **Research Steps**:
-1. Read the I_active implementation in `src/viberesp/driver/response.py` (lines 212-269)
+1. Read the I_active implementation in `src/gsd/driver/response.py` (lines 212-269)
 2. Locate cited references:
    - COMSOL (2020), Eq. 4: `P_E = 0.5·Re{V₀·i_c*}`
    - Kolbrek's statements on reactive power
@@ -62,7 +62,7 @@ This document outlines a comprehensive research plan for validating the recent w
 - Identification of any missing citations or alternative formulations
 
 **Files to Review**:
-- `src/viberesp/driver/response.py` (lines 212-269)
+- `src/gsd/driver/response.py` (lines 212-269)
 - Commit message: 1e9abc8
 
 ---
@@ -90,7 +90,7 @@ This document outlines a comprehensive research plan for validating the recent w
 - Assessment of whether the 2× multiplier is empirically justified or theoretically derived
 
 **Files to Review**:
-- `src/viberesp/driver/radiation_mass.py` (lines 19-86, 89-174)
+- `src/gsd/driver/radiation_mass.py` (lines 19-86, 89-174)
 - `tests/unit_driver/test_radiation_mass.py` (lines 29-135)
 
 ---
@@ -115,7 +115,7 @@ This document outlines a comprehensive research plan for validating the recent w
 - Comparison with alternative solving methods (e.g., Newton-Raphson)
 
 **Files to Review**:
-- `src/viberesp/driver/radiation_mass.py` (lines 89-174)
+- `src/gsd/driver/radiation_mass.py` (lines 89-174)
 - `tests/unit_driver/test_radiation_mass.py` (lines 137-237)
 
 ---
@@ -127,8 +127,8 @@ This document outlines a comprehensive research plan for validating the recent w
 **Objective**: Confirm that all drivers are using correct mass parameters.
 
 **Research Steps**:
-1. Review `src/viberesp/driver/parameters.py` for M_md/M_ms implementation
-2. Check `src/viberesp/driver/bc_drivers.py` for correct M_md values
+1. Review `src/gsd/driver/parameters.py` for M_md/M_ms implementation
+2. Check `src/gsd/driver/bc_drivers.py` for correct M_md values
 3. Cross-reference with B&C datasheets:
    - BC_8NDL51: M_md = 26.77 g
    - BC_12NDL76: M_md = 53.0 g
@@ -141,8 +141,8 @@ This document outlines a comprehensive research plan for validating the recent w
 - Assessment of whether M_md vs M_ms naming is consistent with literature
 
 **Files to Review**:
-- `src/viberesp/driver/parameters.py`
-- `src/viberesp/driver/bc_drivers.py`
+- `src/gsd/driver/parameters.py`
+- `src/gsd/driver/bc_drivers.py`
 
 ---
 
@@ -170,7 +170,7 @@ This document outlines a comprehensive research plan for validating the recent w
 - Verification of claimed <0.5 Hz accuracy
 
 **Files to Review**:
-- `src/viberesp/driver/bc_drivers.py`
+- `src/gsd/driver/bc_drivers.py`
 - `tests/unit_driver/test_radiation_mass.py` (lines 239-327)
 
 ---
@@ -288,7 +288,7 @@ This document outlines a comprehensive research plan for validating the recent w
 **Objective**: Ensure all simulation code has proper literature citations.
 
 **Research Steps**:
-1. Review `src/viberesp/driver/radiation_mass.py` docstrings
+1. Review `src/gsd/driver/radiation_mass.py` docstrings
 2. Check each function has:
    - Brief description
    - Literature section with specific references
@@ -303,7 +303,7 @@ This document outlines a comprehensive research plan for validating the recent w
 - Assessment of citation quality
 
 **Files to Review**:
-- `src/viberesp/driver/radiation_mass.py`
+- `src/gsd/driver/radiation_mass.py`
 - `CLAUDE.md` (citation requirements section)
 
 ---
@@ -360,14 +360,14 @@ This document outlines a comprehensive research plan for validating the recent w
 
 ### Task 7.2: Verify Voice Coil Model Consistency
 
-**Objective**: Ensure viberesp and Hornresp use consistent voice coil models.
+**Objective**: Ensure gsd and Hornresp use consistent voice coil models.
 
 **Research Steps**:
 1. Check Hornresp input files for voice coil parameters:
    - Leb (lossy inductance)
    - Ke (inductance extension)
    - Rss (shorting ring resistance)
-2. Verify viberesp uses `voice_coil_model="simple"` to match
+2. Verify gsd uses `voice_coil_model="simple"` to match
 3. Confirm simple model: `Z_vc = Re + jωLe` (no losses)
 4. Assess whether this explains high-frequency discrepancies
 

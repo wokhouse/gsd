@@ -37,7 +37,7 @@ For BC_15DS115 at 200 Hz:
 
 ### Current Code Status
 
-The existing `direct_radiator_electrical_impedance()` in `src/viberesp/driver/response.py`
+The existing `direct_radiator_electrical_impedance()` in `src/gsd/driver/response.py`
 uses the SAME impedance coupling approach (lines 210-226).
 
 **Known limitation already documented:**
@@ -143,11 +143,11 @@ def calculate_spl_from_transfer_function(
 
 ## Files to Modify
 
-1. `src/viberesp/enclosure/sealed_box.py` - Add transfer function SPL
-2. `src/viberesp/enclosure/ported_box.py` - Add transfer function SPL
-3. `src/viberesp/enclosure/sealed_box.py` - Update `sealed_box_electrical_impedance()`
-4. `src/viberesp/enclosure/ported_box.py` - Update `ported_box_electrical_impedance()`
-5. `src/viberesp/optimization/objectives/response_metrics.py` - Will work automatically once SPL is fixed
+1. `src/gsd/enclosure/sealed_box.py` - Add transfer function SPL
+2. `src/gsd/enclosure/ported_box.py` - Add transfer function SPL
+3. `src/gsd/enclosure/sealed_box.py` - Update `sealed_box_electrical_impedance()`
+4. `src/gsd/enclosure/ported_box.py` - Update `ported_box_electrical_impedance()`
+5. `src/gsd/optimization/objectives/response_metrics.py` - Will work automatically once SPL is fixed
 
 ## Validation Plan
 

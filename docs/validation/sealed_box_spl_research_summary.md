@@ -5,15 +5,15 @@
 
 ## Executive Summary
 
-Research agent investigation revealed that **viberesp's Z_mech calculation is theoretically correct** per Small (1972) and Beranek (1954), but **Hornresp uses a different algorithm** that includes **box damping (losses)** not accounted for in standard sealed box theory.
+Research agent investigation revealed that **gsd's Z_mech calculation is theoretically correct** per Small (1972) and Beranek (1954), but **Hornresp uses a different algorithm** that includes **box damping (losses)** not accounted for in standard sealed box theory.
 
 **Key Finding**: Adding box damping (R_box = 2.32 N·s/m) makes electrical impedance match Hornresp within 0.4%, but velocity remains ~30% low due to **Hornresp internal inconsistency** between electrical and mechanical domains.
 
 ## Problem Statement
 
-Viberesp sealed box simulation shows:
-- **Ze error**: +31% (viberesp 73.6 Ω vs Hornresp 56.0 Ω)
-- **Velocity error**: -27% (viberesp 0.124 m/s vs Hornresp 0.171 m/s)
+GSD sealed box simulation shows:
+- **Ze error**: +31% (gsd 73.6 Ω vs Hornresp 56.0 Ω)
+- **Velocity error**: -27% (gsd 0.124 m/s vs Hornresp 0.171 m/s)
 - **SPL error**: -12 dB
 
 ## Investigation Results

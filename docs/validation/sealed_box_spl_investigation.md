@@ -31,7 +31,7 @@ Calculated Hornresp velocity:
 u = ω × Xd = 2π × 100 × 0.000755 = 0.474 m/s
 ```
 
-## Viberesp Results @ 100 Hz
+## GSD Results @ 100 Hz
 
 ```
 Freq:     100.0 Hz
@@ -45,7 +45,7 @@ I_active:  0.142 A
 
 ### 1. Velocity Error (50.7% low)
 ```
-Velocity ratio (viberesp / Hornresp): 0.493
+Velocity ratio (gsd / Hornresp): 0.493
 Expected SPL difference: 20×log10(0.493) = -6.14 dB
 Actual SPL difference: -15.29 dB
 ```
@@ -144,7 +144,7 @@ Z_reflected = 11.11 - 2.6 = 8.51 Ω
 Z_mech_total = BL² / Z_reflected = 7.3² / 8.51 = 6.26 N·s/m
 ```
 
-This is significantly higher than viberesp's 4.43 N·s/m.
+This is significantly higher than gsd's 4.43 N·s/m.
 
 **Additional R_mech needed:** ~1.8 N·s/m
 
@@ -187,12 +187,12 @@ Hornresp might be using a different formula for sealed box impedance that doesn'
 
 ### Option 4: Experimental validation
 - Measure actual driver in sealed box
-- Compare with both viberesp and Hornresp
+- Compare with both gsd and Hornresp
 - Determine which is correct
 
 ## Key Insight
 
-**The mechanical impedance calculation is the root cause.** Current viberesp gives Z_mech = 4.43 N·s/m, but Hornresp's behavior suggests Z_mech ≈ 6.26 N·s/m. This ~40% difference causes:
+**The mechanical impedance calculation is the root cause.** Current gsd gives Z_mech = 4.43 N·s/m, but Hornresp's behavior suggests Z_mech ≈ 6.26 N·s/m. This ~40% difference causes:
 - Lower velocity (0.234 vs 0.474 m/s)
 - Lower SPL (89.64 vs 104.93 dB)
 
@@ -200,8 +200,8 @@ Hornresp might be using a different formula for sealed box impedance that doesn'
 
 ## Files to Review
 
-1. `src/viberesp/enclosure/sealed_box.py` - Lines 266-296 (mechanical impedance)
-2. `src/viberesp/driver/radiation_mass.py` - Mass calculation methods
+1. `src/gsd/enclosure/sealed_box.py` - Lines 266-296 (mechanical impedance)
+2. `src/gsd/driver/radiation_mass.py` - Mass calculation methods
 3. `literature/thiele_small/small_1972_closed_box.md` - Theory reference
 
 ## Test Commands
@@ -212,8 +212,8 @@ PYTHONPATH=src pytest tests/validation/test_sealed_box.py -v
 
 # Single frequency debug
 PYTHONPATH=src python3 -c "
-from viberesp.enclosure.sealed_box import sealed_box_electrical_impedance
-from viberesp.driver.bc_drivers import get_bc_8ndl51
+from gsd.enclosure.sealed_box import sealed_box_electrical_impedance
+from gsd.driver.bc_drivers import get_bc_8ndl51
 
 driver = get_bc_8ndl51()
 result = sealed_box_electrical_impedance(100, driver, Vb=0.03165)

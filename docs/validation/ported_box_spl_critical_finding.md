@@ -14,7 +14,7 @@ The ported box SPL transfer function produces a **fundamentally inverted** respo
 - 60 Hz: +2.49 dB
 - **Behavior**: 53 Hz > 60 Hz by **+3.75 dB** (PEAK then decreases)
 
-### Viberesp Results (ALL APPROACHES)
+### GSD Results (ALL APPROACHES)
 - **Peak**: +14 to +29 dB at **60-61 Hz** (wrong frequency!)
 - 53 Hz: +0.4 to +21 dB
 - 60 Hz: +14 to +29 dB

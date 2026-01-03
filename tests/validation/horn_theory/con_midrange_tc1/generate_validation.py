@@ -31,9 +31,9 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../src'))
 
 import numpy as np
-from viberesp.simulation.types import ConicalHorn
-from viberesp.simulation.horn_theory import conical_horn_throat_impedance
-from viberesp.hornresp.export import export_to_hornresp
+from gsd.simulation.types import ConicalHorn
+from gsd.simulation.horn_theory import conical_horn_throat_impedance
+from gsd.hornresp.export import export_to_hornresp
 
 
 def main():

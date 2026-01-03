@@ -22,18 +22,18 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from viberesp.enclosure.sealed_box import (
+from gsd.enclosure.sealed_box import (
     calculate_sealed_box_system_parameters,
     sealed_box_electrical_impedance,
 )
-from viberesp.hornresp.results_parser import load_hornresp_sim_file
-from viberesp.validation.compare import (
+from gsd.hornresp.results_parser import load_hornresp_sim_file
+from gsd.validation.compare import (
     compare_electrical_impedance,
     compare_electrical_impedance_phase,
     compare_spl,
     generate_validation_report,
 )
-from viberesp.driver import load_driver
+from gsd.driver import load_driver
 
 # Test configuration for BC_8NDL51
 Vb_LITERS_8NDL51 = 31.65  # Box volume for Qtc=0.707 Butterworth alignment

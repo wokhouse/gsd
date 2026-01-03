@@ -10,9 +10,9 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import numpy as np
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.optimization.objectives.response_metrics import objective_response_flatness
-from viberesp.enclosure.ported_box import (
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.optimization.objectives.response_metrics import objective_response_flatness
+from gsd.enclosure.ported_box import (
     calculate_optimal_port_dimensions,
     ported_box_electrical_impedance,
     calculate_ported_box_system_parameters

@@ -16,13 +16,13 @@ import numpy as np
 import pytest
 from pathlib import Path
 
-from viberesp.simulation.types import ExponentialHorn
-from viberesp.simulation.horn_driver_integration import (
+from gsd.simulation.types import ExponentialHorn
+from gsd.simulation.horn_driver_integration import (
     calculate_horn_spl_flow,
     calculate_horn_cutoff_frequency,
 )
-from viberesp.driver.parameters import ThieleSmallParameters
-from viberesp.simulation.horn_theory import MediumProperties
+from gsd.driver.parameters import ThieleSmallParameters
+from gsd.simulation.horn_theory import MediumProperties
 
 
 class TestHornSPLPhysics:

@@ -141,7 +141,7 @@ Despite incorrect impedance model, **SPL simulation works reasonably well**:
 
 ## Files Modified
 
-- `src/viberesp/driver/data/BC_DE250.yaml` - Updated parameters
+- `src/gsd/driver/data/BC_DE250.yaml` - Updated parameters
 
 ## References
 

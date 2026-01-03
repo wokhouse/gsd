@@ -268,15 +268,15 @@ Hornresp uses a similar "lossy inductance" model with adjustable parameters:
 3. Klippel, W. (2005). "Distributed Mechanical Parameters of Loudspeakers." *JAES*, 53(5), 396-408.
 4. Hornresp Manual: http://www.hornresp.net/
 
-## Implementation in Viberesp
+## Implementation in GSD
 
-**File:** `src/viberesp/driver/electrical_impedance.py`
+**File:** `src/gsd/driver/electrical_impedance.py`
 
 **Function:** `voice_coil_impedance_leach(frequency, driver, K, n)`
 
 **Usage:**
 ```python
-from viberesp.driver.electrical_impedance import voice_coil_impedance_leach
+from gsd.driver.electrical_impedance import voice_coil_impedance_leach
 
 # Calculate voice coil impedance at 10 kHz
 Z_vc = voice_coil_impedance_leach(

@@ -4,7 +4,7 @@ This directory contains reference data from Hornresp for validating the baffle s
 
 ## Purpose
 
-Validate the Olson/Stenzel circular baffle model (`viberesp.enclosure.baffle_step.baffle_step_loss_olson()`) against Hornresp's baffle diffraction simulation.
+Validate the Olson/Stenzel circular baffle model (`gsd.enclosure.baffle_step.baffle_step_loss_olson()`) against Hornresp's baffle diffraction simulation.
 
 ## Status
 
@@ -132,6 +132,6 @@ Unit tests in `tests/unit/test_baffle_step.py` don't require Hornresp.
 
 - Olson (1951) - "Direct Radiator Loudspeaker Enclosures", JAES 2(4)
 - Stenzel (1930) - "Circular baffle diffraction theory"
-- `literature/crossovers/olson_1951.md` - Olson reference in viberesp
+- `literature/crossovers/olson_1951.md` - Olson reference in gsd
 - `literature/crossovers/linkwitz_2003.md` - Linkwitz baffle step compensation
 - Hornresp User Manual - http://www.hornresp.net/

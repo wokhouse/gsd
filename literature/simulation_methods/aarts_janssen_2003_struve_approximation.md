@@ -7,7 +7,7 @@
 **DOI:** 10.1121/1.1564019
 **URL:** https://www.researchgate.net/publication/10745236_Approximation_of_the_Struve_function_H1_occurring_in_impedance_calculations
 
-**Relevance to Viberesp:** Provides a simple and accurate approximation for the Struve H₁ function used in circular piston radiation impedance calculations. Essential for efficient numerical implementation without requiring external special function libraries.
+**Relevance to GSD:** Provides a simple and accurate approximation for the Struve H₁ function used in circular piston radiation impedance calculations. Essential for efficient numerical implementation without requiring external special function libraries.
 
 ---
 
@@ -321,7 +321,7 @@ Aarts approximation solves all these problems with a single formula.
 
 **Implementation Recommendations:**
 
-**Primary approach (viberesp):**
+**Primary approach (gsd):**
 ```python
 # Use scipy as primary implementation
 from scipy.special import struve
@@ -344,7 +344,7 @@ def struve_h1(z, method='scipy'):
 - Aarts provides fallback if scipy unavailable
 - Both can be used for cross-validation
 
-**Applications in Viberesp:**
+**Applications in GSD:**
 
 1. **Radiation impedance at horn mouth:**
    - Use in Beranek Eq. 5.20: X₁ = H₁(2ka)/(ka)
@@ -411,7 +411,7 @@ def radiation_impedance_piston(radius, frequency, c=343.0, rho=1.18):
     return Z
 ```
 
-**Validation in Viberesp:**
+**Validation in GSD:**
 
 ```python
 # Test case: compare Aarts vs scipy

@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 from pathlib import Path
 
-from viberesp.hornresp.query_tools import (
+from gsd.hornresp.query_tools import (
     get_simulation_summary,
     extract_columns,
     query_frequency_range,

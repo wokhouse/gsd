@@ -64,7 +64,7 @@ Error: 3.9% ✅ EXCELLENT
 
 ### B4 Alignment (After Fix)
 
-| Freq (Hz) | Hornresp (Ω) | Viberesp (Ω) | Error (%) | Status |
+| Freq (Hz) | Hornresp (Ω) | GSD (Ω) | Error (%) | Status |
 |-----------|--------------|--------------|-----------|--------|
 | 44.9 (peak) | 23.54 | 22.6 | -3.9% | ✅ PASS |
 | 75 (tuning) | ~3 | ~2.8 | ~-7% | ✅ PASS |
@@ -107,7 +107,7 @@ The key validation metric is the impedance **peaks**, which now match within 4%.
 
 ## Code Changes Made
 
-### src/viberesp/enclosure/ported_box.py
+### src/gsd/enclosure/ported_box.py
 
 **Lines 602-694 (ported_box_impedance_small function):**
 ```python
@@ -139,7 +139,7 @@ Z_vc = R_e + R_es * (numerator / denominator)
 
 ## Files Modified
 
-1. `src/viberesp/enclosure/ported_box.py` - Small's Eq. 16 implementation
+1. `src/gsd/enclosure/ported_box.py` - Small's Eq. 16 implementation
 2. `tests/validation/drivers/bc_8ndl51/ported_box/VALIDATION_ISSUE.md` - This file
 
 ---
@@ -156,7 +156,7 @@ Z_vc = R_e + R_es * (numerator / denominator)
 
 ## Code Changes Made
 
-### src/viberesp/enclosure/ported_box.py
+### src/gsd/enclosure/ported_box.py
 
 **Line 607-619 (Small model):**
 ```python
@@ -192,7 +192,7 @@ Z_m_driver = (driver.R_ms + R_box) + ...
 
 ## Files Modified
 
-1. `src/viberesp/enclosure/ported_box.py` - Box damping added
+1. `src/gsd/enclosure/ported_box.py` - Box damping added
 2. `scripts/validate_ported_box_quick.py` - Validation script created
 3. `tests/validation/drivers/bc_8ndl51/ported_box/VALIDATION_ISSUE.md` - This file
 

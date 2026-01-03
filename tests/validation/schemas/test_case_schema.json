@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://viberesp.org/schemas/test_case_schema.json",
+  "$id": "https://gsd.org/schemas/test_case_schema.json",
   "title": "Test Cases Definition",
   "description": "Schema for test cases definition file for a driver/enclosure combination",
   "type": "object",

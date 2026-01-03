@@ -192,12 +192,12 @@ With 1" throat drivers beaming at ~13.7 kHz:
 
 ## Files Updated with Theory Citations
 
-1. `src/viberesp/driver/data/BC_DH350.yaml`
+1. `src/gsd/driver/data/BC_DH350.yaml`
    - Added theory explanation
    - Literature citations (Kolbrek & Dunker, Beranek)
    - Validation notes (matches Hornresp)
 
-2. `src/viberesp/driver/data/BC_DH450.yaml`
+2. `src/gsd/driver/data/BC_DH450.yaml`
    - Same theory as DH350 (same throat size)
    - Comparison notes
    - Theory citations
@@ -219,7 +219,7 @@ Key points:
 4. **Empirically validated**: Matches Hornresp simulation results
 5. **Production ready**: BC_DH350 and BC_DH450 both pass ±3dB validation
 
-The throat-based beaming calculation is the **correct approach** for simulating horn-loaded compression drivers in the viberesp tool.
+The throat-based beaming calculation is the **correct approach** for simulating horn-loaded compression drivers in the gsd tool.
 
 ## References
 

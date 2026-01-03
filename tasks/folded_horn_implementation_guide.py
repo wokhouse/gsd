@@ -18,10 +18,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from viberesp.driver import load_driver
-from viberesp.simulation.types import HyperbolicHorn, MultiSegmentHorn
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.optimization.objectives.response_metrics import objective_f3
+from gsd.driver import load_driver
+from gsd.simulation.types import HyperbolicHorn, MultiSegmentHorn
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.optimization.objectives.response_metrics import objective_f3
 
 
 def analyze_folded_horn_impacts():

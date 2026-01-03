@@ -1,6 +1,6 @@
-# Viberesp Development Roadmap
+# GSD Development Roadmap
 
-This roadmap outlines the development phases for viberesp, a CLI tool for horn-loaded loudspeaker simulation and design.
+This roadmap outlines the development phases for gsd, a CLI tool for horn-loaded loudspeaker simulation and design.
 
 ## Project Vision
 
@@ -140,8 +140,8 @@ Create a validated loudspeaker simulation tool that:
 - [x] Document Hornresp input format (.inp, .txt)
 - [x] Understand parameter naming conventions
 - [x] `hornresp/export.py` with export functionality
-- [x] Map viberesp parameters to Hornresp format
-- [x] Include metadata (driver name, date, viberesp version)
+- [x] Map gsd parameters to Hornresp format
+- [x] Include metadata (driver name, date, gsd version)
 - [x] Test export with B&C drivers
 - [x] Validation data collected for infinite baffle tests (4 drivers)
 
@@ -156,8 +156,8 @@ Create a validated loudspeaker simulation tool that:
 - [x] Implement `hornresp/export.py`
 - [x] `export_to_hornresp()` function
 - [x] `driver_to_hornresp_record()` conversion
-- [x] Map viberesp parameters to Hornresp format
-- [x] Include metadata (driver name, date, viberesp version)
+- [x] Map gsd parameters to Hornresp format
+- [x] Include metadata (driver name, date, gsd version)
 
 4.3 **Results Parser** ✅ (New in Phase 5)
 - [x] Implement `hornresp/results_parser.py`
@@ -166,8 +166,8 @@ Create a validated loudspeaker simulation tool that:
 - [x] `HornrespSimulationResult` dataclass
 
 4.4 **CLI Commands**
-- [ ] `viberesp export <design>` - Export to Hornresp format ✅ (implemented)
-- [ ] `viberesp import <hornresp_file>` - Import from Hornresp (planned)
+- [ ] `gsd export <design>` - Export to Hornresp format ✅ (implemented)
+- [ ] `gsd import <hornresp_file>` - Import from Hornresp (planned)
 
 **Deliverables:**
 - `hornresp/export.py` - Export functionality
@@ -220,7 +220,7 @@ Create a validated loudspeaker simulation tool that:
 
 5.4 **Reporting** (Partial)
 - [x] Text-based validation reports
-- [ ] Side-by-side plots (viberesp vs Hornresp)
+- [ ] Side-by-side plots (gsd vs Hornresp)
 - [ ] HTML validation reports
 - [ ] CI integration (GitHub Actions)
 
@@ -228,7 +228,7 @@ Create a validated loudspeaker simulation tool that:
 
 **Validation Framework:** ✅ Complete
 **Validation Tests:** ⏳ In Progress (blocked by inductance model)
-**CLI Command:** ⏳ Pending (`viberesp validate` command)
+**CLI Command:** ⏳ Pending (`gsd validate` command)
 
 **Blocker:**
 - Voice coil inductance model needs refinement for high-frequency accuracy
@@ -245,24 +245,24 @@ Create a validated loudspeaker simulation tool that:
 ### Completed Tasks
 
 6.1 **Driver Commands** ✅
-- [x] `viberesp driver list` - List B&C test drivers
-- [x] `viberesp driver show <name>` - Show driver parameters
+- [x] `gsd driver list` - List B&C test drivers
+- [x] `gsd driver show <name>` - Show driver parameters
 - [x] Driver parameter validation and storage
 
 6.2 **Export Commands** ✅
-- [x] `viberesp export <driver>` - Export to Hornresp format
-- [x] `viberesp export-all` - Batch export all drivers
+- [x] `gsd export <driver>` - Export to Hornresp format
+- [x] `gsd export-all` - Batch export all drivers
 
 ### Pending Tasks
 
 6.3 **Simulation Commands**
-- [ ] `viberesp simulate <design>` - Run simulation
-- [ ] `viberesp validate <driver>` - Validate against Hornresp (NEW)
+- [ ] `gsd simulate <design>` - Run simulation
+- [ ] `gsd validate <driver>` - Validate against Hornresp (NEW)
   - Compare Ze magnitude and phase
   - Compare SPL
   - Generate validation report
-- [ ] `viberesp simulate --frequency-range <fmin> <fmax>`
-- [ ] `viberesp simulate --output <format>` (csv, json, plot)
+- [ ] `gsd simulate --frequency-range <fmin> <fmax>`
+- [ ] `gsd simulate --output <format>` (csv, json, plot)
 
 6.4 **Visualization**
 - [ ] Frequency response plot (dB vs Hz)
@@ -271,13 +271,13 @@ Create a validated loudspeaker simulation tool that:
 - [ ] Interactive plots (matplotlib with interactive backend)
 
 6.5 **Analysis Tools**
-- [ ] `viberesp analyze cutoff` - Show cutoff frequency
-- [ ] `viberesp analyze efficiency` - Calculate efficiency
-- [ ] `viberesp analyze impedance` - Throat impedance vs frequency
+- [ ] `gsd analyze cutoff` - Show cutoff frequency
+- [ ] `gsd analyze efficiency` - Calculate efficiency
+- [ ] `gsd analyze impedance` - Throat impedance vs frequency
 
 **Deliverables:**
 - Complete `cli.py` with all commands
-- Design storage (JSON format in `~/.viberesp/designs/`)
+- Design storage (JSON format in `~/.gsd/designs/`)
 - Plotting utilities
 - Configuration management
 
@@ -291,7 +291,7 @@ Create a validated loudspeaker simulation tool that:
 ### Tasks
 
 7.1 **Parameter Sweep**
-- [ ] `viberesp sweep parameter <name> --range <min> <max> --steps <n>`
+- [ ] `gsd sweep parameter <name> --range <min> <max> --steps <n>`
 - [ ] Sweep one parameter while holding others constant
 - [ ] Generate results showing effect on:
   - Cutoff frequency
@@ -311,7 +311,7 @@ Create a validated loudspeaker simulation tool that:
   - Maximum horn length
   - Maximum mouth size
   - Minimum throat size (driver compatibility)
-- [ ] `viberesp optimize <design> --objectives <obj1,obj2,...>`
+- [ ] `gsd optimize <design> --objectives <obj1,obj2,...>`
 
 7.3 **Pareto Front Analysis**
 - [ ] Generate Pareto front for competing objectives
@@ -349,7 +349,7 @@ These are not currently planned but may be considered later:
 **Implementation Status:**
 - Sealed boxes: Full simulation + Hornresp validation + B4 alignments
 - Ported boxes: Helmholtz tuning, port sizing, electrical impedance, Hornresp export
-- See `src/viberesp/enclosure/` for implementation details
+- See `src/gsd/enclosure/` for implementation details
 
 ### Advanced Horn Features
 - [ ] Folded horns (folding geometry)

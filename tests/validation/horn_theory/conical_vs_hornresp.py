@@ -19,9 +19,9 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../src'))
 
 import numpy as np
-from viberesp.simulation.types import ConicalHorn
-from viberesp.simulation.horn_theory import conical_horn_throat_impedance
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation.types import ConicalHorn
+from gsd.simulation.horn_theory import conical_horn_throat_impedance
+from gsd.driver.parameters import ThieleSmallParameters
 
 
 def load_hornresp_sim(filepath):

@@ -9,8 +9,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import math
 import cmath
-from viberesp.driver.bc_drivers import get_bc_15ds115
-from viberesp.enclosure.ported_box import calculate_optimal_port_dimensions
+from gsd.driver.bc_drivers import get_bc_15ds115
+from gsd.enclosure.ported_box import calculate_optimal_port_dimensions
 
 
 def debug_transfer_function_at_f(freq, driver, Vb, Fb, Qp=7.0):

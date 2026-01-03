@@ -422,7 +422,7 @@ The improved model with HF roll-off provides significantly different (and more a
 - `literature/thiele_small/thiele_1971_vented_boxes.md`
 
 **Code:**
-- `src/viberesp/enclosure/ported_box.py` - Improved simulation model
+- `src/gsd/enclosure/ported_box.py` - Improved simulation model
 - `tasks/optimized_bc15ds115_study.py` - Study script
 - `tasks/archive/optimize_bc15ds115_ported.py` - Old study (for comparison)
 

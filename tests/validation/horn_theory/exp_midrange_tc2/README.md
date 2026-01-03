@@ -47,12 +47,12 @@ Validate horn driver integration without throat or rear chambers.
 4. Export Acoustical Impedance
 5. Save as `sim.txt`
 
-## Viberesp Validation
+## GSD Validation
 Run:
 ```python
-from viberesp.simulation import ExponentialHorn
-from viberesp.enclosure.front_loaded_horn import FrontLoadedHorn
-from viberesp.driver.parameters import ThieleSmallParameters
+from gsd.simulation import ExponentialHorn
+from gsd.enclosure.front_loaded_horn import FrontLoadedHorn
+from gsd.driver.parameters import ThieleSmallParameters
 
 driver = ThieleSmallParameters(
     M_md=0.008, C_ms=5e-5, R_ms=3.0,

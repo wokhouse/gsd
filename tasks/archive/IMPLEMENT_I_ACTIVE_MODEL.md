@@ -6,7 +6,7 @@
 
 **Status**: Investigation complete, ready for implementation with literature review.
 
-**Impact**: Improves viberesp's accuracy by 78% at high frequencies (5-20 kHz).
+**Impact**: Improves gsd's accuracy by 78% at high frequencies (5-20 kHz).
 
 ---
 
@@ -14,7 +14,7 @@
 
 ### Current Behavior
 
-Viberesp calculates Lorentz force using current magnitude:
+GSD calculates Lorentz force using current magnitude:
 ```python
 F = BL × |I|  # Uses magnitude of complex current
 ```
@@ -99,7 +99,7 @@ Use WebSearch or Context7 to find:
 **If no literature support found:**
 - Do NOT implement I_active model
 - Create documentation explaining the difference instead
-- Mark viberesp as "low-frequency tool" (<500 Hz)
+- Mark gsd as "low-frequency tool" (<500 Hz)
 
 ### Deliverable
 
@@ -115,7 +115,7 @@ Create `tasks/literature_review_force_calculation.md` with:
 
 ### File to Modify
 
-**Primary**: `src/viberesp/driver/response.py`
+**Primary**: `src/gsd/driver/response.py`
 
 **Location**: Lines 213-229 (diaphragm velocity calculation)
 
@@ -263,19 +263,19 @@ def test_infinite_baffle_spl():
 def test_infinite_baffle_spl():
     """Test infinite baffle SPL against Hornresp reference."""
     # Frequency-dependent tolerances
-    freq, spl_viberesp, spl_hornresp = calculate_comparison()
+    freq, spl_gsd, spl_hornresp = calculate_comparison()
 
     if freq < 500:
         # Low frequency: both models agree
-        assert abs(spl_viberesp - spl_hornresp) < 2
+        assert abs(spl_gsd - spl_hornresp) < 2
     elif freq < 2000:
         # Mid frequency: slight difference
-        assert abs(spl_viberesp - spl_hornresp) < 5
+        assert abs(spl_gsd - spl_hornresp) < 5
     else:
         # High frequency: I_active model much better
         # Previous error: 20-26 dB
         # New error: ~6 dB
-        assert abs(spl_viberesp - spl_hornresp) < 10
+        assert abs(spl_gsd - spl_hornresp) < 10
 ```
 
 ### Regression Tests
@@ -392,7 +392,7 @@ def calculate_diaphragm_velocity_with_active_current(
 
 ## Force Calculation Model
 
-Viberesp uses an **energy-conserving force model** that accounts for
+GSD uses an **energy-conserving force model** that accounts for
 voice coil inductance effects at high frequencies.
 
 ### Key Points
@@ -403,8 +403,8 @@ voice coil inductance effects at high frequencies.
 
 ### Comparison with Hornresp
 
-Hornresp and viberesp use different force calculation models:
-- **Viberesp**: F = BL × I_active (energy-conserving)
+Hornresp and gsd use different force calculation models:
+- **GSD**: F = BL × I_active (energy-conserving)
 - **Hornresp**: Similar approach with additional high-frequency corrections
 
 Both tools agree within 3 dB below 500 Hz. Above 2 kHz, differences
@@ -415,7 +415,7 @@ of up to 8 dB may occur due to:
 
 ### Recommendations
 
-- Use viberesp for low-frequency enclosure design (<500 Hz)
+- Use gsd for low-frequency enclosure design (<500 Hz)
 - Use Hornresp for full-range validation when available
 - For high-frequency predictions, allow ±10 dB tolerance
 ```

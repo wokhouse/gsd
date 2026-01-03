@@ -9,17 +9,17 @@ Add CLI commands for both OptimizationScriptFactory and PlotFactory to provide c
 ## Current State
 
 ### Existing CLI Structure
-- Main entry: `src/viberesp/cli.py` using Click framework
+- Main entry: `src/gsd/cli.py` using Click framework
 - Current commands: `driver`, `export`, `validate`, `sim-*`
 - No optimization or plotting CLI commands exist yet
 
 ### Existing Factories
-1. **OptimizationScriptFactory** (`src/viberesp/optimization/factory.py`)
+1. **OptimizationScriptFactory** (`src/gsd/optimization/factory.py`)
    - ✅ Fully implemented
    - Supports configuration-driven optimization
    - Exports results to JSON
 
-2. **PlotFactory** (`src/viberesp/visualization/factory.py`)
+2. **PlotFactory** (`src/gsd/visualization/factory.py`)
    - ✅ Fully implemented
    - Supports 5 plot types (pareto_2d, pareto_3d, spl_response, horn_profile, parameter_distribution)
    - Loads results from JSON files
@@ -28,14 +28,14 @@ Add CLI commands for both OptimizationScriptFactory and PlotFactory to provide c
 
 ### Phase 1: Optimization CLI Commands
 
-Create new file: `src/viberesp/cli/optimize.py`
+Create new file: `src/gsd/cli/optimize.py`
 
-#### Command 1.1: `viberesp optimize run`
+#### Command 1.1: `gsd optimize run`
 
 Run optimization from configuration.
 
 ```bash
-viberesp optimize run \
+gsd optimize run \
     --driver BC_15DS115 \
     --enclosure-type multisegment_horn \
     --objectives f3,flatness \
@@ -72,7 +72,7 @@ viberesp optimize run \
 @click.option('--seed', type=int)
 def optimize_run(driver, enclosure_type, objectives, preset, output, config, pop_size, generations, seed):
     """Run optimization using OptimizationScriptFactory."""
-    from viberesp.optimization import OptimizationScriptFactory, OptimizationConfig
+    from gsd.optimization import OptimizationScriptFactory, OptimizationConfig
 
     # Load config from YAML if provided
     if config:
@@ -103,12 +103,12 @@ def optimize_run(driver, enclosure_type, objectives, preset, output, config, pop
     click.echo(f"✓ Results saved to: {output}")
 ```
 
-#### Command 1.2: `viberesp optimize preset`
+#### Command 1.2: `gsd optimize preset`
 
 Run optimization using predefined presets.
 
 ```bash
-viberesp optimize preset \
+gsd optimize preset \
     --driver BC_15DS115 \
     --preset f3_target \
     --f3-target 35 \
@@ -134,7 +134,7 @@ viberesp optimize preset \
 # ... other preset-specific options
 def optimize_preset(driver, preset, output, **kwargs):
     """Run optimization using predefined preset."""
-    from viberesp.optimization.presets import get_preset_config
+    from gsd.optimization.presets import get_preset_config
 
     # Get preset config
     opt_config = get_preset_config(preset, driver=driver, **kwargs)
@@ -148,12 +148,12 @@ def optimize_preset(driver, preset, output, **kwargs):
     click.echo(f"✓ Preset '{preset}' optimization complete")
 ```
 
-#### Command 1.3: `viberesp optimize list-presets`
+#### Command 1.3: `gsd optimize list-presets`
 
 List all available optimization presets.
 
 ```bash
-viberesp optimize list-presets
+gsd optimize list-presets
 ```
 
 **Implementation:**
@@ -161,7 +161,7 @@ viberesp optimize list-presets
 @cli.command()
 def optimize_list_presets():
     """List all available optimization presets."""
-    from viberesp.optimization.config import _PRESET_CONFIGS
+    from gsd.optimization.config import _PRESET_CONFIGS
 
     click.echo("Available Optimization Presets:")
     for name, config in _PRESET_CONFIGS.items():
@@ -170,14 +170,14 @@ def optimize_list_presets():
 
 ### Phase 2: Plotting CLI Commands
 
-Create new file: `src/viberesp/cli/plot.py`
+Create new file: `src/gsd/cli/plot.py`
 
-#### Command 2.1: `viberesp plot create`
+#### Command 2.1: `gsd plot create`
 
 Create a single plot from optimization results.
 
 ```bash
-viberesp plot create \
+gsd plot create \
     --type pareto_2d \
     --input results.json \
     --output pareto.png \
@@ -223,7 +223,7 @@ def plot_create(plot_type, input_file, output, x_objective, y_objective, z_objec
                 num_designs, design_indices, frequency_min, frequency_max,
                 voltage, dpi, style, show):
     """Create a single plot from optimization results."""
-    from viberesp.visualization import PlotFactory, PlotConfig
+    from gsd.visualization import PlotFactory, PlotConfig
 
     # Build config
     config = PlotConfig(
@@ -254,12 +254,12 @@ def plot_create(plot_type, input_file, output, x_objective, y_objective, z_objec
     click.echo(f"✓ Plot saved to: {output}")
 ```
 
-#### Command 2.2: `viberesp plot batch`
+#### Command 2.2: `gsd plot batch`
 
 Create multiple plots at once.
 
 ```bash
-viberesp plot batch \
+gsd plot batch \
     --input results.json \
     --output-dir plots/ \
     --plots pareto_2d,spl_response,horn_profile
@@ -282,7 +282,7 @@ viberesp plot batch \
 def plot_batch(input_file, output_dir, plots, dpi, style):
     """Create multiple plots from optimization results."""
     from pathlib import Path
-    from viberesp.visualization import PlotFactory, PlotConfig
+    from gsd.visualization import PlotFactory, PlotConfig
 
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -309,12 +309,12 @@ def plot_batch(input_file, output_dir, plots, dpi, style):
     click.echo(f"\n✓ Generated {len(results)} plots in {output_dir}/")
 ```
 
-#### Command 2.3: `viberesp plot auto`
+#### Command 2.3: `gsd plot auto`
 
 Generate all standard plots for optimization results.
 
 ```bash
-viberesp plot auto \
+gsd plot auto \
     --input results.json \
     --output-dir plots/
 ```
@@ -350,7 +350,7 @@ def plot_auto(input_file, output_dir, dpi):
 
     for plot_type, extra_args in standard_plots:
         cmd = [
-            sys.executable, '-m', 'viberesp.cli', 'plot', 'create',
+            sys.executable, '-m', 'gsd.cli', 'plot', 'create',
             '--type', plot_type,
             '--input', input_file,
             '--output', str(output_dir / f"{plot_type}.png"),
@@ -365,12 +365,12 @@ def plot_auto(input_file, output_dir, dpi):
     click.echo(f"✓ Generated {len(standard_plots)} standard plots in {output_dir}/")
 ```
 
-#### Command 2.4: `viberesp plot list-types`
+#### Command 2.4: `gsd plot list-types`
 
 List all available plot types.
 
 ```bash
-viberesp plot list-types
+gsd plot list-types
 ```
 
 **Implementation:**
@@ -378,7 +378,7 @@ viberesp plot list-types
 @cli.command()
 def plot_list_types():
     """List all available plot types."""
-    from viberesp.visualization.factory import PlotFactory
+    from gsd.visualization.factory import PlotFactory
 
     click.echo("Available Plot Types:")
     for plot_type in PlotFactory.PLOT_TYPES:
@@ -387,28 +387,28 @@ def plot_list_types():
 
 ### Phase 3: CLI Integration
 
-#### 3.1: Update `src/viberesp/cli.py`
+#### 3.1: Update `src/gsd/cli.py`
 
 Add new command groups:
 
 ```python
 # Add after existing imports
-from viberesp.cli import optimize, plot
+from gsd.cli import optimize, plot
 
 # Add new command groups
 cli.add_command(optimize.cli)
 cli.add_command(plot.cli)
 ```
 
-#### 3.2: Create `src/viberesp/cli/__init__.py`
+#### 3.2: Create `src/gsd/cli/__init__.py`
 
 ```python
-"""CLI subcommands for viberesp."""
+"""CLI subcommands for gsd."""
 
-from viberesp.cli import optimize, plot
+from gsd.cli import optimize, plot
 ```
 
-#### 3.3: Create `src/viberesp/cli/optimize.py`
+#### 3.3: Create `src/gsd/cli/optimize.py`
 
 ```python
 """Optimization CLI commands.
@@ -459,7 +459,7 @@ def optimize_list_presets():
     pass
 ```
 
-#### 3.4: Create `src/viberesp/cli/plot.py`
+#### 3.4: Create `src/gsd/cli/plot.py`
 
 ```python
 """Plotting CLI commands.
@@ -516,7 +516,7 @@ def plot_list_types():
 
 ```bash
 # Step 1: Run optimization
-viberesp optimize run \
+gsd optimize run \
     --driver BC_15DS115 \
     --enclosure-type multisegment_horn \
     --objectives f3,flatness \
@@ -526,12 +526,12 @@ viberesp optimize run \
     --output bass_horn_results.json
 
 # Step 2: Generate all standard plots
-viberesp plot auto \
+gsd plot auto \
     --input bass_horn_results.json \
     --output-dir plots/
 
 # Step 3: Create custom plot
-viberesp plot create \
+gsd plot create \
     --type pareto_3d \
     --input bass_horn_results.json \
     --x-objective f3 \
@@ -544,14 +544,14 @@ viberesp plot create \
 
 ```bash
 # Use predefined F3 target preset
-viberesp optimize preset \
+gsd optimize preset \
     --driver BC_21DS115 \
     --preset f3_target \
     --f3-target 34 \
     --output subwoofer_opt.json
 
 # Generate plots
-viberesp plot batch \
+gsd plot batch \
     --input subwoofer_opt.json \
     --output-dir subwoofer_plots/ \
     --plots pareto_2d,spl_response,parameter_distribution
@@ -561,7 +561,7 @@ viberesp plot batch \
 
 ```bash
 # Compare first 10 designs
-viberesp plot create \
+gsd plot create \
     --type spl_response \
     --input results.json \
     --num-designs 10 \
@@ -585,7 +585,7 @@ Ensure all commands have comprehensive help text (already in Click decorators).
 ## File Structure After Implementation
 
 ```
-src/viberesp/
+src/gsd/
 ├── cli.py                           # Main CLI entry point (update)
 ├── cli/
 │   ├── __init__.py                  # CLI subcommands package
@@ -601,7 +601,7 @@ src/viberesp/
 
 1. ✅ All optimization commands work (`run`, `preset`, `list-presets`)
 2. ✅ All plotting commands work (`create`, `batch`, `auto`, `list-types`)
-3. ✅ CLI integrates with existing `viberesp` command
+3. ✅ CLI integrates with existing `gsd` command
 4. ✅ Full workflow test: optimize → generate plots → verify outputs
 5. ✅ Comprehensive help text available (`--help`)
 6. ✅ Error handling for invalid inputs
@@ -610,38 +610,38 @@ src/viberesp/
 
 ```bash
 # Test optimization
-viberesp optimize run --driver BC_8NDL51 --enclosure-type sealed --objectives f3,size --output test_opt.json
+gsd optimize run --driver BC_8NDL51 --enclosure-type sealed --objectives f3,size --output test_opt.json
 
 # Test plotting
-viberesp plot create --type pareto_2d --input test_opt.json --output test_pareto.png
+gsd plot create --type pareto_2d --input test_opt.json --output test_pareto.png
 
 # Test batch plotting
-viberesp plot batch --input test_opt.json --output-dir test_plots/ --plots pareto_2d,horn_profile
+gsd plot batch --input test_opt.json --output-dir test_plots/ --plots pareto_2d,horn_profile
 
 # Test auto plots
-viberesp plot auto --input test_opt.json --output-dir auto_plots/
+gsd plot auto --input test_opt.json --output-dir auto_plots/
 
 # Verify help
-viberesp optimize --help
-viberesp optimize run --help
-viberesp plot --help
-viberesp plot create --help
+gsd optimize --help
+gsd optimize run --help
+gsd plot --help
+gsd plot create --help
 ```
 
 ## Implementation Priority
 
 1. **High Priority:**
-   - `viberesp optimize run` - Core optimization command
-   - `viberesp plot create` - Core plotting command
-   - `viberesp plot auto` - Convenience command for standard plots
+   - `gsd optimize run` - Core optimization command
+   - `gsd plot create` - Core plotting command
+   - `gsd plot auto` - Convenience command for standard plots
 
 2. **Medium Priority:**
-   - `viberesp optimize preset` - Preset-based optimization
-   - `viberesp plot batch` - Batch plotting
-   - `viberesp optimize list-presets` - List available presets
+   - `gsd optimize preset` - Preset-based optimization
+   - `gsd plot batch` - Batch plotting
+   - `gsd optimize list-presets` - List available presets
 
 3. **Low Priority:**
-   - `viberesp plot list-types` - List plot types (can use --help)
+   - `gsd plot list-types` - List plot types (can use --help)
    - Advanced options (custom constraints, specialized plotting options)
 
 ## Notes

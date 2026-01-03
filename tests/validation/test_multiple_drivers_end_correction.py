@@ -10,9 +10,9 @@ import sys
 sys.path.insert(0, 'src')
 
 import numpy as np
-from viberesp.driver import load_driver
-from viberesp.enclosure.ported_box_vector_sum import calculate_spl_ported_vector_sum_array
-from viberesp.simulation.constants import SPEED_OF_SOUND
+from gsd.driver import load_driver
+from gsd.enclosure.ported_box_vector_sum import calculate_spl_ported_vector_sum_array
+from gsd.simulation.constants import SPEED_OF_SOUND
 
 
 def parse_hornresp_sim(filepath):
