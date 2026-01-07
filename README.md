@@ -289,19 +289,10 @@ If you use GSD in your research:
 
 ```bibtex
 @software{gsd,
-  author = {bugworks},
+  author = {Jade Fung},
   title = {bugworks GSD: Genetic Speaker Designer},
   year = {2025},
   url = {https://github.com/wokhouse/gsd}
 }
 ```
 
-## Acknowledgments
-
-- **Hornresp** by David McBean - Industry-standard horn simulation
-- **Olson, Beranek, Small, Thiele** - Foundational acoustic theory
-- **Deb et al. (2002)** - NSGA-II genetic algorithm
-
----
-
-**Built with science. Validated with Hornresp. Optimized with evolution.**
