@@ -26,6 +26,7 @@ from gsd.simulation.types import (
     ExponentialHorn,
     FrequencyResponse,
     SimulationResult,
+    TappedHorn,
 )
 
 # Horn theory functions (T-matrix method)
@@ -44,6 +45,13 @@ from gsd.simulation.horn_driver_integration import (
     rear_chamber_impedance,
     horn_system_acoustic_impedance,
     horn_electrical_impedance,
+)
+
+# Tapped horn functions
+from gsd.simulation.tapped_horn_theory import (
+    upstream_section_impedance,
+    downstream_section_impedance,
+    tapped_horn_tap_impedance,
 )
 
 __all__ = [
@@ -69,9 +77,14 @@ __all__ = [
     "rear_chamber_impedance",
     "horn_system_acoustic_impedance",
     "horn_electrical_impedance",
+    # Tapped horn functions
+    "upstream_section_impedance",
+    "downstream_section_impedance",
+    "tapped_horn_tap_impedance",
     # Data structures
     "ConicalHorn",
     "ExponentialHorn",
     "FrequencyResponse",
     "SimulationResult",
+    "TappedHorn",
 ]

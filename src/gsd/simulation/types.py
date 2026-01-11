@@ -835,6 +835,175 @@ class MultiSegmentHorn:
 
 
 @dataclass
+class TappedHorn:
+    """
+    Tapped horn geometry with driver mounted at tap point.
+
+    A tapped horn divides the horn path into upstream (throat-side) and downstream
+    (mouth-side) sections. The driver's front radiates into the upstream section
+    (closed throat), while the rear radiates into the downstream section (open mouth).
+    Both paths combine at the mouth, creating unique interference characteristics
+    that enable efficient low-frequency reproduction in a compact enclosure.
+
+    Literature:
+        Berzborn, M. & Smithers, M. (2018). "An Acoustic Model of the Tapped Horn
+        Loudspeaker." AES Convention Paper 10047.
+
+        Danley, T.J. (2013). US Patent 8,457,341 B2: "Sound reproduction with
+        improved low frequency characteristics."
+
+        Kolbrek, B. "Horn Loudspeaker Simulation" series.
+        https://kolbrek.hornspeakersystems.info/
+
+        literature/horns/tapped_horn_theory.md
+
+    Attributes:
+        upstream_throat_area: Cross-sectional area at closed throat (cm²)
+        tap_area: Cross-sectional area at driver location (cm²)
+        downstream_mouth_area: Cross-sectional area at mouth (cm²)
+        upstream_length: Length from throat to driver (cm)
+        downstream_length: Length from driver to mouth (cm)
+        upstream_profile: Expansion profile for upstream section ('exponential' or 'conical')
+        downstream_profile: Expansion profile for downstream section ('exponential' or 'conical')
+
+    Examples:
+        >>> th = TappedHorn(
+        ...     upstream_throat_area=50.0,
+        ...     tap_area=200.0,
+        ...     downstream_mouth_area=2000.0,
+        ...     upstream_length=40.0,
+        ...     downstream_length=150.0,
+        ...     upstream_profile='exponential',
+        ...     downstream_profile='exponential'
+        ... )
+        >>> th.total_length
+        190.0  # cm
+        >>> th.quarter_wave_frequency
+        215.0  # Hz (approximate)
+    """
+
+    upstream_throat_area: float  # cm²
+    tap_area: float  # cm²
+    downstream_mouth_area: float  # cm²
+    upstream_length: float  # cm
+    downstream_length: float  # cm
+    upstream_profile: str = 'exponential'  # 'exponential' or 'conical'
+    downstream_profile: str = 'exponential'  # 'exponential' or 'conical'
+
+    def __post_init__(self):
+        """Validate tapped horn parameters."""
+        if self.upstream_throat_area <= 0:
+            raise ValueError("upstream_throat_area must be positive")
+        if self.tap_area <= 0:
+            raise ValueError("tap_area must be positive")
+        if self.downstream_mouth_area <= 0:
+            raise ValueError("downstream_mouth_area must be positive")
+        if self.upstream_length <= 0:
+            raise ValueError("upstream_length must be positive")
+        if self.downstream_length <= 0:
+            raise ValueError("downstream_length must be positive")
+        if self.upstream_profile not in ('exponential', 'conical'):
+            raise ValueError("upstream_profile must be 'exponential' or 'conical'")
+        if self.downstream_profile not in ('exponential', 'conical'):
+            raise ValueError("downstream_profile must be 'exponential' or 'conical'")
+
+        # Validate area expansion (must be monotonic)
+        if self.tap_area <= self.upstream_throat_area:
+            raise ValueError(
+                f"tap_area ({self.tap_area}) must be > upstream_throat_area "
+                f"({self.upstream_throat_area})"
+            )
+        if self.downstream_mouth_area <= self.tap_area:
+            raise ValueError(
+                f"downstream_mouth_area ({self.downstream_mouth_area}) must be > tap_area "
+                f"({self.tap_area})"
+            )
+
+    @property
+    def total_length(self) -> float:
+        """Total acoustic path length from throat to mouth (cm)."""
+        return self.upstream_length + self.downstream_length
+
+    @property
+    def quarter_wave_frequency(self) -> float:
+        """
+        Approximate quarter-wave resonance frequency (Hz).
+
+        Based on upstream section length where λ/4 = upstream_length.
+        This is the frequency where the tapped horn's unique interference
+        characteristics are most pronounced.
+
+        Literature:
+            Danley, US Patent 8,457,341 B2 - Quarter-wave resonance operation
+
+        Returns:
+            Quarter-wave frequency in Hz (using c = 34400 cm/s)
+        """
+        c = 34400  # Speed of sound in cm/s (344 m/s)
+        return c / (4 * self.upstream_length)
+
+    def upstream_section(self) -> 'Union[ExponentialHorn, ConicalHorn]':
+        """
+        Get upstream horn section as a horn object.
+
+        Converts area units from cm² to m² and length from cm to m for
+        compatibility with existing horn simulation functions.
+
+        Returns:
+            ExponentialHorn or ConicalHorn representing upstream section
+        """
+        # Convert to m² and m
+        throat_area = self.upstream_throat_area * 1e-4
+        mouth_area = self.tap_area * 1e-4
+        length = self.upstream_length * 1e-2
+
+        if self.upstream_profile == 'exponential':
+            from gsd.simulation.types import ExponentialHorn
+            return ExponentialHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+        else:  # conical
+            from gsd.simulation.types import ConicalHorn
+            return ConicalHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+
+    def downstream_section(self) -> 'Union[ExponentialHorn, ConicalHorn]':
+        """
+        Get downstream horn section as a horn object.
+
+        Converts area units from cm² to m² and length from cm to m for
+        compatibility with existing horn simulation functions.
+
+        Returns:
+            ExponentialHorn or ConicalHorn representing downstream section
+        """
+        # Convert to m² and m
+        throat_area = self.tap_area * 1e-4
+        mouth_area = self.downstream_mouth_area * 1e-4
+        length = self.downstream_length * 1e-2
+
+        if self.downstream_profile == 'exponential':
+            from gsd.simulation.types import ExponentialHorn
+            return ExponentialHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+        else:  # conical
+            from gsd.simulation.types import ConicalHorn
+            return ConicalHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+
+
+@dataclass
 class FrequencyResponse:
     """
     Frequency response data for a horn or driver.
