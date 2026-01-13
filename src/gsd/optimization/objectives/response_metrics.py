@@ -39,7 +39,8 @@ def objective_f3(
     design_vector: np.ndarray,
     driver: ThieleSmallParameters,
     enclosure_type: str,
-    frequency_points: np.ndarray = None
+    frequency_points: np.ndarray = None,
+    voltage: float = 2.83
 ) -> float:
     """
     Calculate -3dB cutoff frequency for minimization.
@@ -254,6 +255,63 @@ def objective_f3(
         # return the lowest frequency measured (excellent bass extension)
         return freq_valid[0]
 
+    elif enclosure_type == "tapped_horn":
+        # Import here to avoid circular imports
+        from gsd.simulation.tapped_horn_theory import tapped_horn_spl_response
+        from gsd.optimization.parameters.tapped_horn_params import decode_tapped_horn_design
+
+        # Decode design vector to TappedHorn object
+        tapped_horn = decode_tapped_horn_design(design_vector, driver)
+
+        # Generate frequency array for F3 calculation (bass range: 20-500 Hz)
+        if frequency_points is None:
+            frequencies = np.logspace(np.log10(20), np.log10(500), 200)
+        else:
+            frequencies = frequency_points
+
+        # Calculate SPL response using three-port v2 (validated 1.32 dB RMS)
+        spl_values = tapped_horn_spl_response(
+            frequencies, tapped_horn, driver, voltage=voltage
+        )
+
+        # Remove NaN values
+        valid_mask = ~np.isnan(spl_values)
+        if np.sum(valid_mask) < 10:
+            return 500.0  # Large penalty if calculation failed
+
+        freq_valid = frequencies[valid_mask]
+        spl_valid = spl_values[valid_mask]
+
+        # Find reference level (max SPL in passband, typically 50-200 Hz for tapped horns)
+        passband_mask = (freq_valid >= 50) & (freq_valid <= 200)
+        if np.sum(passband_mask) > 0:
+            reference_spl = np.max(spl_valid[passband_mask])
+        else:
+            reference_spl = np.max(spl_valid)
+
+        # Find F3: frequency where SPL crosses reference - 3dB
+        # For tapped horns, we want the lower -3dB frequency (bass extension)
+        target_spl = reference_spl - 3.0
+
+        # Iterate through frequencies to find where response crosses -3dB
+        for i in range(len(freq_valid) - 1):
+            below_current = spl_valid[i] < target_spl
+            below_next = spl_valid[i + 1] < target_spl
+
+            # Found crossover: current is below, next is above (or at target)
+            if below_current and not below_next:
+                # Interpolate to find exact F3
+                f1, f2 = freq_valid[i], freq_valid[i + 1]
+                spl1, spl2 = spl_valid[i], spl_valid[i + 1]
+                # Linear interpolation in log-frequency space
+                log_f3 = np.log10(f1) + (np.log10(f2) - np.log10(f1)) * \
+                         (target_spl - spl1) / (spl2 - spl1)
+                f3 = 10 ** log_f3
+                return f3
+
+        # If F3 not found in range, return minimum frequency measured
+        return freq_valid[0]
+
     else:
         raise ValueError(f"Unsupported enclosure type: {enclosure_type}")
 
@@ -458,6 +516,25 @@ def objective_response_flatness(
 
                 # Calculate SPL at this frequency
                 spl = flh.spl_response(freq, voltage=voltage)
+                result = {'SPL': spl}
+            elif enclosure_type == "tapped_horn":
+                # Import here to avoid circular imports
+                from gsd.simulation.tapped_horn_theory import tapped_horn_spl_response
+                from gsd.optimization.parameters.tapped_horn_params import decode_tapped_horn_design
+
+                # Decode design vector to TappedHorn object (only do this once)
+                if not hasattr(objective_response_flatness, '_th_cache') or \
+                   objective_response_flatness._th_cache_key != id(design_vector):
+                    tapped_horn = decode_tapped_horn_design(design_vector, driver)
+                    objective_response_flatness._th_cache = tapped_horn
+                    objective_response_flatness._th_cache_key = id(design_vector)
+                else:
+                    tapped_horn = objective_response_flatness._th_cache
+
+                # Calculate SPL at this frequency using three-port v2
+                spl = tapped_horn_spl_response(
+                    np.array([freq]), tapped_horn, driver, voltage=voltage
+                )[0]
                 result = {'SPL': spl}
             else:
                 raise ValueError(f"Unsupported enclosure type: {enclosure_type}")

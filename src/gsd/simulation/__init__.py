@@ -11,6 +11,8 @@ Literature:
 - literature/transmission_lines/chabassier_tournemenne_2018_tmatrix.md - T-matrix method
 """
 
+from __future__ import annotations
+
 from gsd.simulation.constants import (
     AIR_DENSITY,
     ATMOSPHERIC_PRESSURE,
@@ -47,12 +49,15 @@ from gsd.simulation.horn_driver_integration import (
     horn_electrical_impedance,
 )
 
-# Tapped horn functions
-from gsd.simulation.tapped_horn_theory import (
-    upstream_section_impedance,
-    downstream_section_impedance,
-    tapped_horn_tap_impedance,
-)
+# NOTE: Tapped horn functions are imported lazily via __getattr__ to avoid circular import
+# with driver.parameters. They will be imported on first access.
+#
+# The circular import chain is:
+# - simulation/__init__.py → tapped_horn_theory.py → driver.parameters → simulation.constants
+# - But simulation.constants triggers simulation/__init__.py to be imported before
+#   driver.parameters finishes loading
+#
+# By using lazy imports, we break this cycle.
 
 __all__ = [
     # Constants
@@ -77,10 +82,11 @@ __all__ = [
     "rear_chamber_impedance",
     "horn_system_acoustic_impedance",
     "horn_electrical_impedance",
-    # Tapped horn functions
-    "upstream_section_impedance",
-    "downstream_section_impedance",
-    "tapped_horn_tap_impedance",
+    # Tapped horn functions (lazily imported)
+    "calculate_three_port_pressure",
+    "calculate_three_port_acoustic_impedance",
+    "tapped_horn_spl_response",
+    "calculate_lossy_wavenumber_enhanced",
     # Data structures
     "ConicalHorn",
     "ExponentialHorn",
@@ -88,3 +94,25 @@ __all__ = [
     "SimulationResult",
     "TappedHorn",
 ]
+
+
+def __getattr__(name: str):
+    """
+    Lazy import for tapped horn functions to avoid circular import.
+
+    The circular import occurs because:
+    1. simulation/__init__.py imports tapped_horn_theory
+    2. tapped_horn_theory imports ThieleSmallParameters from driver.parameters
+    3. driver.parameters imports simulation.constants
+    4. simulation.constants triggers simulation/__init__.py to be imported
+    5. But tapped_horn_theory is still loading, creating a circular dependency
+
+    By deferring the import until first access, we break the cycle.
+    """
+    # Tapped horn functions (lazy loaded)
+    if name in ("calculate_three_port_pressure", "calculate_three_port_acoustic_impedance",
+                "tapped_horn_spl_response", "calculate_lossy_wavenumber_enhanced"):
+        from gsd.simulation import tapped_horn_theory
+        return getattr(tapped_horn_theory, name)
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -876,6 +876,19 @@ class TappedHorn:
         upstream_profile: Expansion profile for upstream section ('exponential' or 'conical')
         downstream_profile: Expansion profile for downstream section ('exponential' or 'conical')
         intermediate_area: Optional intermediate area S3 (cm²) for 3-segment downstream
+        flow_resistivity: Internal damping material flow resistivity (Pa·s/m²)
+            - 0: Undamped (no batting)
+            - 400-800: Light batting for tapped horn subwoofers (20-200 Hz)
+                        (σ=500 gives ~12 dB notch depth, typical for commercial TH)
+            - 2000-4000: Polyester batting (for mid/high frequency applications)
+            - 5000-10000: Fiberglass insulation
+            - 20000+: Carpet/felt (very high damping)
+
+        Note: Tapped horn subwoofers require MUCH lower flow resistivity than
+        room acoustics applications. The Miki model was designed for higher
+        frequencies (>500 Hz). For 20-200 Hz range, use σ ≈ 500 Pa·s/m²
+        for realistic 10-15 dB notch depth (calibrated against commercial
+        designs like Danley TH-115, Labhorn).
 
     Examples:
         >>> # 2-segment tapped horn (not Hornresp compatible)
@@ -908,6 +921,7 @@ class TappedHorn:
     upstream_profile: str = 'exponential'  # 'exponential' or 'conical'
     downstream_profile: str = 'exponential'  # 'exponential' or 'conical'
     intermediate_area: float = None  # cm² (S3), optional for 3-segment model
+    flow_resistivity: float = 0.0  # Pa·s/m² (Rayls/m) - Internal damping (0=undamped)
 
     def __post_init__(self):
         """Validate tapped horn parameters."""
@@ -925,6 +939,10 @@ class TappedHorn:
             raise ValueError("upstream_profile must be 'exponential' or 'conical'")
         if self.downstream_profile not in ('exponential', 'conical'):
             raise ValueError("downstream_profile must be 'exponential' or 'conical'")
+
+        # Validate flow_resistivity (can be zero for undamped)
+        if self.flow_resistivity < 0:
+            raise ValueError("flow_resistivity must be >= 0 (0 = undamped)")
 
         # Validate area expansion (must be monotonic)
         if self.tap_area <= self.upstream_throat_area:
