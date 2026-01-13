@@ -7,6 +7,7 @@ satisfy physical and performance requirements:
 - Port velocity limits (chuffing prevention)
 - Qtc ranges (transient response)
 - F3 limits (bass extension requirements)
+- Total length limits (3D printing constraints)
 
 All constraint functions cite relevant literature.
 """
@@ -14,6 +15,7 @@ All constraint functions cite relevant literature.
 from gsd.optimization.constraints.physical import (
     constraint_max_displacement,
     constraint_port_velocity,
+    constraint_total_length,
 )
 from gsd.optimization.constraints.performance import (
     constraint_f3_limit,
@@ -28,6 +30,7 @@ from gsd.optimization.constraints.performance import (
 __all__ = [
     "constraint_max_displacement",
     "constraint_port_velocity",
+    "constraint_total_length",
     "constraint_f3_limit",
     "constraint_f3_target",
     "constraint_qtc_range",

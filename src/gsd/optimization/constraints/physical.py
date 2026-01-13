@@ -917,4 +917,104 @@ def constraint_mouth_loading(
     return violation
 
 
+def constraint_total_length(
+    design_vector: np.ndarray,
+    driver: ThieleSmallParameters,
+    enclosure_type: str,
+    max_length: float,
+    num_segments: int = 2
+) -> float:
+    """
+    Constrain total horn length to fit within physical limits (e.g., 3D printer build volume).
+
+    This constraint allows **asymmetric** segment lengths, unlike the per-segment
+    constraint in the parameter space. The optimizer can allocate length unevenly
+    across segments (e.g., 18cm + 7cm = 25cm total) as long as the sum ≤ max_length.
+
+    Literature:
+        - Olson (1947), Chapter 5 - Horn length and cutoff frequency relationship
+        - Practical manufacturing constraints for 3D printing and speaker cabinet design
+
+    Theory:
+        Traditional approach: Divide max_length by num_segments and constrain each segment.
+        Problem: This forces symmetric designs (L1 = L2 = ... = Ln = max_length/n).
+
+        This constraint allows:
+        - L1 + L2 + ... + Ln ≤ max_length (total length constraint)
+        - Asymmetric allocation: L1 ≠ L2 ≠ ... ≠ Ln
+        - Optimizer can explore designs like (18cm, 7cm) for 25cm max length
+
+        This provides more design flexibility while respecting physical limits.
+
+    Args:
+        design_vector: Horn parameters
+            - Standard 2-seg: [throat, middle, mouth, L1, L2, V_tc, V_rc]
+            - Hyperbolic 2-seg: [throat, middle, mouth, L1, L2, T1, T2, V_tc, V_rc]
+            - Standard 3-seg: [throat, middle, area2, mouth, L1, L2, L3, V_tc, V_rc]
+            - Hyperbolic 3-seg: [throat, middle, area2, mouth, L1, L2, L3, T1, T2, T3, V_tc, V_rc]
+        driver: ThieleSmallParameters instance (not used for this constraint)
+        enclosure_type: Must be "multisegment_horn" or "mixed_profile_horn"
+        max_length: Maximum total horn length in meters
+            - E.g., 0.25 for 250mm 3D printer constraint
+            - E.g., 1.0 for 1 meter maximum practical length
+        num_segments: Number of segments (2 or 3)
+
+    Returns:
+        Constraint violation (positive = violation, negative = satisfied)
+        - Negative: total_length < max_length (constraint satisfied)
+        - Zero: total_length = max_length (at limit)
+        - Positive: total_length > max_length (constraint violated)
+
+    Examples:
+        >>> # Good design: asymmetric segments within limit
+        >>> design = np.array([0.001, 0.01, 0.04, 0.18, 0.07, 0.0])  # L1=18cm, L2=7cm
+        >>> constraint_total_length(design, driver, "multisegment_horn", max_length=0.25, num_segments=2)
+        -0.0  # Satisfied (18cm + 7cm = 25cm exactly)
+
+        >>> # Bad design: exceeds limit
+        >>> design = np.array([0.001, 0.01, 0.04, 0.20, 0.15, 0.0])  # L1=20cm, L2=15cm
+        >>> constraint_total_length(design, driver, "multisegment_horn", max_length=0.25, num_segments=2)
+        0.10  # VIOLATION (20cm + 15cm = 35cm > 25cm)
+
+        >>> # Symmetric design (traditional approach)
+        >>> design = np.array([0.001, 0.01, 0.04, 0.125, 0.125, 0.0])  # L1=L2=12.5cm
+        >>> constraint_total_length(design, driver, "multisegment_horn", max_length=0.25, num_segments=2)
+        -0.0  # Satisfied (12.5cm + 12.5cm = 25cm)
+    """
+    horn_types = ["multisegment_horn", "mixed_profile_horn"]
+    if enclosure_type not in horn_types:
+        return 0.0  # Not applicable for other enclosure types
+
+    # Detect if hyperbolic or mixed profile (has T parameters or profile_type params)
+    # Standard 2-seg: 7 elements, Hyperbolic 2-seg: 9 elements
+    # Standard 3-seg: 9 elements, Hyperbolic 3-seg: 12 elements
+    # Mixed 2-seg: 11 elements (profile_type + T params)
+    expected_standard = 7 + (2 if num_segments == 3 else 0)
+    has_extra_params = len(design_vector) > expected_standard
+
+    # Extract segment lengths
+    if num_segments == 2:
+        # Lengths are at indices 3, 4 for all types
+        length1, length2 = design_vector[3], design_vector[4]
+        total_length = length1 + length2
+    elif num_segments == 3:
+        # For 3-segment, check if hyperbolic or mixed profile
+        # Standard: [areas x4, lengths x3, V_tc, V_rc] = 9 elements
+        # Hyperbolic: [areas x4, lengths x3, T x3, V_tc, V_rc] = 12 elements
+        # Mixed: [areas x4, lengths x3, profile_type x3, T x3, V_tc, V_rc] = 15 elements
+        if has_extra_params:
+            # Lengths at indices 4, 5, 6
+            length1, length2, length3 = design_vector[4], design_vector[5], design_vector[6]
+        else:
+            # Lengths at indices 4, 5, 6
+            length1, length2, length3 = design_vector[4], design_vector[5], design_vector[6]
+        total_length = length1 + length2 + length3
+    else:
+        return 0.0
+
+    # Constraint: total_length ≤ max_length
+    # Return violation (positive if violated)
+    return total_length - max_length
+
+
 

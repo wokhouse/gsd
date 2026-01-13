@@ -28,8 +28,7 @@ def get_multisegment_horn_parameter_space(
     preset: str = "midrange_horn",
     num_segments: int = 2,
     max_length: float = None,
-    max_mouth_area: float = None,
-    max_volume: float = None
+    max_mouth_area: float = None
 ) -> EnclosureParameterSpace:
     """
     Get parameter space for multi-segment horn optimization.
@@ -64,15 +63,17 @@ def get_multisegment_horn_parameter_space(
         driver: ThieleSmallParameters for the driver
         preset: Design preset ("bass_horn", "midrange_horn", "fullrange_horn")
         num_segments: Number of horn segments (2 or 3)
-        max_length: Optional maximum TOTAL horn length in meters (applied per segment)
+        max_length: Optional maximum TOTAL horn length in meters (enforced via constraint)
+            - Uses constraint_total_length to allow asymmetric segment lengths
+            - Example: max_length=0.25 allows designs like (18cm, 7cm) or (12.5cm, 12.5cm)
         max_mouth_area: Optional maximum mouth area in m²
-        max_volume: Optional maximum horn volume in m³ (not yet implemented)
 
     Returns:
         EnclosureParameterSpace: Parameter space definition
 
     Raises:
         ValueError: If preset or num_segments is not recognized
+        Warning: If constraints produce degenerate parameter space
 
     Examples:
         >>> from gsd.driver import load_driver
@@ -164,23 +165,20 @@ def get_multisegment_horn_parameter_space(
             f"Choose from: 'bass_horn', 'midrange_horn', 'fullrange_horn'"
         )
 
-    # Apply size constraints (e.g., for 3D printing limitations)
-    # If max_length is specified, limit per-segment length to max_length / num_segments
-    # This ensures the TOTAL horn length fits within the constraint
-    if max_length is not None:
-        # For num_segments=2, each segment gets max_length/2
-        # For num_segments=3, each segment gets max_length/3
-        per_segment_max = max_length / num_segments
-        # Clamp length_max to the smaller of preset value and constraint
-        length_max = min(length_max, per_segment_max)
-        # Ensure length_min doesn't exceed length_max after constraint
-        length_min = min(length_min, length_max)
-
-    # Apply mouth area constraint
+    # Apply mouth area constraint (bound-based, not constraint function)
+    # This directly limits the search space for the mouth area parameter
     if max_mouth_area is not None:
         mouth_max = min(mouth_max, max_mouth_area)
         # Ensure mouth_min doesn't exceed mouth_max after constraint
         mouth_min = min(mouth_min, mouth_max)
+        # Warn if constraint makes parameter space degenerate
+        if mouth_min >= mouth_max:
+            import warnings
+            warnings.warn(
+                f"max_mouth_area constraint ({max_mouth_area} m²) with preset '{preset}' "
+                f"produces unusable parameter space (mouth_min={mouth_min} ≥ mouth_max={mouth_max}). "
+                f"Increase max_mouth_area or choose a different preset."
+            )
 
     # Build parameter list based on num_segments
     parameters = [
@@ -308,11 +306,22 @@ def get_multisegment_horn_parameter_space(
         "max_displacement",  # Diaphragm protection
     ]
 
+    # Add total_length constraint if max_length is specified
+    # This allows asymmetric segment lengths while respecting the total length limit
+    if max_length is not None:
+        constraints.append("total_length")
+
     return EnclosureParameterSpace(
         enclosure_type="multisegment_horn",
         parameters=parameters,
         typical_ranges=typical_ranges,
         constraints=constraints,
+        # Store max_length and max_mouth_area for constraint system to use
+        metadata={
+            "max_length": max_length,
+            "max_mouth_area": max_mouth_area,
+            "num_segments": num_segments,
+        }
     )
 
 
@@ -801,8 +810,7 @@ def get_mixed_profile_parameter_space(
     preset: str = "midrange_horn",
     num_segments: int = 2,
     max_length: float = None,
-    max_mouth_area: float = None,
-    max_volume: float = None
+    max_mouth_area: float = None
 ) -> EnclosureParameterSpace:
     """
     Get parameter space for mixed-profile multi-segment horn optimization.
@@ -829,9 +837,8 @@ def get_mixed_profile_parameter_space(
         driver: ThieleSmallParameters for the driver
         preset: Design preset ("bass_horn", "midrange_horn", "fullrange_horn")
         num_segments: Number of horn segments (2 or 3)
-        max_length: Optional maximum TOTAL horn length in meters (applied per segment)
+        max_length: Optional maximum TOTAL horn length in meters (enforced via constraint)
         max_mouth_area: Optional maximum mouth area in m²
-        max_volume: Optional maximum horn volume in m³ (not yet implemented)
 
     Returns:
         EnclosureParameterSpace: Parameter space definition with profile type selection
@@ -851,7 +858,7 @@ def get_mixed_profile_parameter_space(
     # Get base parameter space (without profile types or T params)
     base_space = get_multisegment_horn_parameter_space(
         driver, preset=preset, num_segments=num_segments,
-        max_length=max_length, max_mouth_area=max_mouth_area, max_volume=max_volume
+        max_length=max_length, max_mouth_area=max_mouth_area
     )
 
     # Add profile type selection for each segment
