@@ -357,14 +357,8 @@ class DesignAssistant:
         elif enclosure_type == "multisegment_horn":
             # Get preset from constraints, default to midrange_horn
             preset = constraints.get("preset", "midrange_horn") if constraints else "midrange_horn"
-            # Extract size constraints for 3D printing or other physical limitations
-            max_length = constraints.get("max_length") if constraints else None
-            max_mouth_area = constraints.get("max_mouth_area") if constraints else None
-            max_volume = constraints.get("max_volume") if constraints else None
             param_space = get_multisegment_horn_parameter_space(
-                driver, preset=preset, num_segments=num_segments,
-                max_length=max_length, max_mouth_area=max_mouth_area,
-                max_volume=max_volume
+                driver, preset=preset, num_segments=num_segments
             )
         elif enclosure_type == "conical_horn":
             # Get preset from constraints, default to midrange_horn
@@ -373,14 +367,8 @@ class DesignAssistant:
         elif enclosure_type == "mixed_profile_horn":
             # Get preset from constraints, default to midrange_horn
             preset = constraints.get("preset", "midrange_horn") if constraints else "midrange_horn"
-            # Extract size constraints for 3D printing or other physical limitations
-            max_length = constraints.get("max_length") if constraints else None
-            max_mouth_area = constraints.get("max_mouth_area") if constraints else None
-            max_volume = constraints.get("max_volume") if constraints else None
             param_space = get_mixed_profile_parameter_space(
-                driver, preset=preset, num_segments=num_segments,
-                max_length=max_length, max_mouth_area=max_mouth_area,
-                max_volume=max_volume
+                driver, preset=preset, num_segments=num_segments
             )
         else:
             return OptimizationResult(
