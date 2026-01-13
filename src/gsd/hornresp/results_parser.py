@@ -144,12 +144,13 @@ def _validate_parsed_data(
 
     # Check SPL range (should be reasonable for typical systems at 1m, 2.83V)
     # Sealed boxes below resonance can have very low SPL (< 40 dB)
+    # Horns below cutoff have extreme attenuation (can be < -40 dB)
     # High-efficiency horns can have SPL > 120 dB
     # Only flag clearly unreasonable values
-    if np.any(spl_db < 0) or np.any(spl_db > 150):
+    if np.any(spl_db < -100) or np.any(spl_db > 150):
         raise ValueError(
             f"Invalid SPL data in {filepath}: "
-            f"SPL out of reasonable range [0, 150] dB. "
+            f"SPL out of reasonable range [-100, 150] dB. "
             f"Min={np.min(spl_db):.1f} dB, Max={np.max(spl_db):.1f} dB. "
             f"This may indicate reading wrong column (SPL is column 5, index 4)."
         )

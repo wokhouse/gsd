@@ -205,7 +205,40 @@ export_to_hornresp(
    - Cms in scientific notation with exactly 2 decimal places
    - All required sections must be present
 
-4. **Chamber depth (Lrc)**: Auto-calculated if not provided
+4. **Multi-segment horn format (CRITICAL - Segment type labels, NOT L12/L23)**:
+   Hornresp uses **segment type labels** followed by length, NOT `L12`/`L23` labels:
+
+   **2-segment exponential horn example:**
+   ```
+   S1 = 3.56        (throat area in cm²)
+   S2 = 101.50      (middle/junction area in cm²)
+   Exp = 15.00      ← "Exponential segment, 15.00 cm long" (NOT L12!)
+   F12 = 611.42     (flare frequency for segment 1)
+   S2 = 101.50      (middle area repeated)
+   S3 = 401.10      (mouth area in cm²)
+   Exp = 15.00      ← "Exponential segment, 15.00 cm long" (NOT L23!)
+   F23 = 250.78     (flare frequency for segment 2)
+   ```
+
+   **All segment type labels:**
+   - `Exp = <length>` → Exponential segment
+   - `Con = <length>` → Conical segment
+   - `Trx = <length>` → Tractrix segment (where x is variant)
+   - `Obi = <length>` → Oblate spheroidal segment
+   - `Hyp = <length>` → Hyperbolic (catenoidal) segment
+
+   **Key points:**
+   - The LABEL indicates the horn profile type (Exp/Con/etc.)
+   - The VALUE following the label is the segment length in cm
+   - Do NOT use `L12 =` or `L23 =` - use profile type labels instead
+   - Format is position-based: 4 lines per segment (S1, S2, <Type>, Fxx)
+   - S2 is repeated at start of each subsequent segment
+
+5. **Radiation angle setting**:
+   - Use `Cir = -200.00` for half-space (2π steradians) - typical for freestanding speakers
+   - Do NOT use `Cir = 0.73` (this is full sphere, 4π steradians) unless speaker is free-space
+
+6. **Chamber depth (Lrc)**: Auto-calculated if not provided
    - Must be > 0 for sealed/ported boxes (Hornresp requirement)
    - Calculated as cube root of Vb, clamped to physical constraints
    - Constraints: `2×piston_radius ≤ Lrc ≤ Vb/S_piston`
