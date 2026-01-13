@@ -1,0 +1,51 @@
+name: "BC_10MBX64"
+manufacturer: "B&C Speakers"
+model: "10MBX64"
+description: "10 inch Mid-Bass driver"
+
+# Datasheet specifications (for reference)
+datasheet:
+  fs: 65  # Hz
+  re: 5.5  # Ohms
+  qes: 0.27
+  qms: 5.6
+  qts: 0.26
+  vas: 28  # dm³ (28 L)
+  sd: 346  # cm²
+  eta0: 3.2  # %
+  xmax: 4  # mm
+  xvar: 5.5  # mm
+  mms: 32  # g (total moving mass, includes radiation mass)
+  bl: 16.9  # T·m
+  le: 0.39  # mH
+  ebp: 241  # Hz
+
+# Physical parameters (used for ThieleSmallParameters)
+parameters:
+  M_md: 0.0273  # kg - driver mass only (M_ms - radiation mass)
+  C_ms: 1.874e-4  # m/N - compliance (from Fs and M_ms)
+  R_ms: 2.33  # N·s/m - mechanical resistance (from Qms)
+  R_e: 5.5  # Ohms - voice coil DC resistance
+  L_e: 0.39e-3  # H - voice coil inductance
+  BL: 16.9  # T·m - force factor
+  S_d: 0.0346  # m² - effective area
+  X_max: 0.004  # m - maximum linear excursion
+
+# Notes and warnings
+notes: |
+  M_md is driver mass only (excludes radiation mass).
+  The datasheet reports Mms = 32g (total moving mass including radiation mass).
+  Radiation mass at resonance (~4.7g) is subtracted to get M_md = 27.3g.
+
+  Note: There are some inconsistencies in the datasheet Q values.
+  Using M_md = 27.3g, the calculated Q_es = 0.43 and Q_ts = 0.40,
+  which differ from datasheet Q_es = 0.27 and Q_ts = 0.26.
+  The physical parameters (M_md, C_ms, BL) are prioritized to match Fs.
+
+  Radiation mass is calculated internally using Beranek (1954) theory
+  to match Hornresp methodology (2× radiation mass for infinite baffle).
+
+# Literature references
+literature:
+  - "B&C 10MBX64 datasheet"
+  - "https://www.bcspeakers.com/"
