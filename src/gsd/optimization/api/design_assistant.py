@@ -309,6 +309,9 @@ class DesignAssistant:
             get_mixed_profile_parameter_space,
             build_mixed_profile_horn,
         )
+        from gsd.optimization.parameters.tapped_horn_params import (
+            get_tapped_horn_parameter_space,
+        )
         from gsd.optimization.objectives.composite import EnclosureOptimizationProblem
         from gsd.optimization.optimizers.pymoo_interface import run_nsga2
         from gsd.optimization.results.pareto_front import rank_designs
@@ -329,7 +332,7 @@ class DesignAssistant:
             )
 
         # Validate enclosure type
-        supported_types = ["sealed", "ported", "exponential_horn", "multisegment_horn", "conical_horn", "mixed_profile_horn"]
+        supported_types = ["sealed", "ported", "exponential_horn", "multisegment_horn", "conical_horn", "mixed_profile_horn", "tapped_horn"]
         if enclosure_type not in supported_types:
             return OptimizationResult(
                 success=False,
@@ -369,6 +372,12 @@ class DesignAssistant:
             preset = constraints.get("preset", "midrange_horn") if constraints else "midrange_horn"
             param_space = get_mixed_profile_parameter_space(
                 driver, preset=preset, num_segments=num_segments
+            )
+        elif enclosure_type == "tapped_horn":
+            # Get preset from constraints, default to subwoofer
+            preset = constraints.get("preset", "subwoofer") if constraints else "subwoofer"
+            param_space = get_tapped_horn_parameter_space(
+                driver, preset=preset
             )
         else:
             return OptimizationResult(
@@ -445,6 +454,12 @@ class DesignAssistant:
             if enclosure_type == "mixed_profile_horn":
                 # Default mixed profile horn constraints
                 constraint_list.extend(["segment_continuity", "flare_constant_limits"])
+            if enclosure_type == "tapped_horn":
+                # Default tapped horn constraints
+                constraint_list.extend(constraints.get(
+                    "constraint_list",
+                    ["monotonic_expansion", "area_continuity"]
+                ))
 
         # Setup problem
         try:
@@ -788,6 +803,16 @@ class DesignAssistant:
                 f"  • Bass extension: Limited by horn length and mouth size\n"
                 f"  • Complexity: More difficult to design and build\n"
                 f"  • Note: Requires horn simulation (Phase 3) for optimization"
+            )
+        elif enclosure_type == "tapped_horn":
+            return (
+                f"Tapped horn trade-offs:\n"
+                f"  • Efficiency: Very high in passband (+10-15dB vs direct radiator)\n"
+                f"  • Size: Compact for given low-frequency extension\n"
+                f"  • Bandwidth: Narrow (typically 1-2 octaves)\n"
+                f"  • Quarter-wave resonance: Upstream length sets LF cutoff\n"
+                f"  • Driver requirements: High Mms beneficial for QW resonance\n"
+                f"  • Complexity: More complex than front-loaded horns"
             )
         return "Trade-off analysis not available for this enclosure type."
 

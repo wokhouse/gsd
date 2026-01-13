@@ -175,7 +175,9 @@ def _kolbrek_flare_constant(horn: 'ExponentialHorn') -> float:
 def exponential_horn_tmatrix(
     frequencies: FloatArray,
     horn: 'ExponentialHorn',
-    medium: Optional[MediumProperties] = None
+    medium: Optional[MediumProperties] = None,
+    k: Optional[ComplexArray] = None,
+    z_rc: Optional[float] = None
 ) -> Tuple[ComplexArray, ComplexArray, ComplexArray, ComplexArray]:
     """Calculate T-matrix elements for exponential horn.
 
@@ -188,22 +190,30 @@ def exponential_horn_tmatrix(
         [p₁, U₁]ᵀ = [a b; c d][p₂, U₂]ᵀ
 
     Literature:
-        T-matrix elements for exponential horn:
+        Leach (1991) asymmetric T-matrix elements for exponential horn:
 
-        a = exp(mL)[cos(γL) - (m/γ)sin(γL)]
-        b = exp(mL)·j(Z_rc/S₂)(k/γ)sin(γL)
-        c = exp(mL)·j(S₁/Z_rc)(k/γ)sin(γL)
-        d = exp(mL)(S₁/S₂)[cos(γL) + (m/γ)sin(γL)]
+        a = exp(-εL)[cos(λL) + (ε/λ)sin(λL)]
+        b = exp(-εL)·j(ρc/S₁)(k/λ)sin(λL)
+        c = exp(+εL)·j(S₁/ρc)(k/λ)sin(λL)
+        d = exp(+εL)[cos(λL) - (ε/λ)sin(λL)]
 
-        γ = √(k² - m²) (propagation constant)
+        where ε = flare constant = (1/2L)ln(S₂/S₁) (Kolbrek convention)
+              λ = √(k² - ε²) (propagation constant)
 
+        Leach, W. M. (1991). "Introduction to Electroacoustics and
+        Audio Amplifier Design", Chapter on Horns.
         Kolbrek, "Horn Loudspeaker Simulation Part 1"
         literature/horns/kolbrek_horn_theory_tutorial.md
+        Miki (1990) - Porous absorber model (for complex z_rc with damping)
 
     Args:
         frequencies: Array of frequencies [Hz]
         horn: ExponentialHorn geometry parameters
         medium: Acoustic medium properties (uses default if None)
+        k: Optional complex wavenumber array [rad/m]. If None, uses lossless k = ω/c.
+           Providing k allows inclusion of viscous/thermal losses for accurate SPL.
+        z_rc: Optional characteristic impedance [Pa·s/m]. If None, uses medium.z_rc.
+           Providing z_rc allows inclusion of bulk absorptive losses (Miki model).
 
     Returns:
         Tuple of (a, b, c, d) T-matrix element arrays (complex)
@@ -212,6 +222,8 @@ def exponential_horn_tmatrix(
         - When f < f_c, γ is imaginary; sin/cos become sinh/cosh
         - Near f = f_c, use Taylor expansion to avoid γ→0 singularity
         - All arrays have same shape as input frequencies
+        - For lossy simulation (accurate SPL), provide complex k with Im(k) < 0
+        - For porous absorber simulation, provide complex z_rc from Miki model
 
     Examples:
         >>> import numpy as np
@@ -235,9 +247,17 @@ def exponential_horn_tmatrix(
     L = horn.length
     S1 = horn.throat_area
     S2 = horn.mouth_area
-    z_rc = medium.z_rc
+    # Use provided characteristic impedance, or default to medium.z_rc
+    if z_rc is None:
+        z_rc = medium.z_rc
+    else:
+        z_rc = np.atleast_1d(z_rc)
 
-    k = 2 * np.pi * frequencies / medium.c
+    # Use provided complex wavenumber, or calculate lossless k = ω/c
+    if k is None:
+        k = 2 * np.pi * frequencies / medium.c
+    else:
+        k = np.atleast_1d(k)
 
     # γ = √(k² - m²), can be real or imaginary
     # Use complex sqrt to handle f < f_c case

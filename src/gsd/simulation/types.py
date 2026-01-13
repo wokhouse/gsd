@@ -835,6 +835,317 @@ class MultiSegmentHorn:
 
 
 @dataclass
+class TappedHorn:
+    """
+    Tapped horn geometry with driver mounted at tap point.
+
+    A tapped horn divides the horn path into upstream (throat-side) and downstream
+    (mouth-side) sections. The driver's front radiates into the upstream section
+    (closed throat), while the rear radiates into the downstream section (open mouth).
+    Both paths combine at the mouth, creating unique interference characteristics
+    that enable efficient low-frequency reproduction in a compact enclosure.
+
+    Hornresp Compatibility:
+        Hornresp requires at least 3 segments for tapped horns:
+        - S1 (throat) → S2 (tap point, driver location)
+        - S2 → S3 (intermediate point)
+        - S3 → S4 (mouth)
+
+        To match Hornresp's 3-segment model, specify the intermediate_area
+        parameter. The downstream_length will be split proportionally between
+        the two segments based on the area ratios.
+
+    Literature:
+        Berzborn, M. & Smithers, M. (2018). "An Acoustic Model of the Tapped Horn
+        Loudspeaker." AES Convention Paper 10047.
+
+        Danley, T.J. (2013). US Patent 8,457,341 B2: "Sound reproduction with
+        improved low frequency characteristics."
+
+        Kolbrek, B. "Horn Loudspeaker Simulation" series.
+        https://kolbrek.hornspeakersystems.info/
+
+        literature/horns/tapped_horn_theory.md
+
+    Attributes:
+        upstream_throat_area: Cross-sectional area at closed throat S1 (cm²)
+        tap_area: Cross-sectional area at driver location S2 (cm²)
+        downstream_mouth_area: Cross-sectional area at mouth S4 (cm²)
+        upstream_length: Length from throat to driver L12 (cm)
+        downstream_length: Total length from driver to mouth L23+L34 (cm)
+        upstream_profile: Expansion profile for upstream section ('exponential' or 'conical')
+        downstream_profile: Expansion profile for downstream section ('exponential' or 'conical')
+        intermediate_area: Optional intermediate area S3 (cm²) for 3-segment downstream
+        flow_resistivity: Internal damping material flow resistivity (Pa·s/m²)
+            - 0: Undamped (no batting)
+            - 400-800: Light batting for tapped horn subwoofers (20-200 Hz)
+                        (σ=500 gives ~12 dB notch depth, typical for commercial TH)
+            - 2000-4000: Polyester batting (for mid/high frequency applications)
+            - 5000-10000: Fiberglass insulation
+            - 20000+: Carpet/felt (very high damping)
+
+        Note: Tapped horn subwoofers require MUCH lower flow resistivity than
+        room acoustics applications. The Miki model was designed for higher
+        frequencies (>500 Hz). For 20-200 Hz range, use σ ≈ 500 Pa·s/m²
+        for realistic 10-15 dB notch depth (calibrated against commercial
+        designs like Danley TH-115, Labhorn).
+
+    Examples:
+        >>> # 2-segment tapped horn (not Hornresp compatible)
+        >>> th = TappedHorn(
+        ...     upstream_throat_area=50.0,
+        ...     tap_area=200.0,
+        ...     downstream_mouth_area=2000.0,
+        ...     upstream_length=40.0,
+        ...     downstream_length=150.0,
+        ... )
+        >>> # 3-segment tapped horn (Hornresp compatible)
+        >>> th = TappedHorn(
+        ...     upstream_throat_area=150.0,
+        ...     tap_area=855.0,
+        ...     downstream_mouth_area=6000.0,
+        ...     upstream_length=180.0,
+        ...     downstream_length=200.0,
+        ...     intermediate_area=2265.0,  # S3 for 3-segment model
+        ... )
+        >>> th.total_length
+        380.0  # cm
+        >>> th.downstream_segments()  # Returns 2 ExponentialHorn segments
+    """
+
+    upstream_throat_area: float  # cm² (S1)
+    tap_area: float  # cm² (S2)
+    downstream_mouth_area: float  # cm² (S4)
+    upstream_length: float  # cm (L12)
+    downstream_length: float  # cm (L23 + L34)
+    upstream_profile: str = 'exponential'  # 'exponential' or 'conical'
+    downstream_profile: str = 'exponential'  # 'exponential' or 'conical'
+    intermediate_area: float = None  # cm² (S3), optional for 3-segment model
+    flow_resistivity: float = 0.0  # Pa·s/m² (Rayls/m) - Internal damping (0=undamped)
+
+    def __post_init__(self):
+        """Validate tapped horn parameters."""
+        if self.upstream_throat_area <= 0:
+            raise ValueError("upstream_throat_area must be positive")
+        if self.tap_area <= 0:
+            raise ValueError("tap_area must be positive")
+        if self.downstream_mouth_area <= 0:
+            raise ValueError("downstream_mouth_area must be positive")
+        if self.upstream_length <= 0:
+            raise ValueError("upstream_length must be positive")
+        if self.downstream_length <= 0:
+            raise ValueError("downstream_length must be positive")
+        if self.upstream_profile not in ('exponential', 'conical'):
+            raise ValueError("upstream_profile must be 'exponential' or 'conical'")
+        if self.downstream_profile not in ('exponential', 'conical'):
+            raise ValueError("downstream_profile must be 'exponential' or 'conical'")
+
+        # Validate flow_resistivity (can be zero for undamped)
+        if self.flow_resistivity < 0:
+            raise ValueError("flow_resistivity must be >= 0 (0 = undamped)")
+
+        # Validate area expansion (must be monotonic)
+        if self.tap_area <= self.upstream_throat_area:
+            raise ValueError(
+                f"tap_area ({self.tap_area}) must be > upstream_throat_area "
+                f"({self.upstream_throat_area})"
+            )
+        if self.downstream_mouth_area <= self.tap_area:
+            raise ValueError(
+                f"downstream_mouth_area ({self.downstream_mouth_area}) must be > tap_area "
+                f"({self.tap_area})"
+            )
+
+        # Validate intermediate area (if specified)
+        if self.intermediate_area is not None:
+            if self.intermediate_area <= self.tap_area:
+                raise ValueError(
+                    f"intermediate_area ({self.intermediate_area}) must be > tap_area "
+                    f"({self.tap_area})"
+                )
+            if self.downstream_mouth_area <= self.intermediate_area:
+                raise ValueError(
+                    f"downstream_mouth_area ({self.downstream_mouth_area}) must be > intermediate_area "
+                    f"({self.intermediate_area})"
+                )
+
+    @property
+    def total_length(self) -> float:
+        """Total acoustic path length from throat to mouth (cm)."""
+        return self.upstream_length + self.downstream_length
+
+    @property
+    def quarter_wave_frequency(self) -> float:
+        """
+        Approximate quarter-wave resonance frequency (Hz).
+
+        Based on upstream section length where λ/4 = upstream_length.
+        This is the frequency where the tapped horn's unique interference
+        characteristics are most pronounced.
+
+        Literature:
+            Danley, US Patent 8,457,341 B2 - Quarter-wave resonance operation
+
+        Returns:
+            Quarter-wave frequency in Hz (using c = 34400 cm/s)
+        """
+        c = 34400  # Speed of sound in cm/s (344 m/s)
+        return c / (4 * self.upstream_length)
+
+    def upstream_section(self) -> 'Union[ExponentialHorn, ConicalHorn]':
+        """
+        Get upstream horn section as a horn object.
+
+        Converts area units from cm² to m² and length from cm to m for
+        compatibility with existing horn simulation functions.
+
+        Returns:
+            ExponentialHorn or ConicalHorn representing upstream section
+        """
+        # Convert to m² and m
+        throat_area = self.upstream_throat_area * 1e-4
+        mouth_area = self.tap_area * 1e-4
+        length = self.upstream_length * 1e-2
+
+        if self.upstream_profile == 'exponential':
+            from gsd.simulation.types import ExponentialHorn
+            return ExponentialHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+        else:  # conical
+            from gsd.simulation.types import ConicalHorn
+            return ConicalHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+
+    def downstream_section(self) -> 'Union[ExponentialHorn, ConicalHorn]':
+        """
+        Get downstream horn section as a single horn object.
+
+        Converts area units from cm² to m² and length from cm to m for
+        compatibility with existing horn simulation functions.
+
+        Note: If intermediate_area is specified (3-segment model), this
+        returns a single equivalent segment spanning the full downstream length.
+        For proper 3-segment modeling, use downstream_segments() instead.
+
+        Returns:
+            ExponentialHorn or ConicalHorn representing downstream section
+        """
+        # Convert to m² and m
+        throat_area = self.tap_area * 1e-4
+        mouth_area = self.downstream_mouth_area * 1e-4
+        length = self.downstream_length * 1e-2
+
+        if self.downstream_profile == 'exponential':
+            from gsd.simulation.types import ExponentialHorn
+            return ExponentialHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+        else:  # conical
+            from gsd.simulation.types import ConicalHorn
+            return ConicalHorn(
+                throat_area=throat_area,
+                mouth_area=mouth_area,
+                length=length
+            )
+
+    def downstream_segments(self) -> list:
+        """
+        Get downstream horn sections as a list of horn objects.
+
+        For 2-segment model (no intermediate_area), returns a single segment.
+        For 3-segment model (intermediate_area specified), returns two segments
+        matching Hornresp's S2→S3→S4 topology.
+
+        The downstream_length is split proportionally between segments based
+        on the logarithmic area expansion (matching Hornresp's approach).
+
+        Returns:
+            List of ExponentialHorn or ConicalHorn segments
+
+        Examples:
+            >>> th = TappedHorn(
+            ...     upstream_throat_area=150.0,
+            ...     tap_area=855.0,
+            ...     downstream_mouth_area=6000.0,
+            ...     upstream_length=180.0,
+            ...     downstream_length=200.0,
+            ...     intermediate_area=2265.0,
+            ... )
+            >>> segments = th.downstream_segments()
+            >>> len(segments)
+            2
+            >>> segments[0].throat_area * 1e4  # cm²
+            855.0
+            >>> segments[0].mouth_area * 1e4   # cm²
+            2265.0
+            >>> segments[1].throat_area * 1e4  # cm²
+            2265.0
+            >>> segments[1].mouth_area * 1e4   # cm²
+            6000.0
+        """
+        if self.intermediate_area is None:
+            # 2-segment model: single downstream segment
+            return [self.downstream_section()]
+
+        # 3-segment model: split downstream_length into two segments
+        # Hornresp splits the length proportionally to the logarithmic area expansion
+        import numpy as np
+
+        # Calculate logarithmic area ratios
+        log_total = np.log(self.downstream_mouth_area / self.tap_area)
+        log_seg1 = np.log(self.intermediate_area / self.tap_area)
+        log_seg2 = np.log(self.downstream_mouth_area / self.intermediate_area)
+
+        # Split length proportionally
+        length1 = self.downstream_length * (log_seg1 / log_total)
+        length2 = self.downstream_length * (log_seg2 / log_total)
+
+        # Convert to m² and m
+        throat_area_1 = self.tap_area * 1e-4
+        mouth_area_1 = self.intermediate_area * 1e-4
+        length_1 = length1 * 1e-2
+
+        throat_area_2 = self.intermediate_area * 1e-4
+        mouth_area_2 = self.downstream_mouth_area * 1e-4
+        length_2 = length2 * 1e-2
+
+        if self.downstream_profile == 'exponential':
+            from gsd.simulation.types import ExponentialHorn
+            seg1 = ExponentialHorn(
+                throat_area=throat_area_1,
+                mouth_area=mouth_area_1,
+                length=length_1
+            )
+            seg2 = ExponentialHorn(
+                throat_area=throat_area_2,
+                mouth_area=mouth_area_2,
+                length=length_2
+            )
+            return [seg1, seg2]
+        else:  # conical
+            from gsd.simulation.types import ConicalHorn
+            seg1 = ConicalHorn(
+                throat_area=throat_area_1,
+                mouth_area=mouth_area_1,
+                length=length_1
+            )
+            seg2 = ConicalHorn(
+                throat_area=throat_area_2,
+                mouth_area=mouth_area_2,
+                length=length_2
+            )
+            return [seg1, seg2]
+
+
+@dataclass
 class FrequencyResponse:
     """
     Frequency response data for a horn or driver.
