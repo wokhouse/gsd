@@ -14,6 +14,7 @@ import numpy as np
 from scipy.optimize import minimize
 from gsd.driver.bc_drivers import get_bc_15ds115
 from gsd.optimization.objectives.response_metrics import objective_response_flatness
+from gsd.simulation.response_metrics import find_f3_frequency
 from gsd.enclosure.ported_box import (
     calculate_optimal_port_dimensions,
     ported_box_electrical_impedance,
@@ -171,8 +172,8 @@ def evaluate_design(driver, Vb, Fb, port_area, port_length, freq_points=None):
 
     # Find -3dB point
     max_spl = np.max(spl_array)
-    f3_idx = np.where(spl_array < max_spl - 3)[0]
-    f3 = freq_array[f3_idx[0]] if len(f3_idx) > 0 else None
+    f3 = find_f3_frequency(freq_array, spl_array, max_spl,
+                           search_range=(10, 150), filter_type="highpass")
 
     # Find peak
     peak_idx = np.argmax(spl_array)

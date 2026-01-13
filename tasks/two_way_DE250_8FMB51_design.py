@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
 from gsd.driver import load_driver
+from gsd.simulation.response_metrics import find_f3_frequency
 from gsd.optimization.api.design_assistant import DesignAssistant
 from gsd.optimization.api.crossover_assistant import CrossoverDesignAssistant
 from gsd.enclosure.ported_box import (
@@ -136,12 +137,11 @@ def plot_two_way_response(frequencies, lf_response, hf_response, combined_respon
     passband_max = np.max(combined_response[frequencies > 100])
 
     # System F3 point
-    f3_idx = np.where(combined_response < passband_max - 3)[0]
-    if len(f3_idx) > 0:
-        f3 = frequencies[f3_idx[0]]
-        spl_f3 = combined_response[f3_idx[0]]
-        ax.axvline(f3, color='gray', linestyle='--', alpha=0.5, linewidth=1)
-        ax.text(f3*1.05, spl_f3, f'  System F3 = {f3:.1f} Hz', fontsize=9, color='gray')
+    f3 = find_f3_frequency(frequencies, combined_response, passband_max,
+                           search_range=(10, 150), filter_type="highpass")
+    spl_f3 = np.interp(f3, frequencies, combined_response)
+    ax.axvline(f3, color='gray', linestyle='--', alpha=0.5, linewidth=1)
+    ax.text(f3*1.05, spl_f3, f'  System F3 = {f3:.1f} Hz', fontsize=9, color='gray')
 
     # Crossover point
     xo_idx = np.argmin(np.abs(frequencies - f_xo))
@@ -181,11 +181,8 @@ def analyze_response_metrics(frequencies, response):
     """Calculate response metrics."""
     # Find F3
     passband_max = np.max(response[frequencies > 100])
-    f3_idx = np.where(response < passband_max - 3)[0]
-    if len(f3_idx) > 0:
-        f3 = frequencies[f3_idx[0]]
-    else:
-        f3 = frequencies[0]
+    f3 = find_f3_frequency(frequencies, response, passband_max,
+                           search_range=(10, 150), filter_type="highpass")
 
     # Find F10
     f10_idx = np.where(response < passband_max - 10)[0]
