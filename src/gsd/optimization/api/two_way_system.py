@@ -27,6 +27,257 @@ from gsd.optimization.api.design_assistant import DesignAssistant
 from gsd.optimization.api.crossover_assistant import CrossoverDesignAssistant
 
 
+# =============================================================================
+# CONSTANTS - Horn Model Parameters
+# =============================================================================
+
+# Default HF sensitivity for compression drivers (dB)
+# Literature: Typical compression driver sensitivity range 105-110 dB
+DEFAULT_HF_SENSITIVITY_DB = 110.0
+
+# HF beaming rolloff parameters
+# Above 5 kHz, compression drivers exhibit beaming (directivity increases)
+# This causes apparent SPL rolloff at 3 dB/octave
+HF_BEAMING_START_HZ = 5000.0  # Frequency where beaming begins (Hz)
+HF_BEAMING_TRANSITION_HZ = 7000.0  # Transition center frequency (Hz)
+HF_BEAMING_TRANSITION_WIDTH_HZ = 1000.0  # Transition bandwidth (Hz)
+HF_BEAMING_ROLLOFF_DB_PER_OCTAVE = 3.0  # Rolloff rate (dB/octave)
+
+# Horn cutoff rolloff parameters
+# Below cutoff, horn acts as high-pass filter with 12 dB/octave slope
+# Literature: Olson (1947), Section on horn cutoff characteristics
+HORN_CUTOFF_ROLLOFF_DB_PER_OCTAVE = 12.0
+HORN_CUTOFF_TRANSITION_BAND_OCTAVES = 1.5  # Transition region: Fc/2 to 1.5*Fc
+
+# LF passband range for F3 calculation (Hz)
+# Used to determine reference level for -3 dB frequency
+# Literature: Small (1972) - F3 defined relative to driver passband
+LF_PASSBAND_MIN_HZ = 80.0
+LF_PASSBAND_MAX_HZ = 200.0
+
+# System passband range for flatness calculation (Hz)
+# Typical two-way system passband
+SYSTEM_PASSBAND_MIN_HZ = 100.0
+SYSTEM_PASSBAND_MAX_HZ = 10000.0
+
+# Default crossover/horn ratio requirement
+# Horn should be operating 2 octaves above cutoff at crossover frequency
+# Literature: Standard practice for horn-loaded compression drivers
+MIN_CROSSOVER_TO_HORN_CUTOFF_RATIO = 2.0
+
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+def calculate_f3_frequency(
+    freq: np.ndarray,
+    lf_response: np.ndarray,
+    lf_passband_range: Tuple[float, float] = (LF_PASSBAND_MIN_HZ, LF_PASSBAND_MAX_HZ)
+) -> float:
+    """
+    Calculate F3 (-3 dB frequency) using LF driver passband as reference.
+
+    The F3 is the frequency where the response drops 3 dB below the
+    passband level. Uses LF driver passband (80-200 Hz for woofers),
+    NOT system passband (which would be skewed by HF horn).
+
+    This is critical for correct F3 calculation - using the system maximum
+    (including HF horn's 110 dB) would give bogus results like 20 Hz for
+    a box tuned to 46 Hz.
+
+    Literature:
+        - Small (1972) - F3 definition for enclosure systems
+        - Standard definition: F3 is where response is -3 dB relative to passband
+
+    Args:
+        freq: Frequency array (Hz)
+        lf_response: LF driver response (dB SPL)
+        lf_passband_range: (min_freq, max_freq) for LF passband reference (Hz)
+
+    Returns:
+        F3 frequency (Hz), or np.nan if not found in frequency range
+
+    Example:
+        >>> freq = np.logspace(np.log10(20), np.log10(200), 100)
+        >>> response = calculate_ported_response(freq, driver, Vb, Fb)
+        >>> f3 = calculate_f3_frequency(freq, response)
+        >>> print(f"F3 = {f3:.1f} Hz")
+    """
+    # Define passband reference range
+    lf_passband = (freq >= lf_passband_range[0]) & (freq <= lf_passband_range[1])
+
+    if not np.any(lf_passband):
+        return np.nan
+
+    # Find maximum level in passband
+    lf_passband_level = np.max(lf_response[lf_passband])
+    threshold = lf_passband_level - 3
+
+    # Find F3 crossing point with linear interpolation
+    below_threshold = lf_response < threshold
+
+    if not np.any(below_threshold):
+        return np.nan
+
+    # Linear interpolation for precise crossing
+    for i in range(len(freq) - 1):
+        if lf_response[i] < threshold and lf_response[i + 1] >= threshold:
+            f1, f2 = freq[i], freq[i + 1]
+            r1, r2 = lf_response[i], lf_response[i + 1]
+            # Linear interpolation: f = f1 + (threshold - r1) * (f2 - f1) / (r2 - r1)
+            f3 = f1 + (threshold - r1) * (f2 - f1) / (r2 - r1)
+            return f3
+
+    return np.nan
+
+
+def calculate_hf_horn_response(
+    freq: np.ndarray,
+    horn_cutoff: float,
+    hf_sensitivity: float = DEFAULT_HF_SENSITIVITY_DB
+) -> np.ndarray:
+    """
+    Calculate HF horn response including cutoff and beaming effects.
+
+    Models the frequency response of a compression driver on an exponential horn:
+    - Below cutoff: 12 dB/octave high-pass rolloff
+    - Transition region: Smooth blend from cutoff to nominal
+    - Above cutoff: Nominal sensitivity
+    - HF beaming: 3 dB/octave rolloff above 5 kHz
+
+    Literature:
+        - Olson (1947) - Horn cutoff characteristics (12 dB/octave below Fc)
+        - Beranek (1954) - Horn directivity and beaming
+
+    Args:
+        freq: Frequency array (Hz)
+        horn_cutoff: Horn cutoff frequency (Hz)
+        hf_sensitivity: HF driver sensitivity (dB SPL)
+
+    Returns:
+        HF response array (dB SPL)
+
+    Example:
+        >>> freq = np.logspace(np.log10(20), np.log10(20000), 500)
+        >>> response = calculate_hf_horn_response(freq, horn_cutoff=400)
+        >>> assert response.max() == 110  # Default sensitivity
+    """
+    hf_response = np.zeros_like(freq)
+
+    for i, f in enumerate(freq):
+        if f > HF_BEAMING_START_HZ:
+            # HF beaming rolloff (3 dB/octave above 5 kHz)
+            octaves_above = np.log2(f / HF_BEAMING_START_HZ)
+            hf_rolloff = HF_BEAMING_ROLLOFF_DB_PER_OCTAVE * octaves_above
+
+            # Smooth transition using tanh
+            transition = 0.5 * (1 + np.tanh(
+                (f - HF_BEAMING_TRANSITION_HZ) / HF_BEAMING_TRANSITION_WIDTH_HZ
+            ))
+            hf_response[i] = hf_sensitivity - hf_rolloff * transition
+
+        elif f <= horn_cutoff / 2:
+            # Below cutoff: 12 dB/octave rolloff
+            octaves_below = np.log2(max(f, 10) / horn_cutoff)
+            hf_response[i] = hf_sensitivity + octaves_below * HORN_CUTOFF_ROLLOFF_DB_PER_OCTAVE
+
+        elif f <= horn_cutoff * HORN_CUTOFF_TRANSITION_BAND_OCTAVES:
+            # Transition region with smooth blend (Hermite interpolation)
+            blend = (f - horn_cutoff/2) / horn_cutoff
+            blend_smooth = blend * blend * (3 - 2 * blend)  # Hermite: 3x² - 2x³
+
+            octaves_below = np.log2(max(f, 10) / horn_cutoff)
+            below_cutoff = hf_sensitivity + octaves_below * HORN_CUTOFF_ROLLOFF_DB_PER_OCTAVE
+
+            # Smooth transition from below-cutoff to nominal
+            hf_response[i] = below_cutoff * (1 - blend_smooth) + hf_sensitivity * blend_smooth
+
+        else:
+            # Above cutoff: nominal sensitivity
+            hf_response[i] = hf_sensitivity
+
+    return hf_response
+
+
+def calculate_lr4_crossover_gains(
+    freq: np.ndarray,
+    crossover_frequency: float
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate Linkwitz-Riley 4th-order (LR4) crossover filter gains.
+
+    LR4 filters provide:
+    - -24 dB/octave slope on both sides
+    - Perfect summation (0 dB) at crossover when outputs are in phase
+    - 4th-order = cascaded 2nd-order Butterworth filters
+
+    Literature:
+        - Linkwitz (1976) - Active crossover networks
+        - Formula: LP: 1/(1 + (f/fc)^4), HP: 1/(1 + (fc/f)^4)
+
+    Args:
+        freq: Frequency array (Hz)
+        crossover_frequency: Crossover frequency (Hz)
+
+    Returns:
+        (lp_gain_db, hp_gain_db) - Low-pass and high-pass gains in dB
+
+    Example:
+        >>> freq = np.array([100, 1000, 10000])
+        >>> lp_db, hp_db = calculate_lr4_crossover_gains(freq, 1000)
+        >>> # At crossover: both at -6 dB (sum to 0 dB)
+        >>> assert lp_db[1] == hp_db[1]  # Both -6 dB at fc
+    """
+    ratio = freq / crossover_frequency
+
+    # LR4: 4th order Linkwitz-Riley
+    # Low-pass: 1 / (1 + (f/fc)^4)
+    # High-pass: 1 / (1 + (fc/f)^4)
+    lp_gain = 1.0 / (1.0 + ratio**4)
+    hp_gain = 1.0 / (1.0 + (1.0/ratio)**4)
+
+    # Convert to dB (add small value to avoid log(0))
+    lp_gain_db = 20 * np.log10(lp_gain + 1e-10)
+    hp_gain_db = 20 * np.log10(hp_gain + 1e-10)
+
+    return lp_gain_db, hp_gain_db
+
+
+def calculate_system_flatness(
+    freq: np.ndarray,
+    system_response: np.ndarray,
+    passband_range: Tuple[float, float] = (SYSTEM_PASSBAND_MIN_HZ, SYSTEM_PASSBAND_MAX_HZ)
+) -> float:
+    """
+    Calculate system flatness (peak-to-peak variation in passband).
+
+    Flatness is the difference between maximum and minimum SPL in the
+    specified passband range. Lower is better.
+
+    Literature:
+        - D'Appolito (1984) - System flatness optimization
+        - Industry standard: <6 dB flatness across 100 Hz - 10 kHz
+
+    Args:
+        freq: Frequency array (Hz)
+        system_response: Combined system response (dB SPL)
+        passband_range: (min_freq, max_freq) for flatness calculation (Hz)
+
+    Returns:
+        Flatness in dB (peak-to-peak variation), or np.inf if invalid
+    """
+    passband = (freq >= passband_range[0]) & (freq <= passband_range[1])
+
+    if not np.any(passband):
+        return np.inf
+
+    passband_response = system_response[passband]
+    flatness = np.max(passband_response) - np.min(passband_response)
+
+    return flatness
+
+
 @dataclass
 class TwoWaySystemDesign:
     """
@@ -114,6 +365,9 @@ def optimize_hf_padding_for_flatness(
     for typical woofers), not the system passband which would be skewed by
     the HF horn's higher sensitivity.
 
+    PERFORMANCE: This function is optimized to calculate LF response, HF response,
+    and crossover gains only ONCE, then reuse them for each padding value.
+
     Literature:
         - Small (1972) - F3 definition for enclosure systems
         - D'Appolito (1984) - System flatness optimization
@@ -131,6 +385,9 @@ def optimize_hf_padding_for_flatness(
     Returns:
         Optimal HF padding in dB
 
+    Raises:
+        ValueError: If enclosure type is unsupported or no valid responses found
+
     Example:
         >>> optimal_pad = optimize_hf_padding_for_flatness(
         ...     lf_driver_name="BC_12FW88",
@@ -144,6 +401,15 @@ def optimize_hf_padding_for_flatness(
         Optimal HF padding: -15.50 dB
     """
     from gsd.enclosure.ported_box import calculate_spl_ported_transfer_function
+    from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
+
+    # Validate inputs
+    valid_enclosure_types = ['sealed', 'ported']
+    if lf_enclosure_type not in valid_enclosure_types:
+        raise ValueError(
+            f"Unsupported enclosure type: {lf_enclosure_type}. "
+            f"Must be one of {valid_enclosure_types}"
+        )
 
     # Load drivers
     lf_driver = load_driver(lf_driver_name)
@@ -152,7 +418,11 @@ def optimize_hf_padding_for_flatness(
     # Frequency array
     freq = np.logspace(np.log10(20), np.log10(20000), 500)
 
-    # Get LF response
+    # ========================================================================
+    # Calculate ONCE: LF response, HF response, crossover gains
+    # ========================================================================
+
+    # Get LF response (calculate once, reuse for all padding values)
     if lf_enclosure_type == "ported":
         Vb = lf_enclosure_params["Vb"]
         Fb = lf_enclosure_params["Fb"]
@@ -161,85 +431,47 @@ def optimize_hf_padding_for_flatness(
             for f in freq
         ])
     elif lf_enclosure_type == "sealed":
-        from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
         Vb = lf_enclosure_params["Vb"]
         lf_response = np.array([
             calculate_spl_from_transfer_function(f, lf_driver, Vb)
             for f in freq
         ])
     else:
+        # This should never be reached due to validation above
         raise ValueError(f"Unsupported enclosure type: {lf_enclosure_type}")
 
-    # Get horn parameters
+    # Get horn parameters and calculate HF response (calculate once)
     horn_fc = horn_params.get("cutoff", 800)
-    hf_sensitivity = 110  # Default for compression drivers
+    hf_response = calculate_hf_horn_response(freq, horn_fc, DEFAULT_HF_SENSITIVITY_DB)
 
-    # Calculate HF response (horn model)
-    hf_response = np.zeros_like(freq)
-    for i, f in enumerate(freq):
-        if f > 5000:
-            # HF beaming rolloff
-            hf_rolloff = 3 * np.log2(f / 5000)
-            transition = 0.5 * (1 + np.tanh((f - 7000) / 1000))
-            hf_response[i] = hf_sensitivity - hf_rolloff * transition
-        elif f <= horn_fc / 2:
-            # Below cutoff: 12 dB/octave rolloff
-            octaves_below = np.log2(max(f, 10) / horn_fc)
-            hf_response[i] = hf_sensitivity + octaves_below * 12
-        elif f <= horn_fc * 1.5:
-            # Transition region with smooth blend
-            blend = (f - horn_fc/2) / horn_fc
-            blend_smooth = blend * blend * (3 - 2 * blend)
-            octaves_below = np.log2(max(f, 10) / horn_fc)
-            below_cutoff = hf_sensitivity + octaves_below * 12
-            hf_response[i] = below_cutoff * (1 - blend_smooth) + hf_sensitivity * blend_smooth
-        else:
-            # Above cutoff: nominal sensitivity
-            hf_response[i] = hf_sensitivity
+    # Calculate LR4 crossover gains (calculate once)
+    lp_gain_db, hp_gain_db = calculate_lr4_crossover_gains(freq, crossover_frequency)
 
-    # Calculate LF passband level (for F3 reference)
-    # Use 80-200 Hz range for woofer passband
-    lf_passband = (freq >= 80) & (freq <= 200)
-    lf_passband_level = np.max(lf_response[lf_passband])
+    # ========================================================================
+    # Sweep HF padding values (only recalculate what changes)
+    # ========================================================================
 
-    # Sweep HF padding values
     padding_values = np.linspace(padding_range[0], padding_range[1], num_steps)
     flatness_values = []
 
     for pad in padding_values:
-        # Apply padding
+        # Apply padding (only this changes)
         hf_padded = hf_response + pad
 
-        # Apply LR4 crossover
-        lp_gain = np.zeros_like(freq)
-        hp_gain = np.zeros_like(freq)
-
-        for i, f in enumerate(freq):
-            ratio = f / crossover_frequency
-            # LR4: 4th order Linkwitz-Riley
-            lp_gain[i] = 1.0 / (1.0 + ratio**4)
-            hp_gain[i] = 1.0 / (1.0 + (1.0/ratio)**4)
-
-        lp_gain_db = 20 * np.log10(lp_gain + 1e-10)
-        hp_gain_db = 20 * np.log10(hp_gain + 1e-10)
-
-        # Combine responses
+        # Combine responses with pre-calculated gains
         lf_combined = lf_response + lp_gain_db
         hf_combined = hf_padded + hp_gain_db
 
-        # Power sum
+        # Power sum (acoustic summation)
         system_response = 10 * np.log10(
             10**(lf_combined/10) + 10**(hf_combined/10)
         )
 
         # Calculate flatness in passband
-        passband = (freq >= 100) & (freq <= 10000)
-        if np.sum(passband) > 0:
-            passband_response = system_response[passband]
-            flatness = np.max(passband_response) - np.min(passband_response)
-        else:
-            flatness = np.inf
-
+        flatness = calculate_system_flatness(
+            freq, system_response,
+            passband_range=(SYSTEM_PASSBAND_MIN_HZ, SYSTEM_PASSBAND_MAX_HZ)
+        )
         flatness_values.append(flatness)
 
     # Find optimal (minimum flatness)
@@ -274,6 +506,7 @@ def design_two_way_system(
     2. Optimize HF horn (if compression driver) with constraints
     3. Design crossover using CrossoverDesignAssistant
     4. Optimize HF padding for bi-amped systems (optional)
+    5. Calculate final system performance metrics
 
     Literature:
         - Small (1972) - Enclosure alignment theory
@@ -296,6 +529,10 @@ def design_two_way_system(
     Returns:
         TwoWaySystemDesign with complete specification
 
+    Raises:
+        ValueError: If invalid enclosure type, crossover range, or optimization fails
+        FileNotFoundError: If driver names are not found in database
+
     Example:
         >>> design = design_two_way_system(
         ...     lf_driver_name="BC_12FW88",
@@ -311,7 +548,58 @@ def design_two_way_system(
         This function requires that drivers be available in the driver database.
         For compression drivers, horn_params will be generated automatically.
     """
-    # Step 1: Optimize LF enclosure
+    # ========================================================================
+    # INPUT VALIDATION
+    # ========================================================================
+
+    # Validate enclosure type
+    valid_enclosure_types = ['sealed', 'ported', 'horn']
+    if lf_enclosure_type not in valid_enclosure_types:
+        raise ValueError(
+            f"Invalid enclosure_type: {lf_enclosure_type}. "
+            f"Must be one of {valid_enclosure_types}"
+        )
+
+    # Validate crossover range
+    if crossover_range[0] >= crossover_range[1]:
+        raise ValueError(
+            f"Invalid crossover_range: min ({crossover_range[0]}) >= max ({crossover_range[1]}). "
+            f"Min must be less than max."
+        )
+
+    if crossover_range[0] < 100:
+        raise ValueError(
+            f"Invalid crossover_range: min ({crossover_range[0]} Hz) too low. "
+            f"Minimum crossover frequency is 100 Hz."
+        )
+
+    if crossover_range[1] > 20000:
+        raise ValueError(
+            f"Invalid crossover_range: max ({crossover_range[1]} Hz) too high. "
+            f"Maximum crossover frequency is 20 kHz."
+        )
+
+    # Validate horn constraints if provided
+    if horn_constraints is not None:
+        if "target_cutoff" in horn_constraints:
+            target_cutoff = horn_constraints["target_cutoff"]
+            if target_cutoff < 100 or target_cutoff > 5000:
+                raise ValueError(
+                    f"Invalid target_cutoff: {target_cutoff} Hz. "
+                    f"Must be between 100 and 5000 Hz."
+                )
+
+        if "max_length" in horn_constraints:
+            max_length = horn_constraints["max_length"]
+            if max_length <= 0 or max_length > 10:
+                raise ValueError(
+                    f"Invalid max_length: {max_length} m. "
+                    f"Must be between 0 and 10 meters."
+                )
+
+    # ========================================================================
+    # STEP 1: Optimize LF Enclosure
+    # ========================================================================
     print("Step 1: Optimizing LF enclosure...")
     assistant = DesignAssistant(validation_mode=False)
 
@@ -331,7 +619,9 @@ def design_two_way_system(
         k: float(v) for k, v in best_lf['parameters'].items()
     }
 
-    # Step 2: Design crossover
+    # ========================================================================
+    # STEP 2: Design Crossover
+    # ========================================================================
     print("\nStep 2: Designing crossover...")
     xo_assistant = CrossoverDesignAssistant(validation_mode=False)
 
@@ -343,11 +633,6 @@ def design_two_way_system(
     if is_compression_driver and horn_constraints:
         # Generate horn parameters based on constraints
         # This is a simplified approach - for production, use proper horn optimization
-        from gsd.optimization.parameters.exponential_horn_params import (
-            calculate_horn_cutoff_frequency
-        )
-
-        # Default horn parameters (user should override with proper optimization)
         target_cutoff = horn_constraints.get("target_cutoff", 500)
         horn_params = {
             "cutoff": target_cutoff,
@@ -364,7 +649,9 @@ def design_two_way_system(
         crossover_range=crossover_range,
     )
 
-    # Step 3: Optimize HF padding for bi-amped systems
+    # ========================================================================
+    # STEP 3: Optimize HF Padding for Bi-amped Systems
+    # ========================================================================
     if optimize_hf_padding and horn_params:
         print("\nStep 3: Optimizing HF padding for bi-amped system...")
         hf_padding = optimize_hf_padding_for_flatness(
@@ -378,15 +665,19 @@ def design_two_way_system(
     else:
         hf_padding = crossover_design.hf_padding_db
 
-    # Step 4: Calculate final system performance
+    # ========================================================================
+    # STEP 4: Calculate Final System Performance
+    # ========================================================================
     print("\nStep 4: Calculating final system performance...")
     from gsd.enclosure.ported_box import calculate_spl_ported_transfer_function
+    from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
 
     lf_driver = load_driver(lf_driver_name)
 
     # Calculate responses with final padding
     freq = np.logspace(np.log10(20), np.log10(20000), 500)
 
+    # Get LF response
     if lf_enclosure_type == "ported":
         Vb = lf_enclosure_params["Vb"]
         Fb = lf_enclosure_params["Fb"]
@@ -395,35 +686,54 @@ def design_two_way_system(
             for f in freq
         ])
     elif lf_enclosure_type == "sealed":
-        from gsd.enclosure.sealed_box import calculate_spl_from_transfer_function
         Vb = lf_enclosure_params["Vb"]
         lf_response = np.array([
             calculate_spl_from_transfer_function(f, lf_driver, Vb)
             for f in freq
         ])
+    else:
+        raise ValueError(f"Unsupported enclosure type: {lf_enclosure_type}")
 
-    # Calculate F3 (using LF driver passband)
-    lf_passband = (freq >= 80) & (freq <= 200)
-    lf_passband_level = np.max(lf_response[lf_passband])
-    threshold = lf_passband_level - 3
+    # Calculate F3 using helper function (LF driver passband reference)
+    f3 = calculate_f3_frequency(
+        freq, lf_response,
+        lf_passband_range=(LF_PASSBAND_MIN_HZ, LF_PASSBAND_MAX_HZ)
+    )
 
-    # Find F3 crossing point
-    below_threshold = lf_response < threshold
-    f3 = np.nan
-    if np.any(below_threshold):
-        for i in range(len(freq) - 1):
-            if lf_response[i] < threshold and lf_response[i + 1] >= threshold:
-                # Linear interpolation
-                f1, f2 = freq[i], freq[i + 1]
-                r1, r2 = lf_response[i], lf_response[i + 1]
-                f3 = f1 + (threshold - r1) * (f2 - f1) / (r2 - r1)
-                break
+    # Calculate full system flatness (not just LF)
+    if horn_params:
+        # Get HF response
+        horn_fc = horn_params.get("cutoff", 800)
+        hf_response = calculate_hf_horn_response(freq, horn_fc, DEFAULT_HF_SENSITIVITY_DB)
 
-    # Calculate system flatness
-    # (Would need full system response calculation - placeholder for now)
-    flatness = best_lf['objectives']['flatness']
+        # Apply HF padding
+        hf_response_padded = hf_response + hf_padding
 
-    # Calculate system level
+        # Get crossover gains
+        lp_gain_db, hp_gain_db = calculate_lr4_crossover_gains(
+            freq, crossover_design.crossover_frequency
+        )
+
+        # Combine responses
+        lf_combined = lf_response + lp_gain_db
+        hf_combined = hf_response_padded + hp_gain_db
+
+        # Power sum for system response
+        system_response = 10 * np.log10(
+            10**(lf_combined/10) + 10**(hf_combined/10)
+        )
+
+        # Calculate system flatness (full system, not just LF)
+        flatness = calculate_system_flatness(
+            freq, system_response,
+            passband_range=(SYSTEM_PASSBAND_MIN_HZ, SYSTEM_PASSBAND_MAX_HZ)
+        )
+    else:
+        # No horn, use LF-only flatness as approximation
+        flatness = best_lf['objectives']['flatness']
+
+    # Calculate system level (LF passband)
+    lf_passband = (freq >= LF_PASSBAND_MIN_HZ) & (freq <= LF_PASSBAND_MAX_HZ)
     system_level = np.max(lf_response[lf_passband])
 
     return TwoWaySystemDesign(
