@@ -11,8 +11,8 @@ Literature:
     - Olson (1947) - Horn geometry practical limits
 """
 
-from dataclasses import dataclass
-from typing import Dict, Tuple, List
+from dataclasses import dataclass, field
+from typing import Dict, Tuple, List, Optional
 import numpy as np
 
 
@@ -56,11 +56,13 @@ class EnclosureParameterSpace:
         parameters: List of ParameterRange objects
         typical_ranges: Dict of typical values for reference designs
         constraints: List of constraint function names to apply
+        metadata: Optional dict with additional constraint parameters (e.g., max_length)
     """
     enclosure_type: str
     parameters: List[ParameterRange]
     typical_ranges: Dict[str, Tuple[float, float]]
     constraints: List[str] = None
+    metadata: Dict = field(default_factory=dict)
 
     def get_bounds_dict(self) -> Dict[str, Tuple[float, float]]:
         """Return parameter bounds as dictionary."""

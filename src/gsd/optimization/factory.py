@@ -215,6 +215,7 @@ class OptimizationScriptFactory:
             constraint_horn_throat_sizing,
             constraint_max_displacement,
             constraint_mouth_loading,
+            constraint_total_length,
         )
         from gsd.optimization.constraints.performance import (
             constraint_f3_limit,
@@ -248,6 +249,23 @@ class OptimizationScriptFactory:
             def volume_limit_constraint(X, driver, enclosure_type):
                 return constraint_volume_limit(X, driver, enclosure_type, max_volume_liters=volume_limit)
             constraints.append(("volume_limit", volume_limit_constraint))
+
+        # Handle total_length constraint from parameter space metadata
+        # This allows asymmetric segment lengths (e.g., 18cm + 7cm = 25cm total)
+        if self.param_space and "total_length" in self.param_space.constraints:
+            metadata = self.param_space.metadata or {}
+            max_length = metadata.get("max_length")
+            num_segments = metadata.get("num_segments", 2)
+
+            if max_length is not None:
+                # Create wrapper function with max_length and num_segments
+                def total_length_constraint(X, driver, enclosure_type):
+                    return constraint_total_length(
+                        X, driver, enclosure_type,
+                        max_length=max_length,
+                        num_segments=num_segments
+                    )
+                constraints.append(("total_length", total_length_constraint))
 
         return constraints
 
