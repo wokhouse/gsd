@@ -1,0 +1,49 @@
+name: "BC_12FW88"
+manufacturer: "B&C Speakers"
+model: "12FW88-8"
+description: "12 inch Mid-Bass driver"
+
+# Datasheet specifications (for reference)
+datasheet:
+  fs: 53  # Hz
+  re: 5.1  # Ohms
+  qts: 0.33
+  qes: 0.35
+  qms: 7.7
+  vas: 45.7  # dm³ (45.7 L)
+  sd: 531  # cm²
+  bl: 19.5  # T·m
+  mms: 76.4  # g - total moving mass including radiation mass
+  xmax: 8  # mm
+  xvar: 8.6  # mm
+  le: 0.9  # mH
+  eta0: 2.05  # % - reference efficiency
+  ebp: 151  # Hz - efficiency-bandwidth product
+
+# Physical parameters (used for ThieleSmallParameters)
+parameters:
+  M_md: 0.0626  # kg - driver mass only (calculated from Mms - radiation mass)
+  C_ms: 0.000117  # m/N - compliance (calculated from Vas)
+  R_ms: 3.30  # N·s/m - mechanical resistance (calculated from Qms)
+  R_e: 5.1  # Ohms - voice coil DC resistance
+  L_e: 0.9e-3  # H - voice coil inductance
+  BL: 19.5  # T·m - force factor
+  S_d: 0.0531  # m² - effective area
+  X_max: 0.008  # m - maximum linear excursion
+
+# Notes and warnings
+notes: |
+  M_md is driver mass only (excludes radiation mass).
+  The datasheet reports Mms = 76.4g (total mass including radiation), which
+  is consistent with Fs and Cms. Radiation mass at resonance is ~6.9g,
+  so M_md = 76.4g - 2×6.9g = 62.6g driver mass only.
+
+  Radiation mass is calculated internally using Beranek (1954) theory
+  to match Hornresp methodology (2× radiation mass for infinite baffle).
+
+  C_ms calculated from Vas: C_ms = Vas / (ρ₀·c²·S_d²)
+  R_ms calculated from Qms: R_ms = 2π·F_s·M_ms / Q_ms
+
+# Literature references
+literature:
+  - "B&C 12FW88 datasheet"
