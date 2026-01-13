@@ -273,6 +273,49 @@ The LR4 crossover implementation was validated against external acoustic researc
 
 ## Troubleshooting
 
+### Issue: 20 dB dip at crossover (CRITICAL)
+
+**Cause:** Filters applied in dB domain instead of linear power domain
+**Symptoms:**
+- Filtered outputs ~66 dB instead of ~90 dB
+- Combined response shows massive dip
+- LR4 appears to fail
+
+**Fix:**
+```python
+# Convert to linear FIRST
+hf_linear = 10**(spl_hf/10)
+lf_linear = 10**(spl_lf/10)
+
+# Apply filters
+hf_filtered_linear = hf_linear * hp_filter**2
+lf_filtered_linear = lf_linear * lp_filter**2
+
+# Combine and convert back
+combined = 10 * np.log10(hf_filtered_linear + lf_filtered_linear)
+```
+**Verification:** At crossover, filtered outputs should be -6 dB from passband
+
+### Issue: HF region 6-7 dB below LF passband
+
+**Cause:** HF padded to match LF at crossover instead of LF passband maximum
+**Symptoms:**
+- HF passband outside ±3 dB tolerance band
+- Passband variation > 6 dB
+- System sensitivity lower than expected
+
+**Fix:**
+```python
+# Find LF passband MAXIMUM
+passband_mask = (freq >= 100) & (freq <= 10000)
+lf_max_idx = np.argmax(spl_lf[passband_mask])
+spl_lf_max = spl_lf[passband_mask][lf_max_idx]
+
+# Pad HF to match maximum (not crossover level)
+padding_db = spl_hf_pb - spl_lf_max
+```
+**Verification:** HF passband should be within ±3 dB of system maximum
+
 ### Issue: Massive spikes in crossover response
 
 **Cause:** Hilbert transform truncation artifacts
@@ -293,6 +336,12 @@ The LR4 crossover implementation was validated against external acoustic researc
 **Cause:** Z-offset misalignment (phase cancellation)
 **Fix:** Protrude horn forward to align acoustic centers (Z=0)
 
+### Issue: Hornresp shows ripple for compression driver
+
+**Cause:** Hornresp can't model phase plugs
+**Explanation:** Normal behavior - Hornresp incorrectly models Sd→S1 impedance mismatch
+**Fix:** Use datasheet sensitivity model for HF driver; validate LF only with Hornresp
+
 ## Design Checklist
 
 Before building:
@@ -302,9 +351,20 @@ Before building:
 - [ ] Horn parameters calculated (flare, mouth, throat)
 - [ ] Horn length determined for time alignment
 - [ ] Crossover frequency selected (above horn Fc × 1.5)
-- [ ] HF padding calculated for level matching
+- [ ] **HF padding calibrated to LF passband MAXIMUM (not crossover level)**
+- [ ] **Filters applied in LINEAR domain (not dB)**
+- [ ] **Verified -6 dB at crossover for LR4 filters**
 - [ ] LR4 crossover simulation run and validated
+- [ ] **HF response within ±3 dB of LF passband maximum**
+- [ ] **Passband variation < 4 dB (100 Hz - 10 kHz)**
 - [ ] Time alignment verified (Z=0 for protruding horn)
+
+**Critical Verification Steps (v1.1):**
+- [ ] Check filtered outputs at crossover = ~-6 dB from passband
+- [ ] Confirm combined response at crossover ≈ passband maximum
+- [ ] Verify HF padded correctly (not too low/ high)
+- [ ] Plot ±3 dB tolerance band to visualize flatness
+- [ ] Calculate F3/F10 points to confirm usable bandwidth
 
 **Cabinet Design:**
 - [ ] Baffle dimensions accommodate all drivers
@@ -361,7 +421,66 @@ Before building:
 - VituixCAD - Crossover design and measurement
 - REW (Room EQ Wizard) - Measurement and analysis
 
+## Recent Updates (v1.1 - 2026-01-13)
+
+### Critical Fixes for Horn-Based 2-Way Systems
+
+**Issue 1: Filter Application Domain (CRITICAL)**
+- **Problem:** Filters were applied in dB domain instead of linear power domain
+- **Symptom:** 20 dB dip at crossover, completely wrong system response
+- **Solution:** Convert to linear, apply filters, convert back
+- **Impact:** All crossover simulations must use linear domain
+- **See:** `docs/two_way_crossover_issues.md` Issue 1
+
+**Issue 2: HF Padding Calibration**
+- **Problem:** HF padded to match LF at crossover instead of LF passband maximum
+- **Symptom:** HF region 6-7 dB below system maximum
+- **Solution:** Pad HF to match LF passband maximum, not crossover level
+- **Impact:** Passband variation improved from 6.5 dB to 3.0 dB
+- **See:** `docs/two_way_crossover_issues.md` Issue 2
+
+**Issue 3: Compression Driver Hornresp Limitations**
+- **Problem:** Hornresp can't model phase plugs, shows ripple artifacts
+- **Solution:** Use datasheet sensitivity model for HF, Hornresp for LF only
+- **Impact:** Validation workflow updated
+- **See:** `docs/validation/compression_driver_validation_findings.md`
+
+**Validated Design Example (DH450 + 10MBX64):**
+- LF: BC 10MBX64 (ported, 31.1L, Fb=62.6Hz)
+- HF: BC DH450 (2-segment horn, Fc=607Hz)
+- Crossover: LR4 @ 1339 Hz
+- HF Padding: -13.47 dB (matched to LF passband max)
+- Performance: 3.0 dB variation, 61 Hz - 10 kHz usable bandwidth
+
+**NEW: Corrected Crossover Design Procedure**
+```python
+# Step 1: Find LF passband MAXIMUM (not crossover level)
+passband_mask = (freq >= 100) & (freq <= 10000)
+lf_max_idx = np.argmax(spl_lf[passband_mask])
+spl_lf_max = spl_lf[passband_mask][lf_max_idx]
+
+# Step 2: Pad HF to match LF maximum
+padding_db = spl_hf_pb - spl_lf_max  # NOT crossover level!
+
+# Step 3: Apply filters in LINEAR domain
+hf_linear = 10**(spl_hf_padded/10)
+lf_linear = 10**(spl_lf/10)
+hf_filtered_linear = hf_linear * hp_filter**2
+lf_filtered_linear = lf_linear * lp_filter**2
+combined = 10 * np.log10(hf_filtered_linear + lf_filtered_linear)
+
+# Step 4: Verify -6 dB at crossover
+assert abs(hf_filtered[idx_xo] - (spl_lf_max - 6)) < 0.5
+```
+
 ## Version History
+
+- **v1.1** (2026-01-13): Critical fixes for horn-based systems
+  - Fixed filter application domain (dB vs linear)
+  - Corrected HF padding calibration procedure
+  - Documented compression driver limitations
+  - Validated DH450 + 10MBX64 design
+  - Added F3/F10 analysis and ±3 dB tolerance plots
 
 - **v1.0** (2025-12-30): Initial validated implementation
   - LR4 crossover with complex addition
