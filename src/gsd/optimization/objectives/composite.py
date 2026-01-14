@@ -86,6 +86,7 @@ class EnclosureOptimizationProblem(Problem):
         objectives: List[str],
         parameter_bounds: Dict[str, tuple],
         constraints: List[str] = None,
+        param_space = None,
         num_segments: int = 2,
         target_band: Tuple[float, float] = None,
         hf_cutoff: float = None
@@ -100,6 +101,7 @@ class EnclosureOptimizationProblem(Problem):
                        "efficiency", "size", "wavefront_sphericity", "impedance_smoothness"]
             parameter_bounds: Dict of parameter ranges
             constraints: Optional list of constraint function names
+            param_space: Optional EnclosureParameterSpace with metadata for constraint parameters
             num_segments: Number of segments for multisegment_horn (2 or 3)
             target_band: Optional (f_min, f_max) tuple for constraining flatness optimization
                         to a specific frequency band (e.g., (500, 5000) for midrange)
@@ -157,6 +159,7 @@ class EnclosureOptimizationProblem(Problem):
                 constraint_multisegment_flare_curvature,
                 constraint_conical_expansion_ratio,
                 constraint_exponential_monotonic_expansion,
+                constraint_total_length,
             )
             from gsd.optimization.constraints.performance import (
                 constraint_f3_limit,
@@ -177,6 +180,7 @@ class EnclosureOptimizationProblem(Problem):
                 "mouth_size": constraint_mouth_size,
                 "expansion_ratio": constraint_conical_expansion_ratio,
                 "monotonic_expansion": constraint_exponential_monotonic_expansion,
+                "total_length": constraint_total_length,
             }
 
             for constr_name in constraints:
@@ -190,6 +194,8 @@ class EnclosureOptimizationProblem(Problem):
         self.num_segments = num_segments
         self.target_band = target_band
         self.hf_cutoff = hf_cutoff
+        # Store metadata for constraint functions (e.g., max_length, max_mouth_area)
+        self.metadata = param_space.metadata if param_space and hasattr(param_space, 'metadata') else {}
 
         # Extract parameter bounds in order
         xl = np.array([parameter_bounds[p][0] for p in self.param_names])
@@ -343,18 +349,50 @@ class EnclosureOptimizationProblem(Problem):
                         # For multisegment_horn constraints, pass num_segments
                         # Check if this is a multisegment constraint by name
                         func_name = constraint_func.__name__ if hasattr(constraint_func, '__name__') else ''
+
+                        # Map constraint function names to their metadata parameters
+                        # These parameters are stored in param_space.metadata and need
+                        # to be passed to constraint functions that require them
+                        constraint_param_map = {
+                            'constraint_total_length': ['max_length'],
+                            'constraint_mouth_loading': ['min_circumference_ratio'],
+                            'constraint_multisegment_flare_limits': ['min_mL', 'max_mL'],
+                            'constraint_minimum_expansion': ['min_expansion_ratio'],
+                        }
+
+                        # Extract constraint-specific parameters from metadata
+                        constraint_params = {}
+                        if func_name in constraint_param_map:
+                            for param_name in constraint_param_map[func_name]:
+                                if param_name in self.metadata:
+                                    constraint_params[param_name] = self.metadata[param_name]
+
+                        # Call constraint function with appropriate parameters
                         if needs_num_segments and 'multisegment' in func_name:
+                            # Multisegment constraints need num_segments
                             G[i, j] = constraint_func(
                                 design_vector,
                                 self.driver,
                                 self.enclosure_type,
-                                num_segments=self.num_segments
+                                num_segments=self.num_segments,
+                                **constraint_params  # PASS CONSTRAINT PARAMETERS!
                             )
-                        else:
+                        elif func_name == 'constraint_total_length':
+                            # Total length constraint needs num_segments + max_length
                             G[i, j] = constraint_func(
                                 design_vector,
                                 self.driver,
-                                self.enclosure_type
+                                self.enclosure_type,
+                                num_segments=self.num_segments,
+                                **constraint_params  # Includes max_length from metadata
+                            )
+                        else:
+                            # Other constraints may or may not need extra params
+                            G[i, j] = constraint_func(
+                                design_vector,
+                                self.driver,
+                                self.enclosure_type,
+                                **constraint_params  # PASS CONSTRAINT PARAMETERS!
                             )
                     except Exception:
                         # If constraint fails, treat as violation
