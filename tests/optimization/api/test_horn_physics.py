@@ -340,9 +340,9 @@ class TestMouthAreaFeasibility:
             target_fc_hz=400
         )
 
-        assert result['feasible'] is True
-        assert result['sensitivity_penalty_db'] == 0.0
-        assert "fits constraint" in result['recommendation'].lower()
+        assert result.feasible is True
+        assert result.sensitivity_penalty_db == 0.0
+        assert "fits constraint" in result.recommendation.lower()
 
     def test_infeasible_design(self):
         """
@@ -361,14 +361,13 @@ class TestMouthAreaFeasibility:
             length_cm=25.0
         )
 
-        assert result['feasible'] is False
-        assert 'resulting_fc_hz' in result
-        assert 'sensitivity_penalty_db' in result
-        assert result['sensitivity_penalty_db'] < 0  # Loss
+        assert result.feasible is False
+        assert result.resulting_fc_hz is not None
+        assert result.sensitivity_penalty_db < 0  # Loss
 
         # Resulting Fc should be lower than target (smaller mouth → lower Fc)
         # 250cm² mouth → ~390 Hz, which is lower than 400 Hz target
-        assert result['resulting_fc_hz'] < result['target_fc_hz']
+        assert result.resulting_fc_hz < result.target_fc_hz
 
     def test_sensitivity_penalty_estimate(self):
         """
@@ -389,7 +388,7 @@ class TestMouthAreaFeasibility:
         expected_penalty = 10 * np.log10(available / required)
 
         assert_allclose(
-            result['sensitivity_penalty_db'],
+            result.sensitivity_penalty_db,
             expected_penalty,
             rtol=0.01
         )
@@ -406,7 +405,7 @@ class TestMouthAreaFeasibility:
             target_fc_hz=400
         )
 
-        rec = result['recommendation']
+        rec = result.recommendation
 
         # Should mention options
         assert "multi-piece" in rec.lower() or "options" in rec.lower()

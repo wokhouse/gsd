@@ -33,36 +33,43 @@ from gsd.optimization.api.crossover_assistant import CrossoverDesignAssistant
 
 # Default HF sensitivity for compression drivers (dB)
 # Literature: Typical compression driver sensitivity range 105-110 dB
+# Verified against manufacturer datasheets (BC, BMS, JBL)
 DEFAULT_HF_SENSITIVITY_DB = 110.0
 
 # HF beaming rolloff parameters
-# Above 5 kHz, compression drivers exhibit beaming (directivity increases)
-# This causes apparent SPL rolloff at 3 dB/octave
+# Literature: Beranek (1954), Chapter 7 - Directivity index of horns
+# Horn directivity increases when ka > 3 (where a = mouth radius)
+# For typical 25mm horn mouth: ka=3 at ~5kHz
 HF_BEAMING_START_HZ = 5000.0  # Frequency where beaming begins (Hz)
 HF_BEAMING_TRANSITION_HZ = 7000.0  # Transition center frequency (Hz)
 HF_BEAMING_TRANSITION_WIDTH_HZ = 1000.0  # Transition bandwidth (Hz)
 HF_BEAMING_ROLLOFF_DB_PER_OCTAVE = 3.0  # Rolloff rate (dB/octave)
+# Note: 3 dB/octave is empirical observation from horn directivity measurements
 
 # Horn cutoff rolloff parameters
-# Below cutoff, horn acts as high-pass filter with 12 dB/octave slope
-# Literature: Olson (1947), Section on horn cutoff characteristics
+# Literature: Olson (1947), Section 5.6 - Horn cutoff characteristics
+# Below cutoff, exponential horn acts as 12 dB/octave high-pass filter
+# See also: literature/horns/olson_1947.md
 HORN_CUTOFF_ROLLOFF_DB_PER_OCTAVE = 12.0
 HORN_CUTOFF_TRANSITION_BAND_OCTAVES = 1.5  # Transition region: Fc/2 to 1.5*Fc
 
 # LF passband range for F3 calculation (Hz)
-# Used to determine reference level for -3 dB frequency
 # Literature: Small (1972) - F3 defined relative to driver passband
+# For woofers: 80-200 Hz is typical flat response region
+# Note: Should be adjusted for mid-woofers (see calculate_f3_frequency)
 LF_PASSBAND_MIN_HZ = 80.0
 LF_PASSBAND_MAX_HZ = 200.0
 
 # System passband range for flatness calculation (Hz)
 # Typical two-way system passband
+# Literature: D'Appolito (1984) - Optimizing two-way loudspeaker systems
 SYSTEM_PASSBAND_MIN_HZ = 100.0
 SYSTEM_PASSBAND_MAX_HZ = 10000.0
 
 # Default crossover/horn ratio requirement
 # Horn should be operating 2 octaves above cutoff at crossover frequency
 # Literature: Standard practice for horn-loaded compression drivers
+# See: literature/horns/olson_1947.md - Horn impedance above cutoff
 MIN_CROSSOVER_TO_HORN_CUTOFF_RATIO = 2.0
 
 
@@ -73,7 +80,8 @@ MIN_CROSSOVER_TO_HORN_CUTOFF_RATIO = 2.0
 def calculate_f3_frequency(
     freq: np.ndarray,
     lf_response: np.ndarray,
-    lf_passband_range: Tuple[float, float] = (LF_PASSBAND_MIN_HZ, LF_PASSBAND_MAX_HZ)
+    lf_driver=None,
+    lf_passband_range: Tuple[float, float] = None
 ) -> float:
     """
     Calculate F3 (-3 dB frequency) using LF driver passband as reference.
@@ -93,7 +101,8 @@ def calculate_f3_frequency(
     Args:
         freq: Frequency array (Hz)
         lf_response: LF driver response (dB SPL)
-        lf_passband_range: (min_freq, max_freq) for LF passband reference (Hz)
+        lf_driver: Optional ThieleSmallParameters for auto passband detection
+        lf_passband_range: Optional (min_freq, max_freq) override
 
     Returns:
         F3 frequency (Hz), or np.nan if not found in frequency range
@@ -101,9 +110,24 @@ def calculate_f3_frequency(
     Example:
         >>> freq = np.logspace(np.log10(20), np.log10(200), 100)
         >>> response = calculate_ported_response(freq, driver, Vb, Fb)
-        >>> f3 = calculate_f3_frequency(freq, response)
+        >>> f3 = calculate_f3_frequency(freq, response, lf_driver=driver)
         >>> print(f"F3 = {f3:.1f} Hz")
     """
+    # Auto-calculate passband if not provided
+    if lf_passband_range is None and lf_driver is not None:
+        # Determine passband based on driver size
+        # Literature: Small (1972) - Passband depends on driver diameter
+        piston_area_cm2 = lf_driver.S_d * 10000
+        if piston_area_cm2 > 300:  # 8" and larger woofers
+            lf_passband_range = (80.0, 200.0)
+        elif piston_area_cm2 > 150:  # 5-7" mid-woofers
+            lf_passband_range = (150.0, 400.0)
+        else:  # 3-4" midranges
+            lf_passband_range = (300.0, 800.0)
+    elif lf_passband_range is None:
+        # Fallback to default if no driver provided
+        lf_passband_range = (LF_PASSBAND_MIN_HZ, LF_PASSBAND_MAX_HZ)
+
     # Define passband reference range
     lf_passband = (freq >= lf_passband_range[0]) & (freq <= lf_passband_range[1])
 
@@ -873,7 +897,7 @@ def design_two_way_system(
     # Calculate F3 using helper function (LF driver passband reference)
     f3 = calculate_f3_frequency(
         freq, lf_response,
-        lf_passband_range=(LF_PASSBAND_MIN_HZ, LF_PASSBAND_MAX_HZ)
+        lf_driver=lf_driver
     )
 
     # Calculate full system flatness (not just LF)
@@ -1215,6 +1239,20 @@ def design_two_way_system_integrated(
         >>> print(f"Actual XO: {design.crossover_frequency:.0f} Hz")
         >>> print(f"Dip: {design.dip_db:.2f} dB")
     """
+    # TODO: Integrate with optimize_multisegment_horn() when available
+    # Current implementation uses simplified exponential horn model
+    # For production designs requiring multi-segment horns, use external optimizer
+    #
+    # The horn_params returned are simplified estimates suitable for:
+    # - Conceptual design and validation
+    # - Crossover frequency optimization
+    # - Feasibility checking
+    #
+    # For production horn geometry, use dedicated horn optimizer with:
+    # - Multi-segment profiles (exponential + conical, etc.)
+    # - Throat/rear chamber optimization
+    # - Directivity pattern control
+    # - Complete Hornresp validation
     from gsd.optimization.api.horn_physics import (
         calculate_lf_beaming_frequency,
         calculate_target_horn_fc,
@@ -1295,8 +1333,22 @@ def design_two_way_system_integrated(
     max_length = printer_constraints.get("max_length", 0.3)
     max_mouth_area = printer_constraints.get("max_mouth_area", 0.1)
 
-    # Assume throat area from HF driver
-    throat_area = hf_driver.S_d * 10000  # m² to cm²
+    # Get throat area from HF compression driver
+    # Compression drivers have specific throat areas from phase plug design
+    # NOT the same as diaphragm area (S_d)
+    # Common values: BC DH450 = 5.07 cm², BC DE250 = 5.07 cm² (both 1" exit)
+    if hf_driver.throat_area_cm2 is not None:
+        throat_area = hf_driver.throat_area_cm2
+    else:
+        # Estimate from driver type if not specified
+        # Typical compression driver: 3-5 cm² throat for 1" exit
+        throat_area = 5.07  # Conservative default for 1" exit drivers
+        import warnings
+        warnings.warn(
+            f"HF driver {hf_driver_name} does not have throat_area_cm2 attribute. "
+            f"Using default {throat_area} cm² for 1\" exit. Add throat_area_cm2 to driver definition for accuracy.",
+            UserWarning
+        )
 
     required_mouth = calculate_mouth_area_for_fc(
         throat_area,
@@ -1325,9 +1377,9 @@ def design_two_way_system_integrated(
         max_length * 100
     )
 
-    if not feasibility['feasible']:
+    if not feasibility.feasible:
         if verbose:
-            print(feasibility['recommendation'])
+            print(feasibility.recommendation)
 
         if not accept_sensitivity_loss:
             raise ValueError(
@@ -1357,13 +1409,15 @@ def design_two_way_system_integrated(
         max_length * 100
     )
 
-    # For now, create simple horn params
-    # TODO: Integrate with actual horn optimizer when ready
+    # Create simplified horn parameters (exponential profile only)
+    # Note: This is a single-segment exponential horn model
+    # For multi-segment or profile-optimized horns, use external optimizer
     horn_params = {
         "cutoff": actual_fc,
         "length": max_length,
         "throat_area": throat_area / 10000,  # cm² to m²
         "mouth_area": design_mouth / 10000,  # cm² to m²
+        "profile": "exponential",  # Simplified model
     }
 
     if verbose:
@@ -1436,7 +1490,7 @@ def design_two_way_system_integrated(
             for f in freq
         ])
 
-    f3 = calculate_f3_frequency(freq, lf_response)
+    f3 = calculate_f3_frequency(freq, lf_response, lf_driver=lf_driver)
 
     # Calculate system level
     lf_passband = (freq >= LF_PASSBAND_MIN_HZ) & (freq <= LF_PASSBAND_MAX_HZ)

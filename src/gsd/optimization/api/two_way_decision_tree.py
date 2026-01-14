@@ -435,15 +435,15 @@ def guide_two_way_design_decisions(
 
     accept_sensitivity_loss = False
 
-    if not feasibility['feasible']:
+    if not feasibility.feasible:
         print("\n  ⚠ CONSTRAINT VIOLATION DETECTED")
-        print("\n" + feasibility['recommendation'])
+        print("\n" + feasibility.recommendation)
 
         print("\n  Trade-off analysis:")
         print(f"    • Required mouth: {required_mouth:.0f} cm²")
         print(f"    • Available mouth: {max_mouth_area*10000:.0f} cm²")
-        print(f"    • Resulting Fc with max mouth: {feasibility['resulting_fc_hz']:.0f} Hz")
-        print(f"    • Sensitivity penalty: {feasibility['sensitivity_penalty_db']:+.1f} dB")
+        print(f"    • Resulting Fc with max mouth: {feasibility.resulting_fc_hz:.0f} Hz")
+        print(f"    • Sensitivity penalty: {feasibility.sensitivity_penalty_db:+.1f} dB")
 
         if non_interactive_mode:
             # In non-interactive mode, accept sensitivity loss automatically
@@ -453,7 +453,7 @@ def guide_two_way_design_decisions(
         else:
             # Ask if user accepts sensitivity loss
             accept_loss = _yes_no_prompt(
-                f"\n  Accept {feasibility['sensitivity_penalty_db']:+.1f} dB sensitivity loss for better integration?",
+                f"\n  Accept {feasibility.sensitivity_penalty_db:+.1f} dB sensitivity loss for better integration?",
                 default=False
             )
 
@@ -467,7 +467,7 @@ def guide_two_way_design_decisions(
             sys.exit(1)
         else:
             accept_sensitivity_loss = True
-            print(f"\n  ✓ Proceeding with {feasibility['sensitivity_penalty_db']:+.1f} dB sensitivity loss")
+            print(f"\n  ✓ Proceeding with {feasibility.sensitivity_penalty_db:+.1f} dB sensitivity loss")
     else:
         print("\n  ✓ Design is FEASIBLE within constraints")
 
@@ -508,7 +508,7 @@ def guide_two_way_design_decisions(
         f"  • Throat: {throat_area:.1f} cm² (from {hf_driver_name})",
     ]
 
-    if feasibility['feasible']:
+    if feasibility.feasible:
         reasoning_lines.extend([
             f"  • Mouth: {required_mouth:.0f} cm² (fits constraint)",
             f"  • Status: ✅ FEASIBLE",
@@ -517,13 +517,13 @@ def guide_two_way_design_decisions(
         reasoning_lines.extend([
             f"  • Required mouth: {required_mouth:.0f} cm²",
             f"  • Max mouth: {max_mouth_area*10000:.0f} cm²",
-            f"  • Actual Fc: {feasibility['resulting_fc_hz']:.0f} Hz",
-            f"  • Sensitivity loss: {feasibility['sensitivity_penalty_db']:+.1f} dB",
+            f"  • Actual Fc: {feasibility.resulting_fc_hz:.0f} Hz",
+            f"  • Sensitivity loss: {feasibility.sensitivity_penalty_db:+.1f} dB",
             f"  • Status: ⚠️ ACCEPTED with trade-off",
         ])
 
     # Build trade-offs string
-    if feasibility['feasible']:
+    if feasibility.feasible:
         trade_offs = (
             f"**Design fits within printer constraints.**\n\n"
             f"Trade-offs:\n"
@@ -531,7 +531,7 @@ def guide_two_way_design_decisions(
             f"  • Horn operates {target_crossover_hz/target_fc:.1f}× above cutoff (optimal range: 1.2-2.0)"
         )
     else:
-        actual_fc = feasibility['resulting_fc_hz']
+        actual_fc = feasibility.resulting_fc_hz
         actual_xo_fc_ratio = target_crossover_hz / actual_fc
         trade_offs = (
             f"**Design requires compromise due to printer constraints.**\n\n"
@@ -539,7 +539,7 @@ def guide_two_way_design_decisions(
             f"  • Smaller mouth ({max_mouth_area*10000:.0f} cm² vs {required_mouth:.0f} cm² required)\n"
             f"  • Higher Fc ({actual_fc:.0f} Hz vs {target_fc:.0f} Hz target)\n"
             f"  • XO/Fc ratio of {actual_xo_fc_ratio:.2f} (lower than {target_crossover_hz/target_fc:.2f} target)\n"
-            f"  • {feasibility['sensitivity_penalty_db']:+.1f} dB HF sensitivity loss\n"
+            f"  • {feasibility.sensitivity_penalty_db:+.1f} dB HF sensitivity loss\n"
             f"  • Better crossover integration (lower XO possible)"
         )
 

@@ -77,6 +77,14 @@ def load_driver(driver_name: str) -> ThieleSmallParameters:
     # X_max is optional
     x_max = params.get("X_max", None)
 
+    # throat_area_cm2 is optional (for compression drivers)
+    # Extract from compression_driver section if available
+    throat_area_cm2 = None
+    if "compression_driver" in data:
+        throat_area_m2 = data["compression_driver"].get("throat_area")
+        if throat_area_m2 is not None:
+            throat_area_cm2 = throat_area_m2 * 10000  # m² to cm²
+
     # Create ThieleSmallParameters (derived values calculated automatically)
     return ThieleSmallParameters(
         M_md=params["M_md"],
@@ -87,6 +95,7 @@ def load_driver(driver_name: str) -> ThieleSmallParameters:
         BL=params["BL"],
         S_d=params["S_d"],
         X_max=x_max,
+        throat_area_cm2=throat_area_cm2,
     )
 
 

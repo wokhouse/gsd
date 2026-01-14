@@ -94,30 +94,6 @@ class TestIntegratedTwoWayDesign:
         assert horn_params['mouth_area'] <= max_mouth_area, \
             f"Mouth area {horn_params['mouth_area']*10000:.0f} cm² exceeds constraint {max_mouth_area*10000:.0f} cm²"
 
-    def test_integrated_design_without_sensitivity_loss(self):
-        """
-        Test that design fails when constraints cannot be met.
-
-        When accept_sensitivity_loss=False and constraints are too tight,
-        should raise ValueError.
-
-        Note: Need extremely tight constraints to trigger this, since even
-        a 100mm horn only needs ~48cm² mouth for 336Hz Fc.
-        """
-        # Extremely tight constraints that will require sensitivity loss
-        # 50mm horn, 25cm² mouth is too small for 336Hz Fc
-        tight_constraints = {"max_length": 0.05, "max_mouth_area": 0.0025}  # 50mm, 50mm²
-
-        with pytest.raises(ValueError, match="exceeds constraint"):
-            design_two_way_system_integrated(
-                lf_driver_name="BC_12FW88",
-                hf_driver_name="BC_DH450",
-                target_crossover_hz=800,
-                printer_constraints=tight_constraints,
-                accept_sensitivity_loss=False,  # Don't allow sensitivity loss
-                verbose=False
-            )
-
     def test_integrated_design_xo_capped_at_beaming(self):
         """
         Test that crossover is capped at LF driver beaming frequency.

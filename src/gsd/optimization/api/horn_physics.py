@@ -77,14 +77,27 @@ def calculate_target_horn_fc(
         >>> fc = calculate_target_horn_fc(800, xo_fc_ratio=1.3)
         >>> print(f"Target Fc: {fc:.0f} Hz")  # 615 Hz
     """
-    # Cap XO at LF beaming frequency if provided
-    # XO should be < 0.8×beaming for flat response
-    if lf_driver_beaming_hz is not None:
-        xo_hz = min(desired_crossover_hz, 0.8 * lf_driver_beaming_hz)
-    else:
-        xo_hz = desired_crossover_hz
+    # Calculate target Fc from desired XO
+    target_fc = desired_crossover_hz / xo_fc_ratio
 
-    return xo_hz / xo_fc_ratio
+    # Calculate resulting XO (may differ from desired due to Fc constraints)
+    resulting_xo = target_fc * xo_fc_ratio
+
+    # Cap XO at LF beaming frequency if provided
+    if lf_driver_beaming_hz is not None:
+        max_xo = 0.8 * lf_driver_beaming_hz
+        if resulting_xo > max_xo:
+            import warnings
+            warnings.warn(
+                f"Target XO ({resulting_xo:.0f}Hz) exceeds 0.8×beaming ({max_xo:.0f}Hz). "
+                f"This will cause LF driver beaming and poor integration. "
+                f"Recommend: lower target XO or use smaller LF driver.",
+                UserWarning
+            )
+            # Adjust Fc to meet beaming constraint
+            target_fc = max_xo / xo_fc_ratio
+
+    return target_fc
 
 
 def calculate_mouth_area_for_fc(
@@ -182,90 +195,6 @@ def calculate_fc_from_mouth(
     return fc
 
 
-def assess_mouth_area_feasibility(
-    required_mouth_cm2: float,
-    available_mouth_cm2: float,
-    target_fc_hz: float,
-    throat_area_cm2: float = 7.0,
-    length_cm: float = 25.0
-) -> Dict[str, Any]:
-    """
-    Assess if required mouth area is feasible within constraints.
-
-    Provides recommendations if constraints cannot be met.
-
-    Args:
-        required_mouth_cm2: Required mouth area for target Fc (cm²)
-        available_mouth_cm2: Maximum mouth area from printer constraint (cm²)
-        target_fc_hz: Target cutoff frequency (Hz)
-        throat_area_cm2: Throat area (cm²), default 7.0
-        length_cm: Horn length (cm), default 25.0
-
-    Returns:
-        Dict with:
-        - feasible: bool
-        - required_mouth_cm2: float
-        - available_mouth_cm2: float
-        - resulting_fc_hz: float (if not feasible)
-        - fc_error_hz: float (if not feasible)
-        - recommendation: str
-        - sensitivity_penalty_db: float (if not feasible)
-
-    Example:
-        >>> result = assess_mouth_area_feasibility(
-        ...     required_mouth_cm2=273,
-        ...     available_mouth_cm2=250,
-        ...     target_fc_hz=400
-        ... )
-        >>> if not result['feasible']:
-        ...     print(result['recommendation'])
-    """
-    if required_mouth_cm2 <= available_mouth_cm2:
-        return {
-            "feasible": True,
-            "target_fc_hz": target_fc_hz,
-            "required_mouth_cm2": required_mouth_cm2,
-            "available_mouth_cm2": available_mouth_cm2,
-            "recommendation": f"Design with {required_mouth_cm2:.0f}cm² mouth (fits constraint)",
-            "sensitivity_penalty_db": 0.0
-        }
-    else:
-        # Calculate resulting Fc with max available mouth
-        resulting_fc = calculate_fc_from_mouth(
-            throat_area_cm2,
-            available_mouth_cm2,
-            length_cm
-        )
-
-        fc_error = resulting_fc - target_fc_hz
-
-        # Estimate sensitivity penalty
-        # Smaller mouth = less HF sensitivity
-        # Approximation: 10×log10(available/required) dB
-        # This is a rough estimate based on mouth area ratio
-        sensitivity_penalty = 10 * np.log10(available_mouth_cm2 / required_mouth_cm2)
-
-        recommendation = (
-            f"Required mouth ({required_mouth_cm2:.0f}cm²) exceeds constraint ({available_mouth_cm2:.0f}cm²).\n"
-            f"Options:\n"
-            f"  1. Use max mouth ({available_mouth_cm2:.0f}cm²): Fc={resulting_fc:.0f}Hz "
-            f"({fc_error:+.0f}Hz error, {sensitivity_penalty:+.1f}dB sensitivity loss)\n"
-            f"  2. Use multi-piece horn (2× length)\n"
-            f"  3. Accept higher crossover frequency"
-        )
-
-        return {
-            "feasible": False,
-            "target_fc_hz": target_fc_hz,
-            "required_mouth_cm2": required_mouth_cm2,
-            "available_mouth_cm2": available_mouth_cm2,
-            "resulting_fc_hz": resulting_fc,
-            "fc_error_hz": fc_error,
-            "sensitivity_penalty_db": sensitivity_penalty,
-            "recommendation": recommendation
-        }
-
-
 @dataclass
 class HornFeasibilityResult:
     """
@@ -310,3 +239,79 @@ class HornFeasibilityResult:
             ])
 
         return "\n".join(lines)
+
+
+def assess_mouth_area_feasibility(
+    required_mouth_cm2: float,
+    available_mouth_cm2: float,
+    target_fc_hz: float,
+    throat_area_cm2: float = 7.0,
+    length_cm: float = 25.0
+) -> HornFeasibilityResult:
+    """
+    Assess if required mouth area is feasible within constraints.
+
+    Provides recommendations if constraints cannot be met.
+
+    Args:
+        required_mouth_cm2: Required mouth area for target Fc (cm²)
+        available_mouth_cm2: Maximum mouth area from printer constraint (cm²)
+        target_fc_hz: Target cutoff frequency (Hz)
+        throat_area_cm2: Throat area (cm²), default 7.0
+        length_cm: Horn length (cm), default 25.0
+
+    Returns:
+        HornFeasibilityResult with feasibility assessment
+
+    Example:
+        >>> result = assess_mouth_area_feasibility(
+        ...     required_mouth_cm2=273,
+        ...     available_mouth_cm2=250,
+        ...     target_fc_hz=400
+        ... )
+        >>> if not result.feasible:
+        ...     print(result.recommendation)
+    """
+    if required_mouth_cm2 <= available_mouth_cm2:
+        return HornFeasibilityResult(
+            feasible=True,
+            target_fc_hz=target_fc_hz,
+            required_mouth_cm2=required_mouth_cm2,
+            available_mouth_cm2=available_mouth_cm2,
+            sensitivity_penalty_db=0.0,
+            recommendation=f"Design with {required_mouth_cm2:.0f}cm² mouth (fits constraint)"
+        )
+    else:
+        # Calculate resulting Fc with max available mouth
+        resulting_fc = calculate_fc_from_mouth(
+            throat_area_cm2,
+            available_mouth_cm2,
+            length_cm
+        )
+
+        fc_error = resulting_fc - target_fc_hz
+
+        # Estimate sensitivity penalty
+        # Smaller mouth = less HF sensitivity
+        # Approximation: 10×log10(available/required) dB
+        # This is a rough estimate based on mouth area ratio
+        sensitivity_penalty = 10 * np.log10(available_mouth_cm2 / required_mouth_cm2)
+
+        recommendation = (
+            f"Required mouth ({required_mouth_cm2:.0f}cm²) exceeds constraint ({available_mouth_cm2:.0f}cm²).\n"
+            f"Options:\n"
+            f"  1. Use max mouth ({available_mouth_cm2:.0f}cm²): Fc={resulting_fc:.0f}Hz "
+            f"({fc_error:+.0f}Hz error, {sensitivity_penalty:+.1f}dB sensitivity loss)\n"
+            f"  2. Use multi-piece horn (2× length)\n"
+            f"  3. Accept higher crossover frequency"
+        )
+
+        return HornFeasibilityResult(
+            feasible=False,
+            target_fc_hz=target_fc_hz,
+            required_mouth_cm2=required_mouth_cm2,
+            available_mouth_cm2=available_mouth_cm2,
+            resulting_fc_hz=resulting_fc,
+            sensitivity_penalty_db=sensitivity_penalty,
+            recommendation=recommendation
+        )
