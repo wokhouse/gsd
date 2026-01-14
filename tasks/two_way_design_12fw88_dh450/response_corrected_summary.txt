@@ -1,0 +1,39 @@
+
+CORRECTED TWO-WAY SYSTEM SUMMARY
+=================================
+
+LF DRIVER (BC 12FW88 Ported Box):
+  Box volume: 114.5 L
+  Tuning (Fb): 47.4 Hz
+  Passband level: 94.0 dB
+  CORRECTED F3: 46.3 Hz
+  F3/Fb ratio: 0.98
+  ✓ F3 is properly calculated on low-frequency side
+
+HF DRIVER (BC DH450 Horn):
+  Design: Multi-piece (2 sections)
+  Horn cutoff: 429 Hz
+  Base sensitivity: 110.0 dB
+  Padding: -15.5 dB
+
+CROSSOVER:
+  Type: LR4 (Linkwitz-Riley 4th-order)
+  Frequency: 800 Hz
+
+SYSTEM PERFORMANCE:
+  Passband level: 94.0 dB
+  CORRECTED System F3: 46.4 Hz
+  Flatness (100 Hz - 10 kHz): 1.85 dB
+
+KEY CORRECTIONS:
+  OLD (WRONG): System F3 = 10 Hz
+  NEW (CORRECT): System F3 = 46.4 Hz
+
+  The error was finding the first frequency below passband level
+  (which was 10 Hz at the start of the array) instead of finding
+  the actual -3dB point on the low-frequency rolloff.
+
+PHYSICS CHECK:
+  ✓ F3 (46.3 Hz) is close to Fb (47.4 Hz) - expected for ported box
+  ✓ System F3 (46.4 Hz) is slightly above LF F3 - expected with crossover
+  ✓ Response is high-pass (not extending to 10 Hz) - physically correct

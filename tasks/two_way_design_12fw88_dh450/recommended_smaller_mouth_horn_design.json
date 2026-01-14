@@ -1,0 +1,26 @@
+{
+  "lf_driver": "BC_12FW88",
+  "hf_driver": "BC_DH450",
+  "lf_enclosure": {
+    "Vb_liters": 114.5,
+    "Fb_hz": 47.6
+  },
+  "hf_horn_recommended": {
+    "throat_area_cm2": 7.0,
+    "mouth_area_cm2": 250.0,
+    "length_cm": 25.0,
+    "cutoff_hz": 390.37967328431193,
+    "note": "Smaller mouth for better crossover integration"
+  },
+  "crossover": {
+    "frequency_hz": 780,
+    "order": 4,
+    "type": "LR4",
+    "hf_padding_db": -16.0
+  },
+  "performance": {
+    "dip_at_crossover_db": 3.993445285325933,
+    "flatness_db": 4.847653675934822,
+    "bandwidth_octaves": 7.629117428338512
+  }
+}

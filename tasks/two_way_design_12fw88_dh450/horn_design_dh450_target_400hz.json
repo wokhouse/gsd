@@ -1,0 +1,45 @@
+{
+  "driver": "BC_DH450",
+  "design_type": "multi_piece_target_400hz",
+  "target_cutoff_hz": 400,
+  "achieved_cutoff_hz": 429.3215764938901,
+  "crossover_frequency_hz": 800,
+  "printer_requirement": {
+    "type": "multi_piece",
+    "sections": 2,
+    "max_per_section": "250mm cube",
+    "total_prints": 2
+  },
+  "segments": [
+    {
+      "number": 1,
+      "length_cm": 24.999998584113882,
+      "area_start_cm2": 6.999999976959223,
+      "area_end_cm2": 50.00000092010054,
+      "flare_constant_m": 7.864451957672266,
+      "cutoff_hz": 429.3215764938901,
+      "fits_250mm_printer": true
+    },
+    {
+      "number": 2,
+      "length_cm": 24.64189171704238,
+      "area_start_cm2": 50.00000092010054,
+      "area_end_cm2": 344.5927976324299,
+      "flare_constant_m": 7.833572282317248,
+      "cutoff_hz": 427.6358505238685,
+      "fits_250mm_printer": true
+    }
+  ],
+  "total_length_cm": 49.641890301156266,
+  "throat_area_cm2": 6.999999976959223,
+  "mouth_area_cm2": 344.5927976324299,
+  "mouth_diameter_mm": 65.80484137551174,
+  "overall_cutoff_hz": 429.3215764938901,
+  "volume_liters": 4.950252432274363,
+  "assembly": {
+    "type": "bolt_together",
+    "junction_area_cm2": 50.00000092010054,
+    "junction_diameter_mm": 25.06627239065104,
+    "notes": "Print each section in 250mm cube printer, align flanges, bolt together"
+  }
+}

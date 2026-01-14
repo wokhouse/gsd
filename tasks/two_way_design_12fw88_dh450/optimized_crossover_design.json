@@ -1,0 +1,18 @@
+{
+  "lf_driver": "BC_12FW88",
+  "hf_driver": "BC_DH450",
+  "lf_enclosure": {
+    "Vb_liters": 114.5,
+    "Fb_hz": 46.5
+  },
+  "hf_horn": {
+    "cutoff_hz": 1865,
+    "length_m": 0.25
+  },
+  "crossover": {
+    "frequency_hz": 1459.1836734693877,
+    "hf_padding_db": -16.0,
+    "flatness_db": 10.550111926687151,
+    "dip_depth_db": 0.0
+  }
+}

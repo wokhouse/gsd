@@ -1,0 +1,35 @@
+{
+  "lf_driver": "BC_12FW88",
+  "hf_driver": "BC_DH450",
+  "lf_enclosure": {
+    "Vb_liters": 114.5,
+    "Fb_hz": 47.6
+  },
+  "hf_horn": {
+    "throat_area_cm2": 7.0,
+    "middle_area_cm2": 59.81405162374216,
+    "mouth_area_cm2": 250.0,
+    "length1_cm": 12.5,
+    "length2_cm": 12.5,
+    "total_length_cm": 25.0
+  },
+  "horn_performance": {
+    "cutoff_hz": 468.45560794117426,
+    "recommended_xo_hz": 936.9112158823485,
+    "target_fc_hz": 400,
+    "error_hz": 68.45560794117426
+  },
+  "crossover": {
+    "frequency_hz": 600,
+    "order": 4,
+    "type": "LR4",
+    "hf_padding_db": -16.0,
+    "xo_vs_fc_ratio": 1.2808043917692715,
+    "optimization_method": "sweep_xo_range"
+  },
+  "performance": {
+    "dip_at_crossover_db": 3.1696901291395534,
+    "flatness_db": 3.7154056160904503,
+    "rating": "\u26a0\ufe0f  Accepttable"
+  }
+}

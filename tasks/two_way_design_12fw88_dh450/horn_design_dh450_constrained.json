@@ -1,0 +1,44 @@
+{
+  "driver": "BC_DH450",
+  "segments": [
+    {
+      "number": 1,
+      "length_cm": 12.488085835449594,
+      "area_start_cm2": 6.992786325294103,
+      "area_end_cm2": 498.0406630784924,
+      "flare_constant_m": 34.15897912559732,
+      "cutoff_hz": 1864.743639932407
+    },
+    {
+      "number": 2,
+      "length_cm": 12.499947566482696,
+      "area_start_cm2": 498.0406630784924,
+      "area_end_cm2": 504.3825840781242,
+      "flare_constant_m": 0.10122721691976731,
+      "cutoff_hz": 5.526008498238264
+    }
+  ],
+  "total_length_cm": 24.988033401932288,
+  "throat_area_cm2": 6.992786325294103,
+  "mouth_area_cm2": 504.3825840781242,
+  "mouth_diameter_mm": 79.61314671118066,
+  "overall_cutoff_hz": 1864.743639932407,
+  "volume_liters": 8.613036275808641,
+  "throat_chamber_cm3": 14.990655631545623,
+  "rear_chamber_liters": 0.0035372390347974503,
+  "performance": {
+    "efficiency": -1.1870217214376017e-06,
+    "wavefront_sphericity": 118.59950463972199
+  },
+  "constraints": {
+    "max_length_mm": 250.0,
+    "max_mouth_area_cm2": 625.0,
+    "max_volume_liters": 15.625
+  },
+  "validation": {
+    "length_ok": true,
+    "mouth_ok": true,
+    "volume_ok": true,
+    "fits_printer": true
+  }
+}

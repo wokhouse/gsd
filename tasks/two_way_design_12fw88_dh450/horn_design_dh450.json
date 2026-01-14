@@ -1,0 +1,39 @@
+{
+  "driver": "BC_DH450",
+  "segments": [
+    {
+      "number": 1,
+      "length_cm": 59.99831902576689,
+      "area_start_cm2": 6.995548007200331,
+      "area_end_cm2": 138.00530642169997,
+      "flare_constant_m": 4.970169560446587,
+      "cutoff_hz": 271.32227936763184
+    },
+    {
+      "number": 2,
+      "length_cm": 59.99917919489184,
+      "area_start_cm2": 138.00530642169997,
+      "area_end_cm2": 400.1945159007488,
+      "flare_constant_m": 1.7744552445491806,
+      "cutoff_hz": 96.86776994861164
+    }
+  ],
+  "total_length_cm": 119.99749822065873,
+  "throat_area_cm2": 6.995548007200331,
+  "mouth_area_cm2": 400.1945159007488,
+  "mouth_diameter_mm": 70.91536051402781,
+  "overall_cutoff_hz": 271.32227936763184,
+  "volume_liters": 18.985297177770047,
+  "throat_chamber_cm3": 14.633612565322663,
+  "rear_chamber_liters": 0.0035372218128743743,
+  "performance": {
+    "efficiency": -2.1384088720997743e-05,
+    "wavefront_sphericity": 0.452980291600608
+  },
+  "constraints": {
+    "max_length_mm": 250.0,
+    "max_mouth_area_cm2": 625.0,
+    "max_volume_liters": 15.625
+  },
+  "validation": {
+    "length_ok": 

@@ -1,0 +1,40 @@
+ID = 983.62
+
+Comment = Optimized multisegment horn: Fc=468Hz, L=25.0cm, Mouth=250cm2
+
+|INPUT:
+Le = 0.22 mH
+Re = 12.3 Ohm
+Sd = 14.00 cm²
+Mmd = 1.70 g
+Cms = 13.00 mm/N
+Rms = 1.70 kg/s
+Bl = 5.80 N/A
+Fs = 1053.2 Hz
+
+|LOUDSPEAKER ENCLOSURE:
+Vrc = 4 cm³
+Lrc = 3.0 cm
+Vtc = 15.0 cm³
+Atc = 0.00 cm²
+Ltc = 0.00 cm
+
+|HORN:
+S1 = 7.00
+S2 = 59.81
+Exp = 12.50
+F12 = 468.5
+
+S2 = 59.81
+S3 = 250.00
+Exp = 12.50
+F23 = 312.3
+
+|ANGULAR:
+Ang = 360.0
+Cir = -200.00
+
+|ROOM:
+Room = 0
+Tem = 20.0 C
+Pb = 101.3 kPa

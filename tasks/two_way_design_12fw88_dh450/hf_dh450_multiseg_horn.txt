@@ -1,0 +1,41 @@
+BC DH450 Multi-Segment Horn (Two-Way HF)
+3D printed 2-segment exponential horn for BC DH450 compression driver
+Throat: 6.99 cm² | Mouth: 504.4 cm² | Length: 25.0 cm
+Cutoff: 1865 Hz
+
+|INPUT:
+Le = 0.56 mH    | Driver inductance [H] -> mH
+Re = 16.0 Ohm   | Driver resistance [Ohm]
+Sd = 4.91 cm²   | Diaphragm area [m²] -> cm² (DH450 estimated)
+Mmd = 0.30 g    | Moving mass [kg] -> g (driver mass only, no radiation)
+Cms = 0.15 mm/N | Compliance [m/N] -> mm/N (DH450 estimated)
+Rms = 1.20 kg/s | Mechanical resistance
+Bl = 8.5 N/A    | Force factor
+Fs = 1053 Hz    | Resonance frequency (estimated)
+
+|LOUDSPEAKER ENCLOSURE:
+Vrc = 4 cm³   | Rear chamber volume [cm³]
+Lrc = 3.0 cm      | Rear chamber depth [cm]
+Vtc = 15.0 cm³   | Throat chamber volume [cm³]
+Atc = 0.00 cm²    | Throat chamber area [cm²]
+Ltc = 0.00 cm     | Throat chamber length [cm]
+
+|HORN:
+S1 = 6.99      | Throat area [cm²]
+S2 = 498.0      | Middle area [cm²]
+Exp = 12.49     | Exponential segment length [cm]
+F12 = 1864.7    | Flare frequency segment 1 [Hz]
+
+S2 = 498.0      | Middle area [cm²] (repeated)
+S3 = 504.4      | Mouth area [cm²]
+Exp = 12.50     | Exponential segment length [cm]
+F23 = 5.5    | Flare frequency segment 2 [Hz]
+
+|ANGULAR:
+Ang = 360.0       | Radiation pattern [degrees]
+Cir = -200.00     | Radiation angle (half-space = 2pi steradians)
+
+|ROOM:
+Room = 0
+Tem = 20.0 C      | Temperature
+Pb = 101.3 kPa    | Barometric pressure

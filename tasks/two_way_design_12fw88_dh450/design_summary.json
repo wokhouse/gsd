@@ -1,0 +1,25 @@
+{
+  "lf_driver": "BC_12FW88",
+  "hf_driver": "BC_DH450",
+  "lf_enclosure": {
+    "type": "ported",
+    "Vb": 0.11449402023603315,
+    "Fb": 47.41159857019758,
+    "port_area": 0.019256895878640257,
+    "port_length": 0.49188673739449856
+  },
+  "hf_horn": {
+    "cutoff": 400,
+    "length": 0.225
+  },
+  "crossover": {
+    "frequency_hz": 800.0,
+    "lf_padding_db": 0.0,
+    "hf_padding_db": -15.5
+  },
+  "performance": {
+    "f3_hz": 47.01051698319348,
+    "flatness_db": 4.860472115363336,
+    "system_level_db": 94.34575701696305
+  }
+}
