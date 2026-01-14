@@ -623,6 +623,200 @@ When exploring parameter space:
 - Validate spot checks against Hornresp
 - Warn if parameters violate assumptions from literature (e.g., horn too short for cutoff frequency)
 
+## Two-Way System Design
+
+When designing two-way systems with horn-loaded HF drivers, **ALWAYS use the integrated approach**.
+
+### CRITICAL: Use Integrated Design Function
+
+**One-shot design success:**
+
+```python
+from gsd.optimization.api.two_way_system import design_two_way_system_integrated
+
+design = design_two_way_system_integrated(
+    lf_driver_name="BC_12FW88",
+    hf_driver_name="BC_DH450",
+    target_crossover_hz=800,
+    printer_constraints={"max_length": 0.25, "max_mouth_area": 0.0625},
+    accept_sensitivity_loss=True  # Allow smaller mouth for better integration
+)
+
+print(f"Horn Fc: {design.horn_fc_hz:.0f} Hz")
+print(f"Crossover: {design.crossover_frequency_hz:.0f} Hz")
+print(f"Dip: {design.dip_db:.2f} dB")
+print(f"Rating: {design.validation['rating']}")
+```
+
+### Workflow Requirements
+
+**1. Calculate BEFORE Optimizing:**
+```python
+from gsd.optimization.api.horn_physics import (
+    calculate_target_horn_fc,
+    calculate_mouth_area_for_fc,
+    assess_mouth_area_feasibility
+)
+
+# Work backwards from XO target to horn Fc
+target_fc = calculate_target_horn_fc(
+    desired_crossover_hz=800,
+    lf_driver_beaming_hz=840,
+    xo_fc_ratio=2.0
+)
+
+# Calculate required mouth area for target Fc
+required_mouth = calculate_mouth_area_for_fc(
+    throat_area_cm2=7.0,
+    length_cm=25.0,
+    target_fc_hz=target_fc
+)
+
+# Check feasibility against printer constraints
+feasibility = assess_mouth_area_feasibility(
+    required_mouth_cm2=required_mouth,
+    available_mouth_cm2=625,
+    target_fc_hz=target_fc
+)
+```
+
+**2. Verify Constraints:**
+- XO frequency must be < 0.8×LF_beaming
+- Mouth area must fit printer constraints
+- Horn length must fit printer constraints
+
+**3. Optimize Crossover:**
+```python
+from gsd.optimization.api.two_way_system import optimize_crossover_frequency
+
+# Sweep XO range to find optimal point (don't assume 2×Fc)
+result = optimize_crossover_frequency(
+    lf_driver_name="BC_12FW88",
+    hf_driver_name="BC_DH450",
+    lf_enclosure_type="ported",
+    lf_enclosure_params={"Vb": 0.1145, "Fb": 47.6},
+    horn_fc_hz=468,
+    xo_range_hz=(600, 1200)
+)
+
+print(f"Optimal XO: {result['optimal_xo_hz']:.0f} Hz")
+print(f"XO/Fc ratio: {result['xo_vs_fc_ratio']:.2f}")  # May not be 2.0!
+```
+
+### Physics Background
+
+**Horn Cutoff vs Mouth Area (for fixed length):**
+```
+Fc = (c/4π) × (1/L) × ln(mouth/throat)
+
+For L=250mm, throat=7cm²:
+- mouth=250cm² → Fc=390Hz  (excellent for 800Hz XO)
+- mouth=504cm² → Fc=467Hz  (good for 800Hz XO)
+
+**Critical:** Small mouth changes have LARGE effects on Fc due to logarithm
+```
+
+**LF Driver Beaming:**
+```
+f_beam = 2c/(π×d) where d = piston diameter
+
+For 12" driver: f_beam ≈ 840Hz
+XO should be < 0.8×f_beam ≈ 670Hz for flat response
+```
+
+**Trade-off: HF Sensitivity vs Crossover Integration**
+| Mouth (cm²) | Fc (Hz) | HF Sensitivity | XO Option | Dip Rating |
+|-------------|---------|----------------|-----------|------------|
+| 504 | 467 | Best | ~950Hz | ❌ Poor (13.8dB) |
+| 350 | 427 | Good -2dB | ~850Hz | ⚠️ Acceptable (3.7dB) |
+| 250 | 390 | Fair -4dB | ~600Hz | ✅ Good (3.2dB) |
+
+**User's preference:** "HF sensitivity is definitely something we can sacrifice"
+
+### Common Pitfalls
+
+❌ **WRONG:** Design LF and HF independently, then try to make crossover work
+```python
+# This fails because horn Fc may force XO too high
+lf_design = optimize_lf_enclosure(driver)
+horn_design = optimize_horn(driver)
+crossover = design_crossover(lf_design, horn_design)  # May have huge dip!
+```
+
+✅ **RIGHT:** Use integrated design from start
+```python
+design = design_two_way_system_integrated(...)  # One function call
+```
+
+❌ **WRONG:** Use preset horn without checking Fc
+```python
+# Preset horn may have wrong Fc for your XO target
+horn = get_preset_horn("large_horn")  # Fc=1865Hz!
+# Now XO must be >3700Hz → LF driver beaming → poor integration
+```
+
+✅ **RIGHT:** Calculate required mouth for target Fc
+```python
+target_fc = calculate_target_horn_fc(desired_xo, ...)
+required_mouth = calculate_mouth_area_for_fc(...)
+```
+
+❌ **WRONG:** Assume XO = 2×Fc
+```python
+# Case study found optimal XO = 1.28×Fc, not 2×Fc!
+crossover_freq = horn_fc * 2.0  # May not be optimal
+```
+
+✅ **RIGHT:** Sweep XO range to find optimal point
+```python
+result = optimize_crossover_frequency(...)  # Finds best XO
+```
+
+❌ **WRONG:** Ignore LF driver beaming
+```python
+# XO too high causes LF driver beaming → poor integration
+crossover_freq = 2500  # Too high for 12" driver!
+```
+
+✅ **RIGHT:** Calculate f_beam and cap XO accordingly
+```python
+f_beam = calculate_lf_beaming_frequency(driver)
+xo = min(desired_xo, 0.8 * f_beam)
+```
+
+### Available Functions
+
+**Horn Physics (`src/gsd/optimization/api/horn_physics.py`):**
+- `calculate_lf_beaming_frequency(driver)` → float
+- `calculate_target_horn_fc(desired_xo, f_beam, xo_ratio)` → float
+- `calculate_mouth_area_for_fc(throat, length, target_fc)` → float
+- `calculate_fc_from_mouth(throat, mouth, length)` → float
+- `assess_mouth_area_feasibility(required, available, ...)` → dict
+
+**Crossover Optimization (`src/gsd/optimization/api/two_way_system.py`):**
+- `optimize_crossover_frequency(...)` → dict with optimal_xo_hz, dip_db, etc.
+- `design_two_way_system_integrated(...)` → TwoWaySystemDesign
+
+### Case Study: BC 12FW88 + DH450
+
+See: `docs/two_way_design_review_12fw88_dh450.md`
+
+**Initial attempt (failed):**
+- Used preset horn: 504cm² mouth, Fc=1865Hz (from incorrect doc calculation)
+- Crossover at 2×Fc = 3730Hz
+- Result: 13.75dB dip (POOR)
+
+**Root cause:**
+- Horn Fc too high → XO too high → LF driver beaming
+
+**Solution (successful):**
+- Calculated required mouth for Fc≈400Hz
+- Used 250cm² mouth → Fc=468Hz
+- Optimized XO by sweep → 600Hz (1.28×Fc)
+- Result: 3.17dB dip (ACCEPTABLE)
+
+**Key insight:** For fixed horn length, mouth area directly controls Fc, which controls crossover integration quality.
+
 ## Common Pitfalls
 
 ### Units

@@ -102,6 +102,7 @@ class ThieleSmallParameters:
     BL: float    # Force factor (T·m)
     S_d: float   # Effective piston area (m²)
     X_max: float = None  # Maximum linear excursion (m), optional parameter for port sizing
+    throat_area_cm2: float = None  # Compression driver throat area (cm²), for horn-loaded drivers
 
     # Derived properties (calculated in __post_init__)
     M_ms: float = None  # Total moving mass including radiation (kg)
