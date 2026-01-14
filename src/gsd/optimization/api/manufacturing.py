@@ -14,6 +14,21 @@ from typing import Dict
 from gsd.driver.parameters import ThieleSmallParameters
 
 
+# Constants for design assessment
+# Speed of sound at 20°C, 1 atm (m/s)
+# From Kinsler et al. (1982), Chapter 1
+SPEED_OF_SOUND = 343.0
+
+# Safety margin for printer fit: design must be 95% of max length
+# This accounts for tolerances in 3D printing and assembly
+PRINTER_FIT_TOLERANCE = 0.95
+
+# Throat area estimate for compression drivers
+# Typical throat is ~30% of diaphragm area for 1" drivers
+# This is a rule of thumb - actual value depends on driver design
+THROAT_AREA_RATIO = 0.3
+
+
 def suggest_printing_strategy(
     driver: ThieleSmallParameters,
     target_cutoff: float,
@@ -44,15 +59,39 @@ def suggest_printing_strategy(
             "message": str,
             "sections": list of section lengths
         }
+
+    Raises:
+        ValueError: If input parameters are invalid
     """
-    c = 343.0  # Speed of sound
+    # Validate inputs
+    if target_cutoff <= 0:
+        raise ValueError(
+            f"target_cutoff must be positive, got {target_cutoff} Hz"
+        )
+
+    if printer_max_length <= 0:
+        raise ValueError(
+            f"printer_max_length must be positive, got {printer_max_length} m"
+        )
+
+    if target_mouth_area is not None and target_mouth_area <= 0:
+        raise ValueError(
+            f"target_mouth_area must be positive, got {target_mouth_area} m²"
+        )
+
+    if not hasattr(driver, 'S_d') or driver.S_d <= 0:
+        raise ValueError(
+            f"Driver must have valid S_d parameter, got {getattr(driver, 'S_d', None)}"
+        )
+
+    c = SPEED_OF_SOUND
 
     # Estimate required horn parameters
     # From Olson: Fc = c * m / (2π), m = ln(mouth/throat) / L
     # For given Fc, we need: L = ln(mouth/throat) * (2π * Fc) / c
 
     # Typical throat area for 1" compression driver
-    throat_area = 0.3 * driver.S_d  # ~30% of diaphragm area
+    throat_area = THROAT_AREA_RATIO * driver.S_d  # ~30% of diaphragm area
 
     # Estimate mouth area from cutoff (quarter-wavelength rule)
     # Mouth circumference should be ≥ wavelength at Fc
@@ -71,7 +110,7 @@ def suggest_printing_strategy(
     min_length = np.log(expansion_ratio) / m_required
 
     # Assess strategy
-    if min_length <= printer_max_length * 0.95:
+    if min_length <= printer_max_length * PRINTER_FIT_TOLERANCE:
         # Fits comfortably
         return {
             "fits_single_piece": True,

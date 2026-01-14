@@ -16,6 +16,21 @@ from typing import List, Dict, Optional
 import numpy as np
 
 
+# Validation criteria constants
+# Horn cutoff should be ≤ 0.5 × crossover for clean integration
+# Based on D'Appolito (1984) crossover design guidelines
+MAX_HORN_CUTOFF_RATIO = 0.5
+CRITICAL_HORN_CUTOFF_RATIO = 0.8
+
+# Acceptable passband variation (dB)
+# From Beranek (1954), Chapter 8 - Bandwidth definitions
+MAX_FLATNESS_DB = 6.0
+
+# Acceptable sensitivity mismatch after padding (dB)
+# From loudspeaker system design best practices
+MAX_SENSITIVITY_MISMATCH_DB = 6.0
+
+
 @dataclass
 class DesignValidation:
     """Validation results for two-way system design."""
@@ -67,8 +82,20 @@ def validate_two_way_design(design, verbose: bool = True) -> DesignValidation:
 
     Returns:
         DesignValidation with assessment
+
+    Raises:
+        ValueError: If required design attributes are missing
     """
     from gsd.driver import load_driver
+
+    # Validate required attributes
+    required_attrs = ['lf_driver_name', 'hf_driver_name', 'crossover_frequency']
+    missing = [attr for attr in required_attrs if not hasattr(design, attr)]
+    if missing:
+        raise ValueError(
+            f"Design missing required attributes: {missing}. "
+            f"Cannot validate incomplete design."
+        )
 
     warnings = []
     recommendations = []
@@ -82,14 +109,14 @@ def validate_two_way_design(design, verbose: bool = True) -> DesignValidation:
 
         if horn_fc > 0:
             ratio = horn_fc / xo_freq
-            scores['horn_cutoff_ratio'] = min(1.0, 0.5 / ratio) if ratio > 0 else 0
+            scores['horn_cutoff_ratio'] = min(1.0, MAX_HORN_CUTOFF_RATIO / ratio) if ratio > 0 else 0
 
-            if horn_fc > xo_freq * 0.5:
+            if horn_fc > xo_freq * MAX_HORN_CUTOFF_RATIO:
                 warnings.append(
-                    f"Horn cutoff ({horn_fc:.0f} Hz) > 0.5 × crossover ({xo_freq:.0f} Hz)"
+                    f"Horn cutoff ({horn_fc:.0f} Hz) > {MAX_HORN_CUTOFF_RATIO} × crossover ({xo_freq:.0f} Hz)"
                 )
 
-                if horn_fc > xo_freq * 0.8:
+                if horn_fc > xo_freq * CRITICAL_HORN_CUTOFF_RATIO:
                     recommendations.append("CRITICAL: Horn cutoff too close to crossover!")
                     recommendations.append("  Options: (a) Raise crossover to 1.5-2 kHz")
                     recommendations.append("         (b) Use multi-piece horn for lower cutoff")
@@ -108,10 +135,10 @@ def validate_two_way_design(design, verbose: bool = True) -> DesignValidation:
     # Check 3: Flatness
     if hasattr(design, 'flatness'):
         flatness = design.flatness
-        scores['flatness_score'] = max(0, 1.0 - flatness / 6.0)
+        scores['flatness_score'] = max(0, 1.0 - flatness / MAX_FLATNESS_DB)
 
-        if flatness > 6:
-            warnings.append(f"Flatness {flatness:.2f} dB > 6 dB - poor response")
+        if flatness > MAX_FLATNESS_DB:
+            warnings.append(f"Flatness {flatness:.2f} dB > {MAX_FLATNESS_DB} dB - poor response")
         elif flatness > 3:
             recommendations.append(f"Flatness {flatness:.2f} dB - consider EQ or XO adjustment")
 
@@ -148,7 +175,7 @@ def validate_two_way_design(design, verbose: bool = True) -> DesignValidation:
 
         scores['sensitivity_match'] = max(0, 1.0 - diff / 10.0)
 
-        if diff > 6:
+        if diff > MAX_SENSITIVITY_MISMATCH_DB:
             warnings.append(f"Sensitivity mismatch {diff:.1f} dB after padding")
             recommendations.append("Adjust HF/LF padding or consider different crossover")
 

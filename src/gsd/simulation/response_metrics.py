@@ -19,7 +19,8 @@ def find_f3_frequency(
     spl: np.ndarray,
     passband_level: float,
     search_range: Tuple[float, float] = (10, 200),
-    filter_type: str = "highpass"
+    filter_type: str = "highpass",
+    warn_on_fallback: bool = True
 ) -> float:
     """
     Find -3dB frequency for high-pass or low-pass filters.
@@ -37,12 +38,16 @@ def find_f3_frequency(
         passband_level: Reference passband level (dB)
         search_range: (min_freq, max_freq) to search for F3 (Hz)
         filter_type: "highpass" for ported boxes, "lowpass" for sealed
+        warn_on_fallback: Log warning if using fallback (default: True)
 
     Returns:
         F3 frequency (Hz) with linear interpolation for accuracy
 
     Raises:
         ValueError: If F3 not found in search range
+
+    Warnings:
+        Issues warning if fallback to closest value is used
 
     Examples:
         >>> freq = np.logspace(1, 4, 1000)
@@ -76,7 +81,19 @@ def find_f3_frequency(
     if len(crossings) == 0:
         # Fallback: find closest frequency to target
         closest_idx = np.argmin(np.abs(spl_search - target_level))
-        return freq_search[closest_idx]
+        f3_fallback = freq_search[closest_idx]
+
+        if warn_on_fallback:
+            import warnings
+            warnings.warn(
+                f"F3 crossing not found in search range {search_range}. "
+                f"Using closest value: {f3_fallback:.1f} Hz "
+                f"(target: {target_level:.1f} dB, closest: {spl_search[closest_idx]:.1f} dB). "
+                f"This may indicate incorrect search range or filter type.",
+                UserWarning
+            )
+
+        return f3_fallback
 
     # Linear interpolation for accuracy
     idx = crossings[0]

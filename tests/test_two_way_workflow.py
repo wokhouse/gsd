@@ -21,11 +21,13 @@ class TestF3Calculation:
     """Test F3 calculation helper function."""
 
     def test_highpass_f3(self):
-        """Test F3 for high-pass filter (ported box)."""
-        # Create 4th-order high-pass response at 50 Hz
-        freq = np.logspace(1, 4, 1000)
+        """Test F3 for 1st-order high-pass filter."""
+        # Use 1st-order filter where F3 equals corner frequency
+        # High-pass: response = 20*log10(f / sqrt(fc^2 + f^2))
+        # At f = fc: response = 20*log10(1/sqrt(2)) = -3.01 dB ✓
+        freq = np.logspace(1, 3, 1000)
         fc = 50
-        spl = 20 * np.log10(1 / (1 + (fc / freq)**4)) + 94
+        spl = 20 * np.log10(freq / np.sqrt(fc**2 + freq**2)) + 94
 
         # Passband above cutoff
         passband = np.mean(spl[freq >= 100])
@@ -34,15 +36,17 @@ class TestF3Calculation:
                                search_range=(10, 200),
                                filter_type="highpass")
 
-        # Should be close to fc
+        # Should be close to fc for 1st-order filter
         assert 45 < f3 < 55, f"F3={f3:.1f} Hz, expected ~50 Hz"
 
     def test_lowpass_f3(self):
-        """Test F3 for low-pass filter (sealed box)."""
-        # Create 2nd-order low-pass response at 5000 Hz
+        """Test F3 for 1st-order low-pass filter."""
+        # Use 1st-order filter where F3 equals corner frequency
+        # Low-pass: response = 20*log10(fc / sqrt(fc^2 + f^2))
+        # At f = fc: response = 20*log10(1/sqrt(2)) = -3.01 dB ✓
         freq = np.logspace(1, 5, 1000)
         fc = 5000
-        spl = 20 * np.log10(1 / (1 + (freq / fc)**2)) + 94
+        spl = 20 * np.log10(fc / np.sqrt(fc**2 + freq**2)) + 94
 
         # Passband below cutoff
         passband = np.mean(spl[freq <= 2000])
@@ -51,7 +55,7 @@ class TestF3Calculation:
                                search_range=(1000, 10000),
                                filter_type="lowpass")
 
-        # Should be close to fc
+        # Should be close to fc for 1st-order filter
         assert 4500 < f3 < 5500, f"F3={f3:.1f} Hz, expected ~5000 Hz"
 
     def test_f3_not_found(self):
@@ -77,7 +81,7 @@ class TestPrintingStrategy:
 
         strategy = suggest_printing_strategy(
             driver,
-            target_cutoff=600,  # Higher cutoff = shorter horn
+            target_cutoff=1200,  # Higher cutoff = shorter horn (~19cm)
             printer_max_length=0.25
         )
 
@@ -91,7 +95,7 @@ class TestPrintingStrategy:
 
         strategy = suggest_printing_strategy(
             driver,
-            target_cutoff=400,  # Lower cutoff = longer horn
+            target_cutoff=600,  # Mid-range cutoff = ~37cm horn
             printer_max_length=0.25
         )
 
