@@ -189,3 +189,37 @@ tasks/*_plots/
 plots/
 outputs/
 figures/
+
+# Investigation and analysis artifacts (temporary - use /tmp/ for these)
+# Generated plots and visualizations
+tasks/*/*.pdf
+tasks/*/*.png
+tasks/*/*.jpg
+tasks/*/*.jpeg
+# Hornresp export files (temporary validation artifacts)
+tasks/*/*.txt
+# Intermediate design JSON files
+tasks/*/design_*.json
+tasks/*/final_*.json
+tasks/*/optimized_*.json
+tasks/*/recommended_*.json
+# One-off investigation scripts (use descriptive names for tracked tasks)
+tasks/*/analysis*.py
+tasks/*/complete_*.py
+tasks/*/demonstrate*.py
+tasks/*/create_*.py
+tasks/*/custom_*.py
+tasks/*/redo_*.py
+tasks/*/validate_*.py
+tasks/*/plot_*.py
+tasks/*/optimize_*.py
+tasks/*/optimize_higher*.py
+tasks/*/optimize_xo*.py
+tasks/*/redesign_*.py
+tasks/*/interactive_*.py
+# Case/response summary files
+tasks/*/response_*.txt
+tasks/*/system_response*.*
+# Hornresp exports (use /tmp/ or tests/validation/ for reference data)
+tasks/*/*_multiseg_horn.txt
+tasks/*/*_ported.txt
