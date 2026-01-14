@@ -100,9 +100,13 @@ class TestIntegratedTwoWayDesign:
 
         When accept_sensitivity_loss=False and constraints are too tight,
         should raise ValueError.
+
+        Note: Need extremely tight constraints to trigger this, since even
+        a 100mm horn only needs ~48cm² mouth for 336Hz Fc.
         """
-        # Very tight constraints that will require sensitivity loss
-        tight_constraints = {"max_length": 0.15, "max_mouth_area": 0.0225}  # 150mm, 150mm²
+        # Extremely tight constraints that will require sensitivity loss
+        # 50mm horn, 25cm² mouth is too small for 336Hz Fc
+        tight_constraints = {"max_length": 0.05, "max_mouth_area": 0.0025}  # 50mm, 50mm²
 
         with pytest.raises(ValueError, match="exceeds constraint"):
             design_two_way_system_integrated(
