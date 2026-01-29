@@ -19,10 +19,25 @@ from gsd.optimization.api.result_structures import (
 )
 from gsd.optimization.api.design_assistant import DesignAssistant
 
+# Horn export and dispersion analysis
+from gsd.optimization.api import horn_export
+from gsd.optimization.api import horn_dispersion
+
 __all__ = [
     "DesignAssistant",
     "DesignRecommendation",
     "OptimizationResult",
     "ParameterSweepResult",
     "DesignExplorationQuery",
+    # Horn export
+    "export_horn_profile",
+    "export_horn_profile_dxf",
+    "export_horn_profile_csv",
+    "calculate_exponential_horn_profile",
+    # Horn dispersion
+    "analyze_horn_dispersion",
+    "circular_piston_directivity",
+    "calculate_directivity_index",
+    "calculate_beam_width",
+    "recommend_mouth_size",
 ]
