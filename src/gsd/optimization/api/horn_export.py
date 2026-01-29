@@ -73,9 +73,12 @@ def calculate_exponential_horn_profile(
     radius = np.sqrt(area / np.pi)
 
     # Calculate cutoff frequency
-    # From Olson Eq. 5.18: Fc = (c * m) / (4π)
+    # From Olson Eq. 5.18: Fc = (c * m) / (2π)
+    # Note: Olson's m is defined as S(x) = S_t * exp(m*x)
+    # Kolbrek's m uses S(x) = S_t * exp(2*m*x), hence factor of 2 difference
+    # Literature: Olson (1947), Eq. 5.18; implementation_guide.md
     c = 34300  # cm/s at 20°C
-    fc = (c * m) / (4 * np.pi)
+    fc = (c * m) / (2 * np.pi)
 
     return x, radius, area, fc, m
 
@@ -242,7 +245,10 @@ def export_horn_profile_dxf(
     )
 
     # Save file
-    doc.saveas(output_file)
+    try:
+        doc.saveas(output_path)
+    except OSError as e:
+        raise OSError(f"Failed to write DXF file to {output_path}: {e}")
 
     return output_path
 

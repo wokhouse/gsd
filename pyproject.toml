@@ -45,6 +45,7 @@ dependencies = [
     # File I/O
     "pandas>=2.0.0",  # For CSV parsing and CLI table output
     "pyyaml>=6.0",  # For YAML driver definitions
+    "ezdxf>=1.0.0",  # For DXF export (CAD/CAM integration)
 ]
 
 [project.optional-dependencies]
